@@ -1,7 +1,30 @@
 import React from 'react';
-import { ExternalLink, QrCode, Sparkles, Trash2, User } from 'lucide-react';
+import { ExternalLink, QrCode, Sparkles, Trash2 } from 'lucide-react';
 import { WebProject, Language } from '../types';
 import { translations } from '../translations';
+
+// Icon môn học (dùng riêng cho chế độ rút gọn - chỉ icon, không kèm chữ)
+const SUBJECT_EMOJIS: Record<string, string> = {
+  math: '📐',
+  physics: '⚡',
+  chemistry: '🧪',
+  biology: '🧬',
+  informatics: '💻',
+  literature: '📖',
+  english: '🇬🇧',
+  history: '🏛️',
+  geography: '🌍',
+  natural_sciences: '🔬',
+  stem: '🚀',
+  general: '📚',
+  // Legacy compatibility
+  languages: '💬',
+  computer_science: '💻',
+  history_society: '🏛️',
+  arts_design: '🎨',
+  health_medicine: '🩺',
+  tools_utilities: '🛠️',
+};
 
 interface CompactListItemProps {
   project: WebProject;
@@ -30,7 +53,7 @@ export const CompactListItem: React.FC<CompactListItemProps> = ({
 
   return (
     <div className="flex items-center justify-between py-2.5 px-3.5 bg-white hover:bg-slate-50/90 rounded-xl border border-slate-200/80 hover:border-indigo-300 shadow-xs hover:shadow-sm transition-all gap-3">
-      {/* Tên mô phỏng, Lĩnh vực và Ghi chú tác giả */}
+      {/* Tên mô phỏng + icon môn học (rút gọn: ẩn tác giả và chữ môn để tăng chỗ hiển thị tên) */}
       <div className="flex items-center space-x-2 sm:space-x-2.5 min-w-0 flex-1 overflow-hidden">
         {project.isFamous && (
           <span
@@ -49,21 +72,13 @@ export const CompactListItem: React.FC<CompactListItemProps> = ({
           {project.title}
         </h4>
 
-        {/* Lĩnh vực (Category badge) */}
-        <span className="shrink-0 px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-200/60 text-indigo-700 text-[11px] font-semibold">
-          {t.categoryNames[project.category] || project.category}
+        {/* Icon môn học - chỉ icon, ẩn chữ để tăng khoảng trống cho tên */}
+        <span
+          title={t.categoryNames[project.category] || project.category}
+          className="shrink-0 w-6 h-6 inline-flex items-center justify-center rounded-md bg-indigo-50 border border-indigo-200/60 text-sm leading-none"
+        >
+          {SUBJECT_EMOJIS[project.category] || '📘'}
         </span>
-
-        {/* Ghi chú tác giả / Đơn vị (ví dụ: Thầy..., Trường..., Nước...) */}
-        {project.authorName && (
-          <span
-            className="shrink-0 inline-flex items-center space-x-1 px-2 py-0.5 rounded-md bg-slate-100/90 border border-slate-200/70 text-slate-600 text-[11px] font-medium max-w-[130px] sm:max-w-[200px] truncate"
-            title={t.authorNoteTitle.replace('{name}', project.authorName)}
-          >
-            <User className="w-3 h-3 text-slate-400 shrink-0" />
-            <span className="truncate">{project.authorName}</span>
-          </span>
-        )}
       </div>
 
       {/* Quick Action Buttons */}
