@@ -201,7 +201,7 @@ export async function fetchProjectsFromSheet(scriptUrl: string): Promise<SyncRes
             String(item.isUserSubmission).toUpperCase() === 'YES' ||
             item.isUserSubmission === 1 ||
             String(item.isUserSubmission) === '1'
-          ),
+          ) || !isFamous,
         };
       });
 
@@ -392,33 +392,47 @@ export async function fetchSubmissionsFromSheet(scriptUrl: string): Promise<Sync
     const rawList: any[] = result && Array.isArray(result.data) ? result.data : [];
     const isSubmissionStatus = (s: any) =>
       s === 'approved' || s === 'pending' || s === 'rejected';
-    const projects: WebProject[] = rawList.map((item: any, idx: number) => ({
-      id: String(item.id || `sub-gs-${idx}-${Date.now()}`),
-      title: String(item.title || 'Mô phỏng không tên'),
-      url: String(item.url || ''),
-      description: String(item.description || ''),
-      country: (item.country || 'VN') as any,
-      category: (item.category || 'general') as any,
-      educationLevel: (item.educationLevel || 'all') as any,
-      status: isSubmissionStatus(item.status) ? item.status : 'pending',
-      createdAt: item.createdAt || new Date().toISOString(),
-      previewImage: item.previewImage || undefined,
-      authorName: String(item.authorName || 'Thành viên'),
-      authorContact: item.authorContact ? String(item.authorContact) : undefined,
-      tags: Array.isArray(item.tags)
-        ? item.tags
-        : (item.tags ? String(item.tags).split(',').map((t: string) => t.trim()) : []),
-      views: Number(item.views) || 0,
-      likes: Number(item.likes) || 0,
-      isFamous: Boolean(item.isFamous),
-      isUserSubmission: Boolean(
-        item.isUserSubmission === true ||
-        String(item.isUserSubmission).toUpperCase() === 'TRUE' ||
-        String(item.isUserSubmission).toUpperCase() === 'YES' ||
-        item.isUserSubmission === 1 ||
-        String(item.isUserSubmission) === '1'
-      ),
-    }));
+    const projects: WebProject[] = rawList.map((item: any, idx: number) => {
+      const isFamous = Boolean(
+        item.isFamous === true ||
+        String(item.isFamous).toUpperCase() === 'TRUE' ||
+        String(item.isFamous).toUpperCase() === 'YES' ||
+        item.isFamous === 1 ||
+        String(item.isFamous) === '1' ||
+        String(item.id || '').startsWith('phet-') ||
+        String(item.id || '').startsWith('geogebra-') ||
+        String(item.id || '').startsWith('famous-')
+      );
+      const isUserSubmission =
+        Boolean(
+          item.isUserSubmission === true ||
+          String(item.isUserSubmission).toUpperCase() === 'TRUE' ||
+          String(item.isUserSubmission).toUpperCase() === 'YES' ||
+          item.isUserSubmission === 1 ||
+          String(item.isUserSubmission) === '1'
+        ) || !isFamous;
+      return {
+        id: String(item.id || `sub-gs-${idx}-${Date.now()}`),
+        title: String(item.title || 'Mô phỏng không tên'),
+        url: String(item.url || ''),
+        description: String(item.description || ''),
+        country: (item.country || 'VN') as any,
+        category: (item.category || 'general') as any,
+        educationLevel: (item.educationLevel || 'all') as any,
+        status: isSubmissionStatus(item.status) ? item.status : 'pending',
+        createdAt: item.createdAt || new Date().toISOString(),
+        previewImage: item.previewImage || undefined,
+        authorName: String(item.authorName || 'Thành viên'),
+        authorContact: item.authorContact ? String(item.authorContact) : undefined,
+        tags: Array.isArray(item.tags)
+          ? item.tags
+          : (item.tags ? String(item.tags).split(',').map((t: string) => t.trim()) : []),
+        views: Number(item.views) || 0,
+        likes: Number(item.likes) || 0,
+        isFamous: isFamous,
+        isUserSubmission: isUserSubmission,
+      };
+    });
 
     return { success: true, message: `Đã tải ${projects.length} dự án mới từ Google Sheets`, count: projects.length, data: projects };
   } catch (err: any) {
