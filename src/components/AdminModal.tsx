@@ -54,6 +54,8 @@ interface AdminModalProps {
   onResetData: () => void;
   onSyncProjects?: (newProjects: WebProject[]) => void;
   onRefreshPending?: () => void;
+  communityOnly: boolean;
+  onCommunityOnlyChange: (val: boolean) => void;
   lang: Language;
 }
 
@@ -72,6 +74,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onResetData,
   onSyncProjects,
   onRefreshPending,
+  communityOnly,
+  onCommunityOnlyChange,
   lang,
 }) => {
   const t = translations[lang];
@@ -753,6 +757,27 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                           className="rounded text-emerald-600 focus:ring-emerald-500"
                         />
                         <span>{t.amAutoSyncNew}</span>
+                      </label>
+                    </div>
+
+                    {/* BIẾN KIỂM SOÁT CỘNG ĐỒNG: tab "Bài đăng tải" chỉ hiện bài admin duyệt */}
+                    <div className="pt-2 border-t border-slate-100">
+                      <label className="flex items-start space-x-2.5 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={communityOnly}
+                          onChange={(e) => onCommunityOnlyChange(e.target.checked)}
+                          className="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500"
+                        />
+                        <span className="text-xs text-slate-700 leading-relaxed">
+                          <span className="font-bold block text-slate-800">
+                            Bật chế độ cộng đồng (mặc định)
+                          </span>
+                          <span className="text-[11px] text-slate-500">
+                            Tab "Bài đăng tải" CHỈ hiển thị các bài người dùng gửi và admin ĐÃ DUYỆT.
+                            Tắt để hiện lại mọi bài approved không thuộc mục Nổi tiếng.
+                          </span>
+                        </span>
                       </label>
                     </div>
 

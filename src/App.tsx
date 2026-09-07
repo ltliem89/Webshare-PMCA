@@ -37,6 +37,10 @@ import {
   updateStatsInSheet,
 } from './services/googleSync';
 import { getWebsiteScreenshotUrl } from './utils/screenshot';
+import {
+  isCommunityApprovedOnly,
+  setCommunityApprovedOnly,
+} from './config';
 
 const STORAGE_KEY_PROJECTS = 'webhub_projects_data_v3';
 const STORAGE_KEY_LANG = 'webhub_language_preference';
@@ -80,9 +84,16 @@ const sanitizeAndMigrateProjects = (loadedList: WebProject[]): WebProject[] => {
           p.id.toLowerCase().includes(kw) ||
           p.title.toLowerCase().includes(kw)
       );
+      const isFamousActual = isFamousMatch || !!p.isFamous;
+      // Giữ dữ liệu cũ: bài approved không nổi tiếng → coi là bài admin đã duyệt
+      // (các bài mẫu khởi tạo đều là famous nên không bị tính nhầm)
+      const isUserSubmission =
+        p.isUserSubmission === true ||
+        (p.status === 'approved' && !isFamousActual);
       return {
         ...p,
-        isFamous: isFamousMatch || !!p.isFamous,
+        isFamous: isFamousActual,
+        isUserSubmission,
       };
     });
 
@@ -119,6 +130,16 @@ export default function App() {
   const handleSetIsAdmin = (val: boolean) => {
     setIsAdmin(val);
     localStorage.setItem(STORAGE_KEY_ADMIN, val ? 'true' : 'false');
+  };
+
+  // Biến kiểm soát chế độ cộng đồng: tab "Bài đăng tải" chỉ hiển thị bài admin duyệt
+  const [communityOnly, setCommunityOnly] = useState<boolean>(() =>
+    isCommunityApprovedOnly()
+  );
+
+  const handleCommunityOnlyChange = (val: boolean) => {
+    setCommunityApprovedOnly(val);
+    setCommunityOnly(val);
   };
 
   // 3. Projects State (Loaded from localStorage with clean migration across all versions or Initial Seed)
@@ -267,6 +288,9 @@ export default function App() {
           let changed = false;
           const merged = [...prev];
           for (const cp of cloudProjects) {
+            // Bỏ qua bài đã APPROVED còn sót trong tab chờ duyệt (đã chuyển sang
+            // WebHub_Projects khi admin duyệt) — tránh hiện nhầm trong danh sách chờ.
+            if (cp.status !== 'pending' && cp.status !== 'rejected') continue;
             const idx = merged.findIndex((p) => p.id === cp.id);
             // Chỉ thêm/cập nhật bài CHƯA duyệt (pending/rejected) tới từ đám mây,
             // tránh đè lên dữ liệu approved đang hiển thị.
@@ -423,6 +447,7 @@ export default function App() {
       ...data,
       id: `proj-${Date.now()}`,
       status: 'pending', // Chờ admin duyệt trước khi hiển thị công khai
+      isUserSubmission: true, // Bài người dùng đăng → thuộc tab "Bài đăng tải" khi được duyệt
       createdAt: new Date().toISOString(),
       views: 1,
       likes: 0,
@@ -449,7 +474,12 @@ export default function App() {
     if (!project) return;
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
-      upsertProjectToSheet(scriptUrl, { ...project, status: 'approved' });
+      // Bài được admin duyệt → luôn coi là bài cộng đồng (hiển thị ở "Bài đăng tải")
+      upsertProjectToSheet(scriptUrl, {
+        ...project,
+        status: 'approved',
+        isUserSubmission: true,
+      });
       // Sau khi duyệt, kéo lại danh sách chờ duyệt từ đám mây
       syncPendingFromCloud();
     }
@@ -523,8 +553,11 @@ export default function App() {
     [approvedProjects, lang]
   );
   const defaultApprovedCount = useMemo(
-    () => approvedProjects.filter((p) => !p.isFamous).length,
-    [approvedProjects]
+    () =>
+      approvedProjects.filter(
+        (p) => !p.isFamous && (communityOnly ? p.isUserSubmission : true)
+      ).length,
+    [approvedProjects, communityOnly]
   );
   const famousCount = useMemo(
     () => approvedProjects.filter((p) => !!p.isFamous).length,
@@ -535,11 +568,14 @@ export default function App() {
     return localizedProjects
       .filter((project) => {
         // Nếu người dùng bật nút "Nổi tiếng": hiển thị các mô phỏng nổi tiếng (PhET, GeoGebra, NetSim...)
-        // Mặc định: hiển thị các bài mô phỏng do chúng ta duyệt trực tiếp trên trang web
+        // Mặc định: hiển thị các bài do admin duyệt (tab "Bài đăng tải" - chế độ cộng đồng)
         if (filters.onlyFamous) {
           if (!project.isFamous) return false;
         } else {
           if (project.isFamous) return false;
+          // BIẾN KIỂM SOÁT CỘNG ĐỒNG: nếu bật, chỉ hiện bài người dùng đăng đã duyệt,
+          // mọi bài mẫu (không phải nổi tiếng) đều bị ẩn khỏi tab "Bài đăng tải".
+          if (communityOnly && !project.isUserSubmission) return false;
         }
 
         // Category / Subject filter
@@ -603,7 +639,7 @@ export default function App() {
         }
         return 0;
       });
-  }, [localizedProjects, filters]);
+  }, [localizedProjects, filters, communityOnly]);
 
   const pendingCount = projects.filter((p) => p.status === 'pending').length;
 
@@ -783,6 +819,8 @@ export default function App() {
         onResetData={handleResetData}
         onSyncProjects={(syncedProjects) => setProjects(syncedProjects)}
         onRefreshPending={syncPendingFromCloud}
+        communityOnly={communityOnly}
+        onCommunityOnlyChange={handleCommunityOnlyChange}
         lang={lang}
       />
 

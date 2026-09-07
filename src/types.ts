@@ -40,6 +40,7 @@ export interface WebProject {
   views: number;
   likes: number;
   isFamous?: boolean; // Website mô phỏng nổi tiếng (PhET, GeoGebra, NetSim...)
+  isUserSubmission?: boolean; // Bài do NGƯỜI DÙNG đăng lên, admin đã duyệt → thuộc tab "Bài đăng tải"
 }
 
 export const LANGUAGE_CODES = [

@@ -195,6 +195,13 @@ export async function fetchProjectsFromSheet(scriptUrl: string): Promise<SyncRes
           views: Number(item.views) || 0,
           likes: Number(item.likes) || 0,
           isFamous: isFamous,
+          isUserSubmission: Boolean(
+            item.isUserSubmission === true ||
+            String(item.isUserSubmission).toUpperCase() === 'TRUE' ||
+            String(item.isUserSubmission).toUpperCase() === 'YES' ||
+            item.isUserSubmission === 1 ||
+            String(item.isUserSubmission) === '1'
+          ),
         };
       });
 
@@ -383,6 +390,8 @@ export async function fetchSubmissionsFromSheet(scriptUrl: string): Promise<Sync
 
     const result = await response.json();
     const rawList: any[] = result && Array.isArray(result.data) ? result.data : [];
+    const isSubmissionStatus = (s: any) =>
+      s === 'approved' || s === 'pending' || s === 'rejected';
     const projects: WebProject[] = rawList.map((item: any, idx: number) => ({
       id: String(item.id || `sub-gs-${idx}-${Date.now()}`),
       title: String(item.title || 'Mô phỏng không tên'),
@@ -391,7 +400,7 @@ export async function fetchSubmissionsFromSheet(scriptUrl: string): Promise<Sync
       country: (item.country || 'VN') as any,
       category: (item.category || 'general') as any,
       educationLevel: (item.educationLevel || 'all') as any,
-      status: (item.status === 'pending' || item.status === 'rejected') ? item.status : 'pending',
+      status: isSubmissionStatus(item.status) ? item.status : 'pending',
       createdAt: item.createdAt || new Date().toISOString(),
       previewImage: item.previewImage || undefined,
       authorName: String(item.authorName || 'Thành viên'),
@@ -402,6 +411,13 @@ export async function fetchSubmissionsFromSheet(scriptUrl: string): Promise<Sync
       views: Number(item.views) || 0,
       likes: Number(item.likes) || 0,
       isFamous: Boolean(item.isFamous),
+      isUserSubmission: Boolean(
+        item.isUserSubmission === true ||
+        String(item.isUserSubmission).toUpperCase() === 'TRUE' ||
+        String(item.isUserSubmission).toUpperCase() === 'YES' ||
+        item.isUserSubmission === 1 ||
+        String(item.isUserSubmission) === '1'
+      ),
     }));
 
     return { success: true, message: `Đã tải ${projects.length} dự án mới từ Google Sheets`, count: projects.length, data: projects };
@@ -499,7 +515,8 @@ const HEADERS = [
   "PreviewImage",
   "Tags",
   "Views",
-  "Likes"
+  "Likes",
+  "IsUserSubmission"
 ];
 
 function ensureSheet(name) {
@@ -544,6 +561,14 @@ function parseRows(sheet) {
       rawFamous === 1 ||
       String(rawFamous) === "1"
     );
+    const rawUserSubmission = row[col("isusersubmission", 16)];
+    const isUserSubmission = (
+      rawUserSubmission === true ||
+      String(rawUserSubmission).toUpperCase() === "TRUE" ||
+      String(rawUserSubmission).toUpperCase() === "YES" ||
+      rawUserSubmission === 1 ||
+      String(rawUserSubmission) === "1"
+    );
     projects.push({
       id: String(row[col("id", 0)] || ("proj-" + i)),
       title: String(row[col("title", 1)] || ""),
@@ -554,6 +579,7 @@ function parseRows(sheet) {
       educationLevel: String(row[col("educationlevel", 6)] || "all"),
       status: String(row[col("status", 7)] || "approved"),
       isFamous: isFamous,
+      isUserSubmission: isUserSubmission,
       authorName: String(row[col("authorname", 9)] || (isFamous ? "Nền tảng quốc tế" : "Thành viên")),
       authorContact: String(row[col("authorcontact", 10)] || ""),
       createdAt: row[col("createdat", 11)] ? (row[col("createdat", 11)] instanceof Date ? row[col("createdat", 11)].toISOString() : String(row[col("createdat", 11)])) : new Date().toISOString(),
@@ -566,7 +592,7 @@ function parseRows(sheet) {
   return { rows: projects };
 }
 
-// Chuyển project thành 1 hàng 16 cột
+// Chuyển project thành 1 hàng 17 cột
 function projectToRow(p) {
   return [
     p.id || ("proj-" + new Date().getTime()),
@@ -584,7 +610,8 @@ function projectToRow(p) {
     p.previewImage || "",
     Array.isArray(p.tags) ? p.tags.join(", ") : "",
     p.views || 0,
-    p.likes || 0
+    p.likes || 0,
+    p.isUserSubmission ? true : false
   ];
 }
 
