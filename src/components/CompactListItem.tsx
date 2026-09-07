@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, QrCode, Sparkles, Trash2 } from 'lucide-react';
+import { ExternalLink, Pencil, QrCode, Sparkles, Trash2 } from 'lucide-react';
 import { WebProject, Language } from '../types';
 import { translations } from '../translations';
 
@@ -31,6 +31,7 @@ interface CompactListItemProps {
   lang: Language;
   isAdmin: boolean;
   onOpenQR: (project: WebProject) => void;
+  onEditProject: (project: WebProject) => void;
   onDeleteRequest: (project: WebProject) => void;
   onLike: (projectId: string) => void;
   onVisit: (projectId: string, url: string) => void;
@@ -41,6 +42,7 @@ export const CompactListItem: React.FC<CompactListItemProps> = ({
   lang,
   isAdmin,
   onOpenQR,
+  onEditProject,
   onDeleteRequest,
   onVisit,
 }) => {
@@ -98,6 +100,16 @@ export const CompactListItem: React.FC<CompactListItemProps> = ({
         >
           <ExternalLink className="w-3.5 h-3.5" />
         </button>
+
+        {isAdmin && (
+          <button
+            onClick={() => onEditProject(project)}
+            className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer"
+            title={t.amEdit}
+          >
+            <Pencil className="w-3.5 h-3.5" />
+          </button>
+        )}
 
         {isAdmin && (
           <button

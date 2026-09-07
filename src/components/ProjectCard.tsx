@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   ExternalLink,
   Heart,
+  Pencil,
   QrCode,
   Share2,
   Trash2,
@@ -17,6 +18,7 @@ interface ProjectCardProps {
   lang: Language;
   isAdmin: boolean;
   onOpenQR: (project: WebProject) => void;
+  onEditProject: (project: WebProject) => void;
   onDeleteRequest: (project: WebProject) => void;
   onLike: (projectId: string) => void;
   onVisit: (projectId: string, url: string) => void;
@@ -27,6 +29,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   lang,
   isAdmin,
   onOpenQR,
+  onEditProject,
   onDeleteRequest,
   onLike,
   onVisit,
@@ -166,6 +169,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           >
             <Share2 className="w-3.5 h-3.5" />
           </button>
+
+          {/* Admin Edit Action Button (chỉnh sửa mọi thông tin của mô phỏng) */}
+          {isAdmin && (
+            <button
+              id={`edit-btn-${project.id}`}
+              onClick={() => onEditProject(project)}
+              className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 transition-colors"
+              title={t.amEdit}
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+          )}
 
           {/* Admin Delete Action Button (with safety confirmation) */}
           {isAdmin && (

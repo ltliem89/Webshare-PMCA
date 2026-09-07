@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -48,7 +48,7 @@ const STORAGE_KEY_ADMIN = 'webhub_admin_session';
 
 // Helper to ensure famous platforms and community submissions are cleanly separated
 const sanitizeAndMigrateProjects = (loadedList: WebProject[]): WebProject[] => {
-  // Các dữ liệu mẫu cũ đã được gỡ khỏi bản khởi tạo (demo bài đăng tải, pending, mục ghép cũ)
+  // CĂ¡c dá»¯ liá»‡u máº«u cÅ© Ä‘Ă£ Ä‘Æ°á»£c gá»¡ khá»i báº£n khá»Ÿi táº¡o (demo bĂ i Ä‘Äƒng táº£i, pending, má»¥c ghĂ©p cÅ©)
   const deprecatedSampleIds = new Set<string>([
     'proj-phys-1',
     'proj-chem-1',
@@ -85,8 +85,8 @@ const sanitizeAndMigrateProjects = (loadedList: WebProject[]): WebProject[] => {
           p.title.toLowerCase().includes(kw)
       );
       const isFamousActual = isFamousMatch || !!p.isFamous;
-      // Giữ dữ liệu cũ: bài approved không nổi tiếng → coi là bài admin đã duyệt
-      // (các bài mẫu khởi tạo đều là famous nên không bị tính nhầm)
+      // Giá»¯ dá»¯ liá»‡u cÅ©: bĂ i approved khĂ´ng ná»•i tiáº¿ng â†’ coi lĂ  bĂ i admin Ä‘Ă£ duyá»‡t
+      // (cĂ¡c bĂ i máº«u khá»Ÿi táº¡o Ä‘á»u lĂ  famous nĂªn khĂ´ng bá»‹ tĂ­nh nháº§m)
       const isUserSubmission =
         p.isUserSubmission === true ||
         (p.status === 'approved' && !isFamousActual);
@@ -107,11 +107,11 @@ const sanitizeAndMigrateProjects = (loadedList: WebProject[]): WebProject[] => {
   return updated;
 };
 
-// Hợp nhất dữ liệu cloud (bài đã duyệt) với bản local để KHÔNG làm mất các cờ
-// đã biết như isUserSubmission / isFamous, và KHÔNG làm giảm Views/Likes.
-// Lý do: Apps Script cũ / dữ liệu cũ trong Sheets chưa có cột IsUserSubmission
-// nên dữ liệu tải về thiếu cờ -> nếu ghi đè trực tiếp, bài đã duyệt vụt mất khỏi
-// tab "Bài đăng tải" (cộng đồng).
+// Há»£p nháº¥t dá»¯ liá»‡u cloud (bĂ i Ä‘Ă£ duyá»‡t) vá»›i báº£n local Ä‘á»ƒ KHĂ”NG lĂ m máº¥t cĂ¡c cá»
+// Ä‘Ă£ biáº¿t nhÆ° isUserSubmission / isFamous, vĂ  KHĂ”NG lĂ m giáº£m Views/Likes.
+// LĂ½ do: Apps Script cÅ© / dá»¯ liá»‡u cÅ© trong Sheets chÆ°a cĂ³ cá»™t IsUserSubmission
+// nĂªn dá»¯ liá»‡u táº£i vá» thiáº¿u cá» -> náº¿u ghi Ä‘Ă¨ trá»±c tiáº¿p, bĂ i Ä‘Ă£ duyá»‡t vá»¥t máº¥t khá»i
+// tab "BĂ i Ä‘Äƒng táº£i" (cá»™ng Ä‘á»“ng).
 const mergeCloudProject = (
   local: WebProject,
   cloud: WebProject
@@ -128,7 +128,7 @@ export default function App() {
   // 1. Language state
   const [lang, setLang] = useState<Language>(() => {
     const saved = localStorage.getItem(STORAGE_KEY_LANG);
-    // Tránh giá trị cũ (ja/fr) không còn được hỗ trợ → quay về tiếng Việt
+    // TrĂ¡nh giĂ¡ trá»‹ cÅ© (ja/fr) khĂ´ng cĂ²n Ä‘Æ°á»£c há»— trá»£ â†’ quay vá» tiáº¿ng Viá»‡t
     return LANGUAGE_CODES.includes(saved as Language) ? (saved as Language) : 'vi';
   });
 
@@ -149,7 +149,7 @@ export default function App() {
     localStorage.setItem(STORAGE_KEY_ADMIN, val ? 'true' : 'false');
   };
 
-  // Biến kiểm soát chế độ cộng đồng: tab "Bài đăng tải" chỉ hiển thị bài admin duyệt
+  // Biáº¿n kiá»ƒm soĂ¡t cháº¿ Ä‘á»™ cá»™ng Ä‘á»“ng: tab "BĂ i Ä‘Äƒng táº£i" chá»‰ hiá»ƒn thá»‹ bĂ i admin duyá»‡t
   const [communityOnly, setCommunityOnly] = useState<boolean>(() =>
     isCommunityApprovedOnly()
   );
@@ -184,7 +184,7 @@ export default function App() {
                     (existing) => existing.id === item.id || existing.url === item.url
                   )
                 ) {
-                  // Giữ nguyên trạng thái (approved / pending / rejected) khi tải lại
+                  // Giá»¯ nguyĂªn tráº¡ng thĂ¡i (approved / pending / rejected) khi táº£i láº¡i
                   mergedList.push({ ...item });
                 }
               }
@@ -213,7 +213,7 @@ export default function App() {
     }
   }, [projects]);
 
-  // Theo dõi các thay đổi Views/Likes cục bộ chưa kịp đồng bộ lên Google Sheets.
+  // Theo dĂµi cĂ¡c thay Ä‘á»•i Views/Likes cá»¥c bá»™ chÆ°a ká»‹p Ä‘á»“ng bá»™ lĂªn Google Sheets.
   const statsDirtyRef = useRef<Map<string, { views: number; likes: number }>>(new Map());
   const statsTimerRef = useRef<number | null>(null);
 
@@ -236,7 +236,7 @@ export default function App() {
     dirty.clear();
   }, []);
 
-  // Gộp các thay đổi stats và gửi lên Sheets sau 4 giây trễ (debounce)
+  // Gá»™p cĂ¡c thay Ä‘á»•i stats vĂ  gá»­i lĂªn Sheets sau 4 giĂ¢y trá»… (debounce)
   const markStatsDirty = useCallback(
     (id: string, views: number, likes: number) => {
       const prev = statsDirtyRef.current.get(id) || { views: 0, likes: 0 };
@@ -250,7 +250,7 @@ export default function App() {
     [flushStatsSync]
   );
 
-  // Dọn dẹp timer và đẩy stats còn dang dở khi đóng trang
+  // Dá»n dáº¹p timer vĂ  Ä‘áº©y stats cĂ²n dang dá»Ÿ khi Ä‘Ă³ng trang
   useEffect(() => {
     const flushOnUnload = () => {
       const dirty = statsDirtyRef.current;
@@ -283,15 +283,27 @@ export default function App() {
 
   // 5. Modals State
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
+  // BĂ i Ä‘ang Ä‘Æ°á»£c admin chá»‰nh sá»­a (má»Ÿ tháº³ng SubmitModal á»Ÿ cháº¿ Ä‘á»™ sá»­a)
+  const [editingProject, setEditingProject] = useState<WebProject | null>(null);
+
+  const handleOpenEditProject = (p: WebProject) => {
+    setEditingProject(p);
+    setIsSubmitOpen(true);
+  };
+
+  const handleOpenSubmitNew = () => {
+    setEditingProject(null);
+    setIsSubmitOpen(true);
+  };
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isGoogleSyncOpen, setIsGoogleSyncOpen] = useState(false);
   const [selectedQRProject, setSelectedQRProject] = useState<WebProject | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<WebProject | null>(null);
 
   /**
-   * Kéo các bài CHỜ DUYỆT / TỪ CHỐI từ tab WebHub_Submissions trên Google Sheets về
-   * và hợp nhất vào state local. Nhờ vậy admin mở trên thiết bị BẤT KỲ nào
-   * cũng thấy được bài mà người dùng vừa gửi từ thiết bị khác (cross-device).
+   * KĂ©o cĂ¡c bĂ i CHá»œ DUYá»†T / Tá»ª CHá»I tá»« tab WebHub_Submissions trĂªn Google Sheets vá»
+   * vĂ  há»£p nháº¥t vĂ o state local. Nhá» váº­y admin má»Ÿ trĂªn thiáº¿t bá»‹ Báº¤T Ká»² nĂ o
+   * cÅ©ng tháº¥y Ä‘Æ°á»£c bĂ i mĂ  ngÆ°á»i dĂ¹ng vá»«a gá»­i tá»« thiáº¿t bá»‹ khĂ¡c (cross-device).
    */
   const syncPendingFromCloud = useCallback(() => {
     const scriptUrl = getStoredScriptUrl();
@@ -305,12 +317,12 @@ export default function App() {
           let changed = false;
           const merged = [...prev];
           for (const cp of cloudProjects) {
-            // Bỏ qua bài đã APPROVED còn sót trong tab chờ duyệt (đã chuyển sang
-            // WebHub_Projects khi admin duyệt) — tránh hiện nhầm trong danh sách chờ.
+            // Bá» qua bĂ i Ä‘Ă£ APPROVED cĂ²n sĂ³t trong tab chá» duyá»‡t (Ä‘Ă£ chuyá»ƒn sang
+            // WebHub_Projects khi admin duyá»‡t) â€” trĂ¡nh hiá»‡n nháº§m trong danh sĂ¡ch chá».
             if (cp.status !== 'pending' && cp.status !== 'rejected') continue;
             const idx = merged.findIndex((p) => p.id === cp.id);
-            // Chỉ thêm/cập nhật bài CHƯA duyệt (pending/rejected) tới từ đám mây,
-            // tránh đè lên dữ liệu approved đang hiển thị.
+            // Chá»‰ thĂªm/cáº­p nháº­t bĂ i CHÆ¯A duyá»‡t (pending/rejected) tá»›i tá»« Ä‘Ă¡m mĂ¢y,
+            // trĂ¡nh Ä‘Ă¨ lĂªn dá»¯ liá»‡u approved Ä‘ang hiá»ƒn thá»‹.
             const effectiveStatus =
               cp.status === 'rejected' ? 'rejected' : 'pending';
             if (idx >= 0) {
@@ -366,7 +378,7 @@ export default function App() {
                   };
                   changed = true;
                 } else {
-                  // Hợp nhất giữ cờ + số liệu cao hơn, không làm mất isUserSubmission
+                  // Há»£p nháº¥t giá»¯ cá» + sá»‘ liá»‡u cao hÆ¡n, khĂ´ng lĂ m máº¥t isUserSubmission
                   const mergedItem = {
                     ...mergeCloudProject(merged[idx], cp),
                     status: 'approved',
@@ -387,14 +399,14 @@ export default function App() {
         .catch((err) => {
           console.warn('Background Google Sheets sync notice:', err);
         });
-      // Đồng thời kéo danh sách bài chờ duyệt từ đám mây về
+      // Äá»“ng thá»i kĂ©o danh sĂ¡ch bĂ i chá» duyá»‡t tá»« Ä‘Ă¡m mĂ¢y vá»
       syncPendingFromCloud();
     }
   }, [syncPendingFromCloud]);
 
-  // Định kỳ (mỗi 45 giây) tải lại dữ liệu ĐÃ DUYỆT từ Google Sheets.
-  // Nhờ vậy khi admin duyệt bài ở bất kỳ thiết bị nào, các thiết bị khác
-  // sẽ tự động cập nhật và hiển thị bài ngay mà không cần reload trang.
+  // Äá»‹nh ká»³ (má»—i 45 giĂ¢y) táº£i láº¡i dá»¯ liá»‡u ÄĂƒ DUYá»†T tá»« Google Sheets.
+  // Nhá» váº­y khi admin duyá»‡t bĂ i á»Ÿ báº¥t ká»³ thiáº¿t bá»‹ nĂ o, cĂ¡c thiáº¿t bá»‹ khĂ¡c
+  // sáº½ tá»± Ä‘á»™ng cáº­p nháº­t vĂ  hiá»ƒn thá»‹ bĂ i ngay mĂ  khĂ´ng cáº§n reload trang.
   useEffect(() => {
     const scriptUrl = getStoredScriptUrl();
     if (!scriptUrl || !isAutoSyncEnabled()) return;
@@ -408,9 +420,9 @@ export default function App() {
             let changed = false;
             const merged = [...prev];
 
-            // Ghép bài đã duyệt từ đám mây (giữ lại pending/rejected local)
+            // GhĂ©p bĂ i Ä‘Ă£ duyá»‡t tá»« Ä‘Ă¡m mĂ¢y (giá»¯ láº¡i pending/rejected local)
             for (let cp of cloudApproved) {
-              // Đừng để dữ liệu đám mây ghi đè Views/Likes local chưa kịp đồng bộ
+              // Äá»«ng Ä‘á»ƒ dá»¯ liá»‡u Ä‘Ă¡m mĂ¢y ghi Ä‘Ă¨ Views/Likes local chÆ°a ká»‹p Ä‘á»“ng bá»™
               const dirty = statsDirtyRef.current.get(cp.id);
               if (dirty) {
                 cp = {
@@ -467,7 +479,7 @@ export default function App() {
   const handleSubmitNewProject = (
     data: Omit<WebProject, 'id' | 'createdAt' | 'views' | 'likes'>
   ) => {
-    // Tự tạo ảnh đại diện (screenshot) nếu người dùng không tải ảnh lên
+    // Tá»± táº¡o áº£nh Ä‘áº¡i diá»‡n (screenshot) náº¿u ngÆ°á»i dĂ¹ng khĂ´ng táº£i áº£nh lĂªn
     const thumbnail =
       (data.previewImage && data.previewImage.trim()) ||
       getWebsiteScreenshotUrl(data.url);
@@ -475,18 +487,18 @@ export default function App() {
     const newProject: WebProject = {
       ...data,
       id: `proj-${Date.now()}`,
-      status: 'pending', // Chờ admin duyệt trước khi hiển thị công khai
-      isUserSubmission: true, // Bài người dùng đăng → thuộc tab "Bài đăng tải" khi được duyệt
+      status: 'pending', // Chá» admin duyá»‡t trÆ°á»›c khi hiá»ƒn thá»‹ cĂ´ng khai
+      isUserSubmission: true, // BĂ i ngÆ°á»i dĂ¹ng Ä‘Äƒng â†’ thuá»™c tab "BĂ i Ä‘Äƒng táº£i" khi Ä‘Æ°á»£c duyá»‡t
       createdAt: new Date().toISOString(),
       views: 1,
       likes: 0,
       previewImage: thumbnail,
     };
     setProjects((prev) => [newProject, ...prev]);
-    // Chuyển về tab "Bài đăng tải" mặc định
+    // Chuyá»ƒn vá» tab "BĂ i Ä‘Äƒng táº£i" máº·c Ä‘á»‹nh
     setFilters((prev) => ({ ...prev, onlyFamous: false }));
 
-    // Đẩy bài mới (trạng thái pending) lên Google Sheets nếu đã cấu hình
+    // Äáº©y bĂ i má»›i (tráº¡ng thĂ¡i pending) lĂªn Google Sheets náº¿u Ä‘Ă£ cáº¥u hĂ¬nh
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
       pushSingleProjectToSheet(scriptUrl, newProject);
@@ -498,18 +510,18 @@ export default function App() {
       prev.map((p) => (p.id === id ? { ...p, status: 'approved' } : p))
     );
 
-    // Đồng bộ toàn bộ thông tin bài (gồm ảnh đại diện) lên Google Sheets
+    // Äá»“ng bá»™ toĂ n bá»™ thĂ´ng tin bĂ i (gá»“m áº£nh Ä‘áº¡i diá»‡n) lĂªn Google Sheets
     const project = projects.find((p) => p.id === id);
     if (!project) return;
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
-      // Bài được admin duyệt → luôn coi là bài cộng đồng (hiển thị ở "Bài đăng tải")
+      // BĂ i Ä‘Æ°á»£c admin duyá»‡t â†’ luĂ´n coi lĂ  bĂ i cá»™ng Ä‘á»“ng (hiá»ƒn thá»‹ á»Ÿ "BĂ i Ä‘Äƒng táº£i")
       upsertProjectToSheet(scriptUrl, {
         ...project,
         status: 'approved',
         isUserSubmission: true,
       });
-      // Sau khi duyệt, kéo lại danh sách chờ duyệt từ đám mây
+      // Sau khi duyá»‡t, kĂ©o láº¡i danh sĂ¡ch chá» duyá»‡t tá»« Ä‘Ă¡m mĂ¢y
       syncPendingFromCloud();
     }
   };
@@ -519,13 +531,13 @@ export default function App() {
       prev.map((p) => (p.id === id ? { ...p, status: 'rejected' } : p))
     );
 
-    // Đồng bộ trạng thái từ chối (kèm toàn bộ thông tin) lên Google Sheets
+    // Äá»“ng bá»™ tráº¡ng thĂ¡i tá»« chá»‘i (kĂ¨m toĂ n bá»™ thĂ´ng tin) lĂªn Google Sheets
     const project = projects.find((p) => p.id === id);
     if (!project) return;
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
       upsertProjectToSheet(scriptUrl, { ...project, status: 'rejected' });
-      // Sau khi từ chối, kéo lại danh sách chờ duyệt từ đám mây
+      // Sau khi tá»« chá»‘i, kĂ©o láº¡i danh sĂ¡ch chá» duyá»‡t tá»« Ä‘Ă¡m mĂ¢y
       syncPendingFromCloud();
     }
   };
@@ -533,8 +545,8 @@ export default function App() {
   const handleConfirmDelete = (id: string) => {
     setProjects((prev) => prev.filter((p) => p.id !== id));
 
-    // Đồng bộ xóa lên Google Sheets (cả tab đã duyệt lẫn chờ duyệt)
-    // để bài đã xóa không quay lại khi tải dữ liệu từ Sheets / duyệt từ xa.
+    // Äá»“ng bá»™ xĂ³a lĂªn Google Sheets (cáº£ tab Ä‘Ă£ duyá»‡t láº«n chá» duyá»‡t)
+    // Ä‘á»ƒ bĂ i Ä‘Ă£ xĂ³a khĂ´ng quay láº¡i khi táº£i dá»¯ liá»‡u tá»« Sheets / duyá»‡t tá»« xa.
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
       deleteSubmissionsFromSheet(scriptUrl, [id]);
@@ -596,14 +608,14 @@ export default function App() {
   const filteredProjects = useMemo(() => {
     return localizedProjects
       .filter((project) => {
-        // Nếu người dùng bật nút "Nổi tiếng": hiển thị các mô phỏng nổi tiếng (PhET, GeoGebra, NetSim...)
-        // Mặc định: hiển thị các bài do admin duyệt (tab "Bài đăng tải" - chế độ cộng đồng)
+        // Náº¿u ngÆ°á»i dĂ¹ng báº­t nĂºt "Ná»•i tiáº¿ng": hiá»ƒn thá»‹ cĂ¡c mĂ´ phá»ng ná»•i tiáº¿ng (PhET, GeoGebra, NetSim...)
+        // Máº·c Ä‘á»‹nh: hiá»ƒn thá»‹ cĂ¡c bĂ i do admin duyá»‡t (tab "BĂ i Ä‘Äƒng táº£i" - cháº¿ Ä‘á»™ cá»™ng Ä‘á»“ng)
         if (filters.onlyFamous) {
           if (!project.isFamous) return false;
         } else {
           if (project.isFamous) return false;
-          // BIẾN KIỂM SOÁT CỘNG ĐỒNG: nếu bật, chỉ hiện bài người dùng đăng đã duyệt,
-          // mọi bài mẫu (không phải nổi tiếng) đều bị ẩn khỏi tab "Bài đăng tải".
+          // BIáº¾N KIá»‚M SOĂT Cá»˜NG Äá»’NG: náº¿u báº­t, chá»‰ hiá»‡n bĂ i ngÆ°á»i dĂ¹ng Ä‘Äƒng Ä‘Ă£ duyá»‡t,
+          // má»i bĂ i máº«u (khĂ´ng pháº£i ná»•i tiáº¿ng) Ä‘á»u bá»‹ áº©n khá»i tab "BĂ i Ä‘Äƒng táº£i".
           if (communityOnly && !project.isUserSubmission) return false;
         }
 
@@ -682,7 +694,7 @@ export default function App() {
         onSearchChange={(query) => setFilters({ ...filters, searchQuery: query })}
         isAdmin={isAdmin}
         onOpenAdmin={() => setIsAdminOpen(true)}
-        onOpenSubmit={() => setIsSubmitOpen(true)}
+        onOpenSubmit={handleOpenSubmitNew}
         pendingCount={pendingCount}
         onOpenGoogleSync={() => setIsGoogleSyncOpen(true)}
         hasGoogleSync={Boolean(getStoredScriptUrl())}
@@ -694,7 +706,7 @@ export default function App() {
         <StatsBanner
           projects={projects}
           lang={lang}
-          onOpenSubmit={() => setIsSubmitOpen(true)}
+          onOpenSubmit={handleOpenSubmitNew}
         />
 
         {/* Filter and View Mode Switcher */}
@@ -707,7 +719,7 @@ export default function App() {
           totalResults={filteredProjects.length}
           approvedCount={defaultApprovedCount}
           famousCount={famousCount}
-          onOpenSubmit={() => setIsSubmitOpen(true)}
+          onOpenSubmit={handleOpenSubmitNew}
         />
 
         {/* Empty State */}
@@ -738,7 +750,7 @@ export default function App() {
                 {t.clearFilters}
               </button>
               <button
-                onClick={() => setIsSubmitOpen(true)}
+                onClick={handleOpenSubmitNew}
                 className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-xs"
               >
                 {t.submitWebsite}
@@ -746,7 +758,7 @@ export default function App() {
             </div>
           </div>
         ) : (
-          /* Render based on View Mode: Expanded (Đầy đủ mockup, QR, mô tả) vs Compact (Chỉ Tên & Lĩnh vực) */
+          /* Render based on View Mode: Expanded (Äáº§y Ä‘á»§ mockup, QR, mĂ´ táº£) vs Compact (Chá»‰ TĂªn & LÄ©nh vá»±c) */
           <>
             {viewMode === 'expanded' ? (
               <div
@@ -760,6 +772,7 @@ export default function App() {
                     lang={lang}
                     isAdmin={isAdmin}
                     onOpenQR={(p) => setSelectedQRProject(p)}
+                    onEditProject={handleOpenEditProject}
                     onDeleteRequest={(p) => setProjectToDelete(p)}
                     onLike={handleLike}
                     onVisit={handleVisit}
@@ -775,6 +788,7 @@ export default function App() {
                     lang={lang}
                     isAdmin={isAdmin}
                     onOpenQR={(p) => setSelectedQRProject(p)}
+                    onEditProject={handleOpenEditProject}
                     onDeleteRequest={(p) => setProjectToDelete(p)}
                     onLike={handleLike}
                     onVisit={handleVisit}
@@ -791,7 +805,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
             <span className="font-bold text-slate-800">{t.appName}</span>
-            <span>—</span>
+            <span>â€”</span>
             <span>{t.appTagline}</span>
           </div>
 
@@ -802,16 +816,22 @@ export default function App() {
             >
               {isAdmin ? t.adminMode : t.adminPortal}
             </button>
-            <span>•</span>
+            <span>â€¢</span>
             <button
-              onClick={() => setIsSubmitOpen(true)}
+              onClick={handleOpenSubmitNew}
               className="text-slate-600 hover:text-slate-900"
             >
               {t.submitWebsite}
             </button>
-            <span>•</span>
+            <span>â€¢</span>
             <span className="text-slate-400">{t.footerReady}</span>
           </div>
+        </div>
+        {/* Báº£n quyá»n / TĂ¡c giáº£ */}
+        <div className="mt-5 pt-4 border-t border-slate-100 text-[11px] text-slate-400">
+          Â© {new Date().getFullYear()} Designed by{' '}
+          <span className="font-semibold text-slate-600">LiemLT</span>
+          <span className="mx-1.5">â€¢</span>Can Tho, Vietnam
         </div>
       </footer>
 
@@ -823,11 +843,13 @@ export default function App() {
         lang={lang}
       />
 
-      {/* Website Submission Modal */}
+      {/* Website Submission Modal (cũng dùng cho Admin chỉnh sửa bài) */}
       <SubmitModal
         isOpen={isSubmitOpen}
         onClose={() => setIsSubmitOpen(false)}
         onSubmit={handleSubmitNewProject}
+        editingProject={editingProject}
+        onUpdate={handleUpdateProject}
         lang={lang}
         isAdmin={isAdmin}
       />
