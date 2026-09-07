@@ -287,7 +287,10 @@ export default function App() {
   const [editingProject, setEditingProject] = useState<WebProject | null>(null);
 
   const handleOpenEditProject = (p: WebProject) => {
-    setEditingProject(p);
+    // Luôn chỉnh sửa bản GỐC (raw) trong state — không lấy bản localized
+    // từ card, tránh ghi đè nội dung gốc / mất các cờ quan trọng.
+    const raw = projects.find((item) => item.id === p.id) || p;
+    setEditingProject(raw);
     setIsSubmitOpen(true);
   };
 
@@ -553,11 +556,34 @@ export default function App() {
     }
   };
 
-  const handleUpdateProject = (updated: WebProject) => {
-    setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+const handleUpdateProject = (updated: WebProject) => {
+    // Chỉnh sửa KHÔNG thay đổi trạng thái duyệt & không làm mất các cờ/quyền:
+    // giữ nguyên status (approve/reject/pending), id, ngày tạo, thống kê,
+    // isFamous và isUserSubmission từ bản ghi hiện có.
+    const existing = projects.find((p) => p.id === updated.id);
+    const merged: WebProject = existing
+      ? {
+          ...updated,
+          id: existing.id,
+          createdAt: existing.createdAt || updated.createdAt,
+          status: existing.status || updated.status,
+          views: Math.max(existing.views, updated.views),
+          likes: Math.max(existing.likes, updated.likes),
+          isFamous: existing.isFamous === true ? true : updated.isFamous === true,
+          isUserSubmission:
+            existing.isUserSubmission === true
+              ? true
+              : updated.isUserSubmission === true,
+        }
+      : updated;
+
+    setProjects((prev) =>
+      prev.map((p) => (p.id === merged.id ? merged : p))
+    );
+
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
-      upsertProjectToSheet(scriptUrl, updated);
+      upsertProjectToSheet(scriptUrl, merged);
     }
   };
 

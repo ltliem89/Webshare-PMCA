@@ -181,9 +181,11 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
             <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center animate-bounce">
               <CheckCircle2 className="w-10 h-10" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900">{t.submitSuccess}</h3>
+            <h3 className="text-xl font-bold text-slate-900">
+              {editingProject ? t.smEditSavedTitle : t.submitSuccess}
+            </h3>
             <p className="text-xs text-slate-600 max-w-md leading-relaxed">
-              {t.smSuccessDesc}
+              {editingProject ? t.smEditSavedDesc : t.smSuccessDesc}
             </p>
           </div>
         ) : (

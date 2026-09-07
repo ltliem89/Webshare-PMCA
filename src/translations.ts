@@ -69,6 +69,8 @@ export interface Translations {
   submitBtn: string;
   submitSuccess: string;
   submitSuccessDesc: string;
+  smEditSavedTitle: string;
+  smEditSavedDesc: string;
   adminDashboardTitle: string;
   pendingApprovals: string;
   approvedWebsites: string;
@@ -332,6 +334,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'Tải ảnh',
     smMockupTitle: 'Tiêu đề website của bạn',
     smSuccessDesc: 'Bài mô phỏng đã được gửi đến ban quản trị. Sau khi được duyệt, bài sẽ hiển thị ngay trên trang chủ!',
+    smEditSavedTitle: 'Đã lưu chỉnh sửa!',
+    smEditSavedDesc: 'Thay đổi đã được lưu và hiển thị ngay lập tức. Bài viết không cần phải duyệt lại.',
     smEditTitle: 'Chỉnh sửa mô phỏng',
     gsTitle: 'Quản Lý & Đồng Bộ Google Sheets',
     gsConfigured: 'Đã cấu hình',
@@ -582,6 +586,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'Upload image',
     smMockupTitle: 'Your website title',
     smSuccessDesc: 'Your simulation has been sent to the admins. Once approved, it will appear on the homepage right away!',
+    smEditSavedTitle: 'Changes saved!',
+    smEditSavedDesc: 'Your edits are saved and visible immediately. No need to wait for approval again.',
     smEditTitle: 'Edit simulation',
     gsTitle: 'Manage & Sync Google Sheets',
     gsConfigured: 'Configured',
@@ -832,6 +838,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'อัปโหลดรูปภาพ',
     smMockupTitle: 'ชื่อเว็บไซต์ของคุณ',
     smSuccessDesc: 'แบบจำลองของคุณถูกส่งถึงผู้ดูแลแล้ว เมื่อผ่านการอนุมัติ จะแสดงบนหน้าหลักทันที!',
+    smEditSavedTitle: 'บันทึกการแก้ไขแล้ว!',
+    smEditSavedDesc: 'การแก้ไขถูกบันทึกและแสดงผลทันที ไม่ต้องรอการอนุมัติซ้ำ',
     smEditTitle: 'แก้ไขแบบจำลอง',
     gsTitle: 'จัดการและซิงค์ Google Sheets',
     gsConfigured: 'ตั้งค่าแล้ว',
@@ -1082,6 +1090,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'ပုံ တင်ရန်',
     smMockupTitle: 'သင့်ဝက်ဆိုက်၏ ခေါင်းစဉ်',
     smSuccessDesc: 'သင့် simulation ကို အက်မင်ထံ ပို့ပြီးပါပြီ။ အတည်ပြုပြီးသည်နှင့် မူရင်းစာမျက်နှာတွင် ချက်ချင်းပြသပါမည်!',
+    smEditSavedTitle: 'တည်းဖြတ်မှု သိမ်းပြီးပါပြီ!',
+    smEditSavedDesc: 'အပြောင်းအလဲများကို သိမ်းဆည်းပြီး ချက်ချင်းပြသပါသည်။ ထပ်မံအတည်ပြုရန် မလိုပါ။',
     smEditTitle: 'simulation ကို တည်းဖြတ်ရန်',
     gsTitle: 'Google Sheets စီမံခန့်ခွဲခြင်းနှင့် ထပ်တူပြုခြင်း',
     gsConfigured: 'ပြင်ဆင်ပြီးပါပြီ',
@@ -1332,6 +1342,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'ອັບໂຫຼດຮູບ',
     smMockupTitle: 'ຫົວຂໍ້ເວັບໄຊທ໌ຂອງທ່ານ',
     smSuccessDesc: 'simulation ຂອງທ່ານຖືກສົ່ງຫາຜູ້ບໍລິຫານແລ້ວ. ເມື່ອໄດ້ຮັບອະນຸມັດ ຈະສະແດງໃນໜ້າຫຼັກທັນທີ!',
+    smEditSavedTitle: 'ບັນທຶກການແກ້ໄຂແລ້ວ!',
+    smEditSavedDesc: 'ການແກ້ໄຂຖືກບັນທຶກແລະສະແດງທັນທີ. ບໍ່ຈຳເປັນຕ້ອງອະນຸມັດຊ້ຳ',
     smEditTitle: 'ແກ້ໄຂ simulation',
     gsTitle: 'ຈັດການ ແລະ ຊິງຄ໌ Google Sheets',
     gsConfigured: 'ຕັ້ງຄ່າແລ້ວ',
@@ -1582,6 +1594,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'ផ្ទុក​រូបភាព',
     smMockupTitle: 'ចំណង​ជើង​វេបសាយ​របស់​អ្នក',
     smSuccessDesc: 'simulation របស់​អ្នក​ត្រូវ​បាន​ផ្ញើ​ទៅ​អ្នក​គ្រប់គ្រង​ហើយ។ បន្ទាប់​ពី​អនុម័ត វា​នឹង​បង្ហាញ​លើ​ទំព័រ​ដើម​ភ្លាម!',
+    smEditSavedTitle: 'បាន​រក្សាទុក​ការ​កែសម្រួល!',
+    smEditSavedDesc: 'ការ​ផ្លាស់ប្ដូរ​ត្រូវ​បាន​រក្សាទុក​ហើយ​បង្ហាញ​ភ្លាមៗ។ មិន​ចាំបាច់​អនុម័ត​ម្ដងទៀត​ទេ។',
     smEditTitle: 'កែ​សម្រួល​ simulation',
     gsTitle: 'គ្រប់គ្រង និង​ធ្វើ​សមកាលកម្ម Google Sheets',
     gsConfigured: 'បាន​កំណត់​រួច',
@@ -1832,6 +1846,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'Unggah gambar',
     smMockupTitle: 'Judul situs web Anda',
     smSuccessDesc: 'Simulasi Anda telah dikirim ke admin. Setelah disetujui, akan tampil langsung di beranda!',
+    smEditSavedTitle: 'Perubahan tersimpan!',
+    smEditSavedDesc: 'Perubahan disimpan dan langsung tampil. Tidak perlu menunggu persetujuan lagi.',
     smEditTitle: 'Edit simulasi',
     gsTitle: 'Kelola & Sinkronkan Google Sheets',
     gsConfigured: 'Terkonfigurasi',
@@ -2082,6 +2098,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'Muat naik imej',
     smMockupTitle: 'Tajuk laman web anda',
     smSuccessDesc: 'Simulasi anda telah dihantar kepada admin. Setelah diluluskan, ia akan muncul di laman utama dengan serta-merta!',
+    smEditSavedTitle: 'Perubahan disimpan!',
+    smEditSavedDesc: 'Perubahan disimpan dan dipaparkan serta-merta. Tidak perlu kelulusan semula.',
     smEditTitle: 'Edit simulasi',
     gsTitle: 'Urus & Segerakkan Google Sheets',
     gsConfigured: 'Dikonfigurasi',
@@ -2332,6 +2350,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'Mag-upload ng imahe',
     smMockupTitle: 'Pamagat ng iyong website',
     smSuccessDesc: 'Naipadala na ang iyong simulation sa admin. Kapag naaprubahan, lalabas ito kaagad sa homepage!',
+    smEditSavedTitle: 'Nai-save ang mga pagbabago!',
+    smEditSavedDesc: 'Nai-save at agad na ipinapakita ang mga pagbabago. Hindi na kailangan muling aprubahan.',
     smEditTitle: 'I-edit ang simulation',
     gsTitle: 'Pamahalaan at I-sync ang Google Sheets',
     gsConfigured: 'Naka-configure',
@@ -2582,6 +2602,8 @@ export const translations: Record<Language, Translations> = {
     smUploadImage: 'Upload imajen',
     smMockupTitle: 'Títulu website ita-nian',
     smSuccessDesc: 'Ita-nia simulation haruka ona ba admin. Depois de aprovadu, sei hatudu iha pájina prinsipál kedas!',
+    smEditSavedTitle: 'Mudansa simu ona!',
+    smEditSavedDesc: 'Mudansa simu no hatudu kedas. La presiza aprevasaun fali.',
     smEditTitle: 'Edita simulation',
     gsTitle: 'Jestão & Sinkroniza Google Sheets',
     gsConfigured: 'Konfiguradu ona',
