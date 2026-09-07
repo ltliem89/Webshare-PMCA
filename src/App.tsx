@@ -20,6 +20,7 @@ import { FilterBar } from './components/FilterBar';
 import { ProjectCard } from './components/ProjectCard';
 import { TimelineLayerCard } from './components/TimelineLayerCard';
 import { CompactListItem } from './components/CompactListItem';
+import { SimulationGuide } from './components/SimulationGuide';
 import { QRCodeModal } from './components/QRCodeModal';
 import { SubmitModal } from './components/SubmitModal';
 import { AdminModal } from './components/AdminModal';
@@ -280,6 +281,12 @@ export default function App() {
     sortBy: 'newest',
     onlyFamous: false,
   });
+  // Tab "Hướng dẫn tạo mô phỏng" — khi bật, ẩn danh sách web và hiện hướng dẫn
+  const [showGuide, setShowGuide] = useState(false);
+
+  const handleOpenGuide = () => setShowGuide(true);
+
+  const handleExitGuide = () => setShowGuide(false);
 
   // 5. Modals State
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
@@ -746,10 +753,24 @@ const handleUpdateProject = (updated: WebProject) => {
           approvedCount={defaultApprovedCount}
           famousCount={famousCount}
           onOpenSubmit={handleOpenSubmitNew}
+          showGuide={showGuide}
+          onOpenGuide={handleOpenGuide}
+          onCloseGuide={handleExitGuide}
         />
 
-        {/* Empty State */}
-        {filteredProjects.length === 0 ? (
+        {/* Tab "Hướng dẫn tạo mô phỏng" */}
+        {showGuide ? (
+          <SimulationGuide
+            lang={lang}
+            onSubmit={() => {
+              handleExitGuide();
+              handleOpenSubmitNew();
+            }}
+          />
+        ) : (
+          /* Empty State */
+          <>
+          {filteredProjects.length === 0 ? (
           <div className="py-16 text-center bg-white rounded-2xl border border-slate-200/80 p-8">
             <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center mx-auto mb-3">
               <Globe className="w-7 h-7" />
@@ -822,6 +843,8 @@ const handleUpdateProject = (updated: WebProject) => {
                 ))}
               </div>
             )}
+          </>
+        )}
           </>
         )}
       </main>

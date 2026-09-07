@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AlignLeft,
+  BookOpenText,
   CheckCircle2,
   LayoutGrid,
   Plus,
@@ -29,6 +30,9 @@ interface FilterBarProps {
   approvedCount: number;
   famousCount: number;
   onOpenSubmit?: () => void;
+  showGuide?: boolean;
+  onOpenGuide?: () => void;
+  onCloseGuide?: () => void;
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({
@@ -41,11 +45,29 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   approvedCount,
   famousCount,
   onOpenSubmit,
+  showGuide,
+  onOpenGuide,
+  onCloseGuide,
 }) => {
   const t = translations[lang];
 
   const handleCategoryChange = (category: CategoryId | 'ALL') => {
     onFilterChange({ ...filters, category });
+  };
+
+  const handleOpenGuideTab = () => {
+    onFilterChange({
+      searchQuery: '',
+      category: 'ALL',
+      educationLevel: 'ALL',
+      sortBy: 'newest',
+      onlyFamous: false,
+    });
+    if (onOpenGuide) onOpenGuide();
+  };
+
+  const handleCloseGuideTab = () => {
+    if (onCloseGuide) onCloseGuide();
   };
 
   const handleLevelChange = (educationLevel: EducationLevelId | 'ALL') => {
@@ -58,6 +80,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
   const toggleFamousFilter = (isFamous: boolean) => {
     onFilterChange({ ...filters, onlyFamous: isFamous });
+    if (onCloseGuide) onCloseGuide();
   };
 
   const handleResetFilters = () => {
@@ -86,7 +109,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             id="tab-user-submitted-btn"
             onClick={() => toggleFamousFilter(false)}
             className={`flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-              !filters.onlyFamous
+              !filters.onlyFamous && !showGuide
                 ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm shadow-indigo-500/20 ring-2 ring-indigo-300/40'
                 : 'bg-slate-100/90 text-slate-700 border-slate-200/80 hover:bg-slate-200/80 hover:text-slate-900'
             }`}
@@ -96,7 +119,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <span className="whitespace-nowrap">{t.uploadTab}</span>
             <span
               className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
-                !filters.onlyFamous
+                !filters.onlyFamous && !showGuide
                   ? 'bg-indigo-700 text-white'
                   : 'bg-slate-200 text-slate-700'
               }`}
@@ -110,7 +133,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             id="tab-famous-btn"
             onClick={() => toggleFamousFilter(true)}
             className={`flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-              filters.onlyFamous
+              filters.onlyFamous && !showGuide
                 ? 'bg-amber-500 text-white border-amber-600 shadow-sm shadow-amber-500/20 ring-2 ring-amber-300/50'
                 : 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100 hover:border-amber-300'
             }`}
@@ -118,19 +141,38 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           >
             <Sparkles
               className={`w-3.5 h-3.5 ${
-                filters.onlyFamous ? 'text-amber-100 fill-amber-100' : 'text-amber-600 fill-amber-500'
+                filters.onlyFamous && !showGuide ? 'text-amber-100 fill-amber-100' : 'text-amber-600 fill-amber-500'
               }`}
             />
             <span className="whitespace-nowrap">{t.famousTabShort}</span>
             <span
               className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
-                filters.onlyFamous
+                filters.onlyFamous && !showGuide
                   ? 'bg-amber-600 text-white'
                   : 'bg-amber-200/90 text-amber-950'
               }`}
             >
               {famousCount}
             </span>
+          </button>
+
+          {/* Tab 3: Hướng dẫn tạo mô phỏng bằng AI */}
+          <button
+            id="tab-guide-btn"
+            onClick={showGuide ? handleCloseGuideTab : handleOpenGuideTab}
+            className={`flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+              showGuide
+                ? 'bg-slate-900 text-white border-slate-950 shadow-sm shadow-slate-500/20 ring-2 ring-slate-400/40'
+                : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100 hover:border-slate-400'
+            }`}
+            title={t.guideTabTitle}
+          >
+            <BookOpenText
+              className={`w-3.5 h-3.5 ${
+                showGuide ? 'text-emerald-300' : 'text-slate-500'
+              }`}
+            />
+            <span className="whitespace-nowrap">{t.guideTab}</span>
           </button>
         </div>
 
@@ -185,6 +227,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 2. Hàng bộ lọc: Môn học, Cấp học, Sắp xếp theo - ĐƯỢC TỐI ƯU TRÊN MỌI THIẾT BỊ */}
+      {!showGuide && (
       <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 items-center">
         {/* Môn học / Lĩnh vực (Category) */}
         <div>
@@ -244,9 +287,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </select>
         </div>
       </div>
+      )}
 
       {/* Tóm tắt kết quả lọc & Nút Đặt lại bộ lọc */}
-      {(isFiltered || totalResults === 0) && (
+      {!showGuide && (isFiltered || totalResults === 0) && (
         <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
           <span>
             {filters.onlyFamous
