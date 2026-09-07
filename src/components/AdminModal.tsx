@@ -53,6 +53,7 @@ interface AdminModalProps {
   onImportData: (data: WebProject[]) => void;
   onResetData: () => void;
   onSyncProjects?: (newProjects: WebProject[]) => void;
+  onRefreshPending?: () => void;
   lang: Language;
 }
 
@@ -70,6 +71,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   onImportData,
   onResetData,
   onSyncProjects,
+  onRefreshPending,
   lang,
 }) => {
   const t = translations[lang];
@@ -93,6 +95,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [autoSync, setAutoSync] = useState<boolean>(() => isAutoSyncEnabled());
   const [isCodeCopied, setIsCodeCopied] = useState(false);
   const [editingProject, setEditingProject] = useState<WebProject | null>(null);
+  const [isPendingSyncing, setIsPendingSyncing] = useState(false);
+  const [pendingSyncMsg, setPendingSyncMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -100,8 +104,13 @@ export const AdminModal: React.FC<AdminModalProps> = ({
       setLastSync(getLastSyncTime());
       setAutoSync(isAutoSyncEnabled());
       setSyncStatusMsg(null);
+      // Khi admin mở modal: kéo ngay bài chờ duyệt từ đám mây về
+      if (isAdmin && onRefreshPending) {
+        handleRefreshPending();
+      }
     }
-  }, [isOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, isAdmin]);
 
   if (!isOpen) return null;
 
@@ -231,6 +240,28 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     navigator.clipboard.writeText(GOOGLE_APPS_SCRIPT_CODE);
     setIsCodeCopied(true);
     setTimeout(() => setIsCodeCopied(false), 2500);
+  };
+
+  // Tải bài chờ duyệt (pending) từ Google Sheets về (cross-device visibility)
+  const handleRefreshPending = async () => {
+    if (!onRefreshPending) return;
+    setIsPendingSyncing(true);
+    setPendingSyncMsg(null);
+    try {
+      await onRefreshPending();
+      setPendingSyncMsg({
+        type: 'success',
+        text: 'Đã tải bài chờ duyệt từ Google Sheets (mọi thiết bị)',
+      });
+    } catch {
+      setPendingSyncMsg({
+        type: 'error',
+        text: 'Không thể tải bài chờ duyệt từ Google Sheets. Hãy kiểm tra cấu hình.',
+      });
+    } finally {
+      setIsPendingSyncing(false);
+      setTimeout(() => setPendingSyncMsg(null), 4000);
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -453,6 +484,41 @@ export const AdminModal: React.FC<AdminModalProps> = ({
               {/* TAB 1: PENDING QUEUE */}
               {activeTab === 'pending' && (
                 <div>
+                  <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+                    <p className="text-xs text-slate-500">
+                      {t.amPendingHint}
+                    </p>
+                    <button
+                      onClick={handleRefreshPending}
+                      disabled={isPendingSyncing}
+                      className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm transition-colors disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${isPendingSyncing ? 'animate-spin' : ''}`} />
+                      <span>{isPendingSyncing ? t.amSyncing : 'Tải bài chờ từ Cloud'}</span>
+                    </button>
+                  </div>
+
+                  {pendingSyncMsg && (
+                    <div
+                      className={`p-3 rounded-xl text-xs flex items-center space-x-2 mb-3 ${
+                        pendingSyncMsg.type === 'success'
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                          : pendingSyncMsg.type === 'error'
+                          ? 'bg-rose-50 text-rose-800 border border-rose-200'
+                          : 'bg-indigo-50 text-indigo-800 border border-indigo-200'
+                      }`}
+                    >
+                      {pendingSyncMsg.type === 'success' ? (
+                        <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                      ) : pendingSyncMsg.type === 'error' ? (
+                        <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                      ) : (
+                        <Zap className="w-4 h-4 shrink-0 text-indigo-600" />
+                      )}
+                      <span className="flex-1">{pendingSyncMsg.text}</span>
+                    </div>
+                  )}
+
                   {pendingList.length === 0 ? (
                     <div className="py-12 text-center text-slate-400">
                       <CheckCircle2 className="w-12 h-12 text-emerald-500/60 mx-auto mb-2" />
@@ -461,9 +527,6 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <p className="text-xs text-slate-500 mb-2">
-                        {t.amPendingHint}
-                      </p>
                       {pendingList.map((item) => (
                         <div
                           key={item.id}

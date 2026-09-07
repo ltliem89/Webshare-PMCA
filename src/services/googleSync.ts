@@ -432,6 +432,29 @@ export async function deleteSubmissionsFromSheet(scriptUrl: string, projectIds: 
 }
 
 /**
+ * Cập nhật số liệu thống kê (Views / Likes) của bài ĐÃ DUYỆT lên Google Sheets.
+ * Gửi theo batch: items = [{ projectId, views, likes }, ...] để hạn chế số lượt POST.
+ */
+export async function updateStatsInSheet(
+  scriptUrl: string,
+  items: { projectId: string; views: number; likes: number }[]
+): Promise<void> {
+  const url = cleanScriptUrl(scriptUrl);
+  if (!url || url.includes('docs.google.com/spreadsheets') || items.length === 0) return;
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'updateStats', items }),
+    });
+  } catch (e) {
+    console.warn('Silent fail updating stats to Google Sheet', e);
+  }
+}
+
+/**
  * Complete Google Apps Script template code that the user can copy and paste into Google Sheets
  */
 export const GOOGLE_APPS_SCRIPT_CODE = `/**
@@ -683,6 +706,7 @@ function doPost(e) {
     }
 
     // 4. Cập nhật trạng thái duyệt (approved / rejected). Nếu APPROVED thì sao chép sang MAIN_SHEET.
+    //    Nếu REJECTED thì gỡ khỏi MAIN_SHEET (phòng trường hợp bài đã duyệt rồi bị duyệt lại/từ chối).
     if (payload.action === "updateStatus" && payload.projectId && payload.status) {
       const sSheet = ensureSheet(SUBMISSION_SHEET);
       const data = sSheet.getDataRange().getValues();
@@ -697,6 +721,8 @@ function doPost(e) {
                 break;
               }
             }
+          } else if (payload.status === "rejected" && String(data[i][0])) {
+            deleteRowsById(ensureSheet(MAIN_SHEET), [String(payload.projectId)]);
           }
           return createJsonResponse({ status: "success", message: "Đã cập nhật trạng thái bài viết" });
         }
@@ -723,7 +749,11 @@ function doPost(e) {
     //    Xóa ở CẢ HAI tab: WebHub_Submissions (chưa duyệt) và WebHub_Projects (đã duyệt)
     //    để bài đã xóa không quay lại khi tải dữ liệu từ Sheets hoặc duyệt từ xa.
     if (payload.action === "deleteProject") {
-      const ids = Array.isArray(payload.ids) ? payload.ids : [payload.projectId];
+      const ids = (Array.isArray(payload.ids) ? payload.ids : (payload.projectId ? [payload.projectId] : []))
+        .filter(function (id) { return id !== undefined && id !== null && String(id) !== ""; });
+      if (ids.length === 0) {
+        return createJsonResponse({ status: "error", message: "Thiếu projectId để xóa dự án" });
+      }
       const removedSub = deleteRowsById(ensureSheet(SUBMISSION_SHEET), ids);
       const removedMain = deleteRowsById(ensureSheet(MAIN_SHEET), ids);
       return createJsonResponse({
@@ -731,6 +761,26 @@ function doPost(e) {
         message: "Đã xóa " + (removedSub.length + removedMain.length) + " dự án khỏi Google Sheets",
         removed: removedSub.length + removedMain.length
       });
+    }
+
+    // 7. Cập nhật số liệu thống kê (Views / Likes) của bài ĐÃ DUYỆT trên MAIN_SHEET.
+    //    Gửi theo batch: payload.items = [{ projectId, views, likes }, ...]
+    if (payload.action === "updateStats" && payload.items && Array.isArray(payload.items)) {
+      const sheet = ensureSheet(MAIN_SHEET);
+      const data = sheet.getDataRange().getValues();
+      let updated = 0;
+      for (let i = 1; i < data.length; i++) {
+        let match = null;
+        for (let k = 0; k < payload.items.length; k++) {
+          if (String(payload.items[k].projectId) === String(data[i][0])) { match = payload.items[k]; break; }
+        }
+        if (match) {
+          sheet.getRange(i + 1, 15).setValue(Number(match.views) >= 0 ? Number(match.views) : (Number(data[i][14]) || 0));
+          sheet.getRange(i + 1, 16).setValue(Number(match.likes) >= 0 ? Number(match.likes) : (Number(data[i][15]) || 0));
+          updated++;
+        }
+      }
+      return createJsonResponse({ status: "success", message: "Đã cập nhật thống kê " + updated + " mô phỏng", updated: updated });
     }
 
     return createJsonResponse({ status: "ignored", message: "Không có hành động phù hợp" });

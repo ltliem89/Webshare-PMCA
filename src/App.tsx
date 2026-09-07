@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FilterState,
   Language,
@@ -32,7 +32,9 @@ import {
   pushSingleProjectToSheet,
   upsertProjectToSheet,
   fetchProjectsFromSheet,
+  fetchSubmissionsFromSheet,
   deleteSubmissionsFromSheet,
+  updateStatsInSheet,
 } from './services/googleSync';
 import { getWebsiteScreenshotUrl } from './utils/screenshot';
 
@@ -173,6 +175,64 @@ export default function App() {
     }
   }, [projects]);
 
+  // Theo dõi các thay đổi Views/Likes cục bộ chưa kịp đồng bộ lên Google Sheets.
+  const statsDirtyRef = useRef<Map<string, { views: number; likes: number }>>(new Map());
+  const statsTimerRef = useRef<number | null>(null);
+
+  const flushStatsSync = useCallback(() => {
+    if (statsTimerRef.current !== null) {
+      window.clearTimeout(statsTimerRef.current);
+      statsTimerRef.current = null;
+    }
+    const dirty = statsDirtyRef.current;
+    if (dirty.size === 0) return;
+    const scriptUrl = getStoredScriptUrl();
+    if (scriptUrl && isAutoSyncEnabled()) {
+      const items = Array.from(dirty.entries()).map(([projectId, s]) => ({
+        projectId,
+        views: s.views,
+        likes: s.likes,
+      }));
+      updateStatsInSheet(scriptUrl, items);
+    }
+    dirty.clear();
+  }, []);
+
+  // Gộp các thay đổi stats và gửi lên Sheets sau 4 giây trễ (debounce)
+  const markStatsDirty = useCallback(
+    (id: string, views: number, likes: number) => {
+      const prev = statsDirtyRef.current.get(id) || { views: 0, likes: 0 };
+      statsDirtyRef.current.set(id, {
+        views: Math.max(prev.views, views),
+        likes: Math.max(prev.likes, likes),
+      });
+      if (statsTimerRef.current !== null) window.clearTimeout(statsTimerRef.current);
+      statsTimerRef.current = window.setTimeout(flushStatsSync, 4000);
+    },
+    [flushStatsSync]
+  );
+
+  // Dọn dẹp timer và đẩy stats còn dang dở khi đóng trang
+  useEffect(() => {
+    const flushOnUnload = () => {
+      const dirty = statsDirtyRef.current;
+      if (dirty.size === 0) return;
+      const scriptUrl = getStoredScriptUrl();
+      if (!scriptUrl || !isAutoSyncEnabled()) return;
+      const items = Array.from(dirty.entries()).map(([projectId, s]) => ({
+        projectId,
+        views: s.views,
+        likes: s.likes,
+      }));
+      updateStatsInSheet(scriptUrl, items);
+    };
+    window.addEventListener('beforeunload', flushOnUnload);
+    return () => {
+      window.removeEventListener('beforeunload', flushOnUnload);
+      if (statsTimerRef.current !== null) window.clearTimeout(statsTimerRef.current);
+    };
+  }, []);
+
   // 4. View Mode & Filter State
   const [viewMode, setViewMode] = useState<ViewMode>('expanded');
   const [filters, setFilters] = useState<FilterState>({
@@ -190,20 +250,148 @@ export default function App() {
   const [selectedQRProject, setSelectedQRProject] = useState<WebProject | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<WebProject | null>(null);
 
+  /**
+   * Kéo các bài CHỜ DUYỆT / TỪ CHỐI từ tab WebHub_Submissions trên Google Sheets về
+   * và hợp nhất vào state local. Nhờ vậy admin mở trên thiết bị BẤT KỲ nào
+   * cũng thấy được bài mà người dùng vừa gửi từ thiết bị khác (cross-device).
+   */
+  const syncPendingFromCloud = useCallback(() => {
+    const scriptUrl = getStoredScriptUrl();
+    if (!scriptUrl || !isAutoSyncEnabled()) return;
+
+    return fetchSubmissionsFromSheet(scriptUrl)
+      .then((result) => {
+        if (!result.success || !result.data) return;
+        setProjects((prev) => {
+          const cloudProjects = result.data as WebProject[];
+          let changed = false;
+          const merged = [...prev];
+          for (const cp of cloudProjects) {
+            const idx = merged.findIndex((p) => p.id === cp.id);
+            // Chỉ thêm/cập nhật bài CHƯA duyệt (pending/rejected) tới từ đám mây,
+            // tránh đè lên dữ liệu approved đang hiển thị.
+            const effectiveStatus =
+              cp.status === 'rejected' ? 'rejected' : 'pending';
+            if (idx >= 0) {
+              if (
+                merged[idx].status === 'pending' ||
+                merged[idx].status === 'rejected'
+              ) {
+                merged[idx] = { ...merged[idx], ...cp, status: effectiveStatus };
+                changed = true;
+              }
+            } else {
+              merged.push({ ...cp, status: effectiveStatus });
+              changed = true;
+            }
+          }
+          return changed ? merged : prev;
+        });
+      })
+      .catch((err) => {
+        console.warn('Background pending sync notice:', err);
+      });
+  }, []);
+
   // Background non-blocking auto-sync from Google Sheets on initial load
   useEffect(() => {
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
       fetchProjectsFromSheet(scriptUrl)
         .then((result) => {
-          if (result.success && result.data && result.data.length > 0) {
-            setProjects(result.data);
-          }
+          if (!result.success || !result.data || result.data.length === 0) return;
+          setProjects((prev) => {
+            const cloudApproved = result.data as WebProject[];
+            const merged = [...prev];
+            let changed = false;
+            for (const cp of cloudApproved) {
+              const idx = merged.findIndex((p) => p.id === cp.id);
+              if (idx >= 0) {
+                if (merged[idx].status !== 'approved') {
+                  merged[idx] = { ...merged[idx], ...cp, status: 'approved' };
+                  changed = true;
+                } else {
+                  // Giữ số liệu Views/Likes cao hơn để không bị giảm sau khi reload
+                  const keepMax = {
+                    views: Math.max(merged[idx].views, cp.views),
+                    likes: Math.max(merged[idx].likes, cp.likes),
+                  };
+                  if (JSON.stringify(merged[idx]) !== JSON.stringify({ ...cp, ...keepMax })) {
+                    merged[idx] = { ...cp, ...keepMax };
+                    changed = true;
+                  }
+                }
+              } else {
+                merged.push({ ...cp, status: 'approved' });
+                changed = true;
+              }
+            }
+            return changed ? merged : prev;
+          });
         })
         .catch((err) => {
           console.warn('Background Google Sheets sync notice:', err);
         });
+      // Đồng thời kéo danh sách bài chờ duyệt từ đám mây về
+      syncPendingFromCloud();
     }
+  }, [syncPendingFromCloud]);
+
+  // Định kỳ (mỗi 45 giây) tải lại dữ liệu ĐÃ DUYỆT từ Google Sheets.
+  // Nhờ vậy khi admin duyệt bài ở bất kỳ thiết bị nào, các thiết bị khác
+  // sẽ tự động cập nhật và hiển thị bài ngay mà không cần reload trang.
+  useEffect(() => {
+    const scriptUrl = getStoredScriptUrl();
+    if (!scriptUrl || !isAutoSyncEnabled()) return;
+
+    const pollApproved = () => {
+      fetchProjectsFromSheet(scriptUrl)
+        .then((result) => {
+          if (!result.success || !result.data) return;
+          setProjects((prev) => {
+            let cloudApproved = result.data as WebProject[];
+            let changed = false;
+            const merged = [...prev];
+
+            // Ghép bài đã duyệt từ đám mây (giữ lại pending/rejected local)
+            for (let cp of cloudApproved) {
+              // Đừng để dữ liệu đám mây ghi đè Views/Likes local chưa kịp đồng bộ
+              const dirty = statsDirtyRef.current.get(cp.id);
+              if (dirty) {
+                cp = {
+                  ...cp,
+                  views: Math.max(cp.views, dirty.views),
+                  likes: Math.max(cp.likes, dirty.likes),
+                };
+              }
+              const idx = merged.findIndex((p) => p.id === cp.id);
+              if (idx >= 0) {
+                if (merged[idx].status !== 'approved') {
+                  merged[idx] = { ...merged[idx], ...cp, status: 'approved' };
+                  changed = true;
+                } else {
+                  // Cập nhật nội dung nhưng giữ status approved
+                  if (JSON.stringify(merged[idx]) !== JSON.stringify(cp)) {
+                    merged[idx] = cp;
+                    changed = true;
+                  }
+                }
+              } else {
+                merged.push({ ...cp, status: 'approved' });
+                changed = true;
+              }
+            }
+            return changed ? merged : prev;
+          });
+        })
+        .catch((err) => {
+          console.warn('Polling approved sync notice:', err);
+        });
+    };
+
+    pollApproved();
+    const interval = setInterval(pollApproved, 45000);
+    return () => clearInterval(interval);
   }, []);
 
   // 6. Action Handlers
@@ -211,12 +399,16 @@ export default function App() {
     setProjects((prev) =>
       prev.map((p) => (p.id === projectId ? { ...p, likes: p.likes + 1 } : p))
     );
+    const p = projects.find((x) => x.id === projectId);
+    if (p) markStatsDirty(projectId, p.views, p.likes + 1);
   };
 
   const handleVisit = (projectId: string) => {
     setProjects((prev) =>
       prev.map((p) => (p.id === projectId ? { ...p, views: p.views + 1 } : p))
     );
+    const p = projects.find((x) => x.id === projectId);
+    if (p) markStatsDirty(projectId, p.views + 1, p.likes);
   };
 
   const handleSubmitNewProject = (
@@ -258,6 +450,8 @@ export default function App() {
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
       upsertProjectToSheet(scriptUrl, { ...project, status: 'approved' });
+      // Sau khi duyệt, kéo lại danh sách chờ duyệt từ đám mây
+      syncPendingFromCloud();
     }
   };
 
@@ -272,6 +466,8 @@ export default function App() {
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
       upsertProjectToSheet(scriptUrl, { ...project, status: 'rejected' });
+      // Sau khi từ chối, kéo lại danh sách chờ duyệt từ đám mây
+      syncPendingFromCloud();
     }
   };
 
@@ -586,6 +782,7 @@ export default function App() {
         onImportData={handleImportData}
         onResetData={handleResetData}
         onSyncProjects={(syncedProjects) => setProjects(syncedProjects)}
+        onRefreshPending={syncPendingFromCloud}
         lang={lang}
       />
 
