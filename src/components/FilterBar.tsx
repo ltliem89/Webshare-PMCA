@@ -4,7 +4,6 @@ import {
   BookOpenText,
   CheckCircle2,
   LayoutGrid,
-  Plus,
   RotateCcw,
   Sparkles,
   UploadCloud,
@@ -176,20 +175,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </button>
         </div>
 
-        {/* Bên phải: Nút Đăng tải + Cụm chế độ xem [☰ Rút gọn] [⊞ Mở rộng] */}
+        {/*
+          Bên phải: Cụm chế độ xem [☰ Rút gọn] [⊞ Mở rộng]
+        */}
         <div className="flex items-center space-x-2 ml-auto">
-          {/* Nút Đăng tải tiện lợi ngay trên thanh công cụ */}
-          {onOpenSubmit && (
-            <button
-              id="filterbar-open-submit-btn"
-              onClick={onOpenSubmit}
-              className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
-              title={t.submitShortTitle}
-            >
-              <Plus className="w-3.5 h-3.5 text-indigo-300" />
-              <span className="hidden md:inline">{t.submitShort}</span>
-            </button>
-          )}
 
           {/* Cụm chế độ xem: [☰ Rút gọn] & [⊞ Mở rộng] */}
           <div className="flex items-center space-x-1 p-1 bg-slate-100/90 rounded-xl border border-slate-200/70">

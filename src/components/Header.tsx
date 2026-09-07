@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Globe2,
-  Plus,
   Search,
   ShieldCheck,
   ShieldAlert,
@@ -139,17 +138,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </>
               )}
             </div>
-
-            {/* Primary Submit Button */}
-            <button
-              id="header-submit-btn"
-              onClick={onOpenSubmit}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-bold shadow-sm shadow-indigo-500/20 transition-all cursor-pointer"
-              title={t.submitUploadTitle}
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">{t.submitShort}</span>
-            </button>
 
             {/* Google Sheets Sync Button */}
             {onOpenGoogleSync && (
