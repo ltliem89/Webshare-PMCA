@@ -107,6 +107,23 @@ const sanitizeAndMigrateProjects = (loadedList: WebProject[]): WebProject[] => {
   return updated;
 };
 
+// Hợp nhất dữ liệu cloud (bài đã duyệt) với bản local để KHÔNG làm mất các cờ
+// đã biết như isUserSubmission / isFamous, và KHÔNG làm giảm Views/Likes.
+// Lý do: Apps Script cũ / dữ liệu cũ trong Sheets chưa có cột IsUserSubmission
+// nên dữ liệu tải về thiếu cờ -> nếu ghi đè trực tiếp, bài đã duyệt vụt mất khỏi
+// tab "Bài đăng tải" (cộng đồng).
+const mergeCloudProject = (
+  local: WebProject,
+  cloud: WebProject
+): WebProject => ({
+  ...cloud,
+  views: Math.max(local.views, cloud.views),
+  likes: Math.max(local.likes, cloud.likes),
+  isFamous: local.isFamous === true || cloud.isFamous === true,
+  isUserSubmission:
+    local.isUserSubmission === true || cloud.isUserSubmission === true,
+});
+
 export default function App() {
   // 1. Language state
   const [lang, setLang] = useState<Language>(() => {
@@ -301,11 +318,22 @@ export default function App() {
                 merged[idx].status === 'pending' ||
                 merged[idx].status === 'rejected'
               ) {
-                merged[idx] = { ...merged[idx], ...cp, status: effectiveStatus };
+                merged[idx] = {
+                  ...merged[idx],
+                  ...cp,
+                  status: effectiveStatus,
+                  isUserSubmission:
+                    merged[idx].isUserSubmission === true ||
+                    cp.isUserSubmission === true,
+                };
                 changed = true;
               }
             } else {
-              merged.push({ ...cp, status: effectiveStatus });
+              merged.push({
+                ...cp,
+                status: effectiveStatus,
+                isUserSubmission: cp.isUserSubmission === true,
+              });
               changed = true;
             }
           }
@@ -332,16 +360,19 @@ export default function App() {
               const idx = merged.findIndex((p) => p.id === cp.id);
               if (idx >= 0) {
                 if (merged[idx].status !== 'approved') {
-                  merged[idx] = { ...merged[idx], ...cp, status: 'approved' };
+                  merged[idx] = {
+                    ...mergeCloudProject(merged[idx], cp),
+                    status: 'approved',
+                  };
                   changed = true;
                 } else {
-                  // Giữ số liệu Views/Likes cao hơn để không bị giảm sau khi reload
-                  const keepMax = {
-                    views: Math.max(merged[idx].views, cp.views),
-                    likes: Math.max(merged[idx].likes, cp.likes),
+                  // Hợp nhất giữ cờ + số liệu cao hơn, không làm mất isUserSubmission
+                  const mergedItem = {
+                    ...mergeCloudProject(merged[idx], cp),
+                    status: 'approved',
                   };
-                  if (JSON.stringify(merged[idx]) !== JSON.stringify({ ...cp, ...keepMax })) {
-                    merged[idx] = { ...cp, ...keepMax };
+                  if (JSON.stringify(merged[idx]) !== JSON.stringify(mergedItem)) {
+                    merged[idx] = mergedItem;
                     changed = true;
                   }
                 }
@@ -390,15 +421,13 @@ export default function App() {
               }
               const idx = merged.findIndex((p) => p.id === cp.id);
               if (idx >= 0) {
-                if (merged[idx].status !== 'approved') {
-                  merged[idx] = { ...merged[idx], ...cp, status: 'approved' };
+                const mergedItem = {
+                  ...mergeCloudProject(merged[idx], cp),
+                  status: 'approved',
+                };
+                if (JSON.stringify(merged[idx]) !== JSON.stringify(mergedItem)) {
+                  merged[idx] = mergedItem;
                   changed = true;
-                } else {
-                  // Cập nhật nội dung nhưng giữ status approved
-                  if (JSON.stringify(merged[idx]) !== JSON.stringify(cp)) {
-                    merged[idx] = cp;
-                    changed = true;
-                  }
                 }
               } else {
                 merged.push({ ...cp, status: 'approved' });
