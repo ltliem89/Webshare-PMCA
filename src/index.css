@@ -23,3 +23,13 @@ body {
   background: #94a3b8;
 }
 
+/* Tên lửa bay lên hạ xuống liên tục (icon tab Kiến tạo) */
+.animate-rocket {
+  animation: rocket-bounce 1.6s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+@keyframes rocket-bounce {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-4px) rotate(12deg); }
+}
+

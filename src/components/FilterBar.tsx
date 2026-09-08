@@ -167,11 +167,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             title={t.guideTabTitle}
           >
             <Rocket
-              className={`w-3.5 h-3.5 ${
-                showGuide ? 'text-emerald-300 animate-bounce' : 'text-slate-500'
+              className={`w-4 h-4 shrink-0 animate-rocket ${
+                showGuide ? 'fill-indigo-400 text-indigo-300 drop-shadow-[0_0_6px_rgba(129,140,248,0.9)]' : 'text-indigo-500'
               }`}
             />
-            <span className="whitespace-nowrap">{t.guideTab}</span>
+            <span className={`whitespace-nowrap ${
+              showGuide ? 'text-amber-300 drop-shadow-[0_0_4px_rgba(251,191,36,0.8)]' : ''
+            }`}>
+              {t.guideTab}
+            </span>
           </button>
         </div>
 
