@@ -39,6 +39,7 @@ export interface WebProject {
   tags: string[];
   views: number;
   likes: number;
+  goLink?: string; // Link /go/<mã-hóa> dùng cho người dùng thường (ẩn URL gốc)
   isFamous?: boolean; // Website mô phỏng nổi tiếng (PhET, GeoGebra, NetSim...)
   isUserSubmission?: boolean; // Bài do NGƯỜI DÙNG đăng lên, admin đã duyệt → thuộc tab "Bài đăng tải"
 }

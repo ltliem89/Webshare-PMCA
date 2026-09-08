@@ -1,5 +1,6 @@
 import { WebProject } from '../types';
 import { SEED_FOR_SHEET } from '../data/seedForSheet';
+import { getGoUrl } from '../utils/goLink';
 
 export const STORAGE_KEY_APPSCRIPT_URL = 'webhub_google_appscript_url';
 export const STORAGE_KEY_LAST_SYNC = 'webhub_google_last_sync';
@@ -19,6 +20,30 @@ export interface SyncResult {
   message: string;
   count?: number;
   data?: WebProject[];
+}
+
+/**
+ * Sinh link /go/<mã> cho 1 project dựa trên origin hiện tại của website.
+ * Lưu vào cột "GoLink" trên Google Sheets để mọi thiết bị dùng chung đường link che.
+ */
+export function computeGoLink(project: WebProject): string {
+  try {
+    if (typeof window === 'undefined') return project.goLink || '';
+    return getGoUrl(window.location, project.url, {
+      title: project.title,
+      authorName: project.authorName,
+      authorEmail: project.authorContact,
+    });
+  } catch {
+    return project.goLink || '';
+  }
+}
+
+/**
+ * Đính kèm goLink (link /go/<mã>) trước khi gửi project lên Google Sheets.
+ */
+function withGoLink(project: WebProject): WebProject {
+  return { ...project, goLink: computeGoLink(project) };
 }
 
 /**
@@ -170,6 +195,7 @@ export async function fetchProjectsFromSheet(scriptUrl: string): Promise<SyncRes
           previewImage: item.previewImage || undefined,
           authorName: String(item.authorName || (isFamous ? 'Nền tảng quốc tế' : 'Thành viên')),
           authorContact: item.authorContact ? String(item.authorContact) : undefined,
+          goLink: item.goLink ? String(item.goLink) : undefined,
           tags: Array.isArray(item.tags)
             ? item.tags
             : (item.tags ? String(item.tags).split(',').map((t: string) => t.trim()) : []),
@@ -240,7 +266,7 @@ export async function pushProjectsToSheet(scriptUrl: string, projects: WebProjec
   try {
     const payload = JSON.stringify({
       action: 'syncAll',
-      projects: projects,
+      projects: projects.map(withGoLink),
       timestamp: new Date().toISOString(),
     });
 
@@ -285,7 +311,7 @@ export async function pushSingleProjectToSheet(scriptUrl: string, project: WebPr
       },
       body: JSON.stringify({
         action: 'addProject',
-        project: project,
+        project: withGoLink(project),
       }),
     });
   } catch (e) {
@@ -311,7 +337,7 @@ export async function upsertProjectToSheet(scriptUrl: string, project: WebProjec
       },
       body: JSON.stringify({
         action: 'upsertProject',
-        project: project,
+        project: withGoLink(project),
       }),
     });
   } catch (e) {
@@ -405,6 +431,7 @@ export async function fetchSubmissionsFromSheet(scriptUrl: string): Promise<Sync
         previewImage: item.previewImage || undefined,
         authorName: String(item.authorName || 'Thành viên'),
         authorContact: item.authorContact ? String(item.authorContact) : undefined,
+        goLink: item.goLink ? String(item.goLink) : undefined,
         tags: Array.isArray(item.tags)
           ? item.tags
           : (item.tags ? String(item.tags).split(',').map((t: string) => t.trim()) : []),
@@ -511,7 +538,8 @@ const HEADERS = [
   "Tags",
   "Views",
   "Likes",
-  "IsUserSubmission"
+  "IsUserSubmission",
+  "GoLink"
 ];
 
 function ensureSheet(name) {
@@ -581,7 +609,8 @@ function parseRows(sheet) {
       previewImage: String(row[col("previewimage", 12)] || ""),
       tags: row[col("tags", 13)] ? String(row[col("tags", 13)]).split(",").map(function (t) { return t.trim(); }) : [],
       views: Number(row[col("views", 14)] || 0),
-      likes: Number(row[col("likes", 15)] || 0)
+      likes: Number(row[col("likes", 15)] || 0),
+      goLink: String(row[col("golink", 17)] || "")
     });
   }
   return { rows: projects };
@@ -606,7 +635,8 @@ function projectToRow(p) {
     Array.isArray(p.tags) ? p.tags.join(", ") : "",
     p.views || 0,
     p.likes || 0,
-    p.isUserSubmission ? true : false
+    p.isUserSubmission ? true : false,
+    p.goLink || ""
   ];
 }
 
