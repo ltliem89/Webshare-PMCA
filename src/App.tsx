@@ -846,37 +846,89 @@ const handleUpdateProject = (updated: WebProject) => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-white border-t border-slate-200/80 py-8 mt-12 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold text-slate-800">{t.appName}</span>
-            <span>â€”</span>
-            <span>{t.appTagline}</span>
+      <footer className="w-full bg-white border-t border-slate-200/80 mt-12">
+        <div className="max-w-7xl mx-auto px-4 py-10">
+          {/* THÔNG TIN TÁC GIẢ */}
+          <div className="mb-8">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-800 mb-5">
+              Thông tin tác giả
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[13px]">
+              <div className="space-y-1.5 text-slate-600">
+                <p>
+                  <span className="font-semibold text-slate-800">
+                    Tác giả &amp; Phát triển:
+                  </span>
+                  <span className="ml-1.5">Lê Thanh Liêm</span>
+                </p>
+                <p>
+                  <span className="font-semibold text-slate-800">
+                    Lĩnh vực:
+                  </span>
+                  <span className="ml-1.5">
+                    Giáo dục · STEM · Công nghệ · AI
+                  </span>
+                </p>
+                <p>
+                  <span className="font-semibold text-slate-800">
+                    Địa điểm:
+                  </span>
+                  <span className="ml-1.5">
+                    Thành phố Cần Thơ, Việt Nam
+                  </span>
+                </p>
+              </div>
+
+              <div className="space-y-1.5 text-slate-600">
+                <p className="font-semibold text-slate-800">Liên hệ:</p>
+                <p>
+                  <span className="font-semibold text-slate-800">
+                    Email:
+                  </span>
+                  <a
+                    href="mailto:ltliem89@gmail.com"
+                    className="ml-1.5 text-indigo-600 hover:underline"
+                  >
+                    ltliem89@gmail.com
+                  </a>
+                </p>
+                <p>
+                  <span className="font-semibold text-slate-800">
+                    Email công việc:
+                  </span>
+                  <a
+                    href="mailto:liemlt2@fe.edu.vn"
+                    className="ml-1.5 text-indigo-600 hover:underline"
+                  >
+                    liemlt2@fe.edu.vn
+                  </a>
+                </p>
+                <p>
+                  <span className="font-semibold text-slate-800">
+                    Điện thoại / Zalo / LINE:
+                  </span>
+                  <a
+                    href="tel:0978152896"
+                    className="ml-1.5 text-indigo-600 hover:underline"
+                  >
+                    0978152896
+                  </a>
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center space-x-4 text-[11px]">
-            <button
-              onClick={() => setIsAdminOpen(true)}
-              className="text-indigo-600 hover:underline font-semibold"
-            >
-              {isAdmin ? t.adminMode : t.adminPortal}
-            </button>
-            <span>â€¢</span>
-            <button
-              onClick={handleOpenSubmitNew}
-              className="text-slate-600 hover:text-slate-900"
-            >
-              {t.submitWebsite}
-            </button>
-            <span>â€¢</span>
-            <span className="text-slate-400">{t.footerReady}</span>
+          {/* Bản quyền */}
+          <div className="pt-6 border-t border-slate-100">
+            <p className="text-[13px] font-semibold text-slate-800">
+              © {new Date().getFullYear()} Lê Thanh Liêm. All rights reserved.
+            </p>
+            <p className="mt-2 text-xs leading-6 text-slate-500">
+              Thiết kế, nội dung và phát triển của website thuộc về tác giả,
+              ngoại trừ các thành phần, thư viện, tài nguyên hoặc nội dung của
+              bên thứ ba được sử dụng theo giấy phép tương ứng.
+            </p>
           </div>
-        </div>
-        {/* Báº£n quyá»n / TĂ¡c giáº£ */}
-        <div className="mt-5 pt-4 border-t border-slate-100 text-[11px] text-slate-400">
-          Â© {new Date().getFullYear()} Designed by{' '}
-          <span className="font-semibold text-slate-600">LiemLT</span>
-          <span className="mx-1.5">â€¢</span>Can Tho, Vietnam
         </div>
       </footer>
 
