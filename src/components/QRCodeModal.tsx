@@ -26,7 +26,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
   useEffect(() => {
     if (project?.url && isOpen) {
-const accessUrl = isAdmin ? project.url : getGoUrl(window.location, project.url);
+const accessUrl = isAdmin ? project.url : getGoUrl(window.location, project.url, { title: project.title, authorName: project.authorName });
       generateQrDataUrl(accessUrl).then((url) => {
         setQrSrc(url);
       });
@@ -36,7 +36,7 @@ const accessUrl = isAdmin ? project.url : getGoUrl(window.location, project.url)
 
   if (!isOpen || !project) return null;
 
-  const accessUrl = isAdmin ? project.url : getGoUrl(window.location, project.url);
+  const accessUrl = isAdmin ? project.url : getGoUrl(window.location, project.url, { title: project.title, authorName: project.authorName });
 
   const handleCopy = async () => {
     try {

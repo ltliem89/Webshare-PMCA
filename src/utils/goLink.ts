@@ -1,10 +1,11 @@
 /**
- * Tạo link che cho mỗi mô phỏng: URL gốc được mã hóa (XOR + base64url) đưa thẳng
- * vào link, serverless decode rồi 302 redirect tới mô phỏng thật:
- *   https://<domain>/go/<mã-hóa>  → Redirect 302 → URL gốc.
+ * Tạo link che cho mỗi mô phỏng: payload {url, title, authorName} được mã hóa
+ * (XOR + base64url) đưa thẳng vào link. Serverless decode rồi trả về TRANG KHUNG
+ * trên domain của mình (iframe + tên tác giả) — thanh địa chỉ luôn hiện
+ * https://<domain>/go/<mã-hóa>, KHÔNG lộ URL gốc cho người mở link.
  *
- * Lưu ý: mã dễ giải mã (XOR key nằm ở 2 phía). Mục đích là che URL gốc khỏi
- * giao diện/thanh địa chỉ cho người dùng thường — KHÔNG phải mã hóa bảo mật cao.
+ * Lưu ý: mã dễ giải mã nếu biết key (key nằm ở 2 phía). Mục đích là che URL gốc
+ * khỏi giao diện/thanh địa chỉ cho người dùng thường — không phải bảo mật cao cấp.
  */
 
 const XOR_KEY = 'webhub-go-v2#sbx7q';
@@ -38,13 +39,13 @@ function base64UrlToBytes(str: string): Uint8Array {
   return bytes;
 }
 
-/** Mã hóa URL gốc → mã ngắn dạng base64url (đưa vào path của link che). */
-export function encodeUrlToCode(url: string): string {
-  return bytesToBase64Url(xorBytes(new TextEncoder().encode(url)));
+/** Mã hóa một chuỗi → mã ngắn dạng base64url (đưa vào path của link che). */
+export function encodeToCode(text: string): string {
+  return bytesToBase64Url(xorBytes(new TextEncoder().encode(text)));
 }
 
-/** Giải mã mã → URL gốc. Trả về '' nếu mã không hợp lệ. */
-export function decodeCodeToUrl(code: string): string {
+/** Giải mã mã → chuỗi gốc. Trả về '' nếu mã không hợp lệ. */
+export function decodeCodeToText(code: string): string {
   try {
     return new TextDecoder().decode(xorBytes(base64UrlToBytes(code)));
   } catch {
@@ -52,11 +53,25 @@ export function decodeCodeToUrl(code: string): string {
   }
 }
 
+export interface GoLinkMeta {
+  title?: string;
+  authorName?: string;
+}
+
 /**
  * Link che đầy đủ của một mô phỏng:
- *   https://<domain>/go/<mã-hóa>  → 302 redirect tới URL gốc.
- * Dùng cho nút Truy cập, Chia sẻ, Copy link, QR, address bar.
+ *   https://<domain>/go/<mã-hóa>  → TRANG KHUNG (iframe) giữ nguyên domain,
+ *   thanh địa chỉ không lộ URL gốc. Dùng cho nút Truy cập, Chia sẻ, Copy, QR.
  */
-export function getGoUrl(location: { origin: string }, realUrl: string): string {
-  return `${location.origin}/go/${encodeUrlToCode(realUrl)}`;
+export function getGoUrl(
+  location: { origin: string },
+  realUrl: string,
+  meta?: GoLinkMeta
+): string {
+  const payload = JSON.stringify({
+    u: realUrl,
+    t: (meta && meta.title) || '',
+    a: (meta && meta.authorName) || '',
+  });
+  return `${location.origin}/go/${encodeToCode(payload)}`;
 }

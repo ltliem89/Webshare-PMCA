@@ -37,7 +37,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   const t = translations[lang];
   const [isLiked, setIsLiked] = useState(false);
-  const goUrl = getGoUrl(window.location, project.url);
+  const goUrl = getGoUrl(
+    window.location,
+    project.url,
+    { title: project.title, authorName: project.authorName }
+  );
   const displayUrl = isAdmin ? undefined : goUrl;
 
   const handleLike = (e: React.MouseEvent) => {
