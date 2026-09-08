@@ -13,7 +13,7 @@ export const STORAGE_KEY_AUTO_SYNC = 'webhub_google_auto_sync';
  * Đuôi /dev chỉ dùng để TEST (chỉ người có quyền sửa script truy cập được).
  */
 export const DEFAULT_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbw7QvnRI3e2l_0B7Nl4KDeLEOT3CWo-P_CcjWGD5XIoT7XVBhsiWG3OKEVrOcihLyUm/exec';
+  'https://script.google.com/macros/s/AKfycbxeY4iM95zJyy0wkjE4OvRwU5gI4XgTRM_RM1TIJuGTRI0CCSPgq4KRFt2X2EiQ6PAg/exec';
 
 export interface SyncResult {
   success: boolean;
