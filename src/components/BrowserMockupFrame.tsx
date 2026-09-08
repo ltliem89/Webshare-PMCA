@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExternalLink, Globe, Lock, ShieldCheck } from 'lucide-react';
+import { ExternalLink, Globe, Lock, ShieldCheck, User } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../translations';
 import { extractDomain, getWebsiteScreenshotUrl } from '../utils/screenshot';
@@ -8,6 +8,8 @@ interface BrowserMockupFrameProps {
   url: string;
   title: string;
   previewImage?: string;
+  authorName?: string;
+  displayUrl?: string;
   onClick?: () => void;
   aspectRatio?: 'video' | 'wide' | 'standard';
   lang: Language;
@@ -17,13 +19,15 @@ export const BrowserMockupFrame: React.FC<BrowserMockupFrameProps> = ({
   url,
   title,
   previewImage,
+  authorName,
+  displayUrl,
   onClick,
   aspectRatio = 'video',
   lang,
 }) => {
   const t = translations[lang];
   const [imageError, setImageError] = useState(false);
-  const domain = extractDomain(url);
+  const domain = extractDomain(displayUrl || url);
   const screenshotUrl = getWebsiteScreenshotUrl(url, previewImage);
 
   const aspectClass =
@@ -82,6 +86,18 @@ export const BrowserMockupFrame: React.FC<BrowserMockupFrameProps> = ({
               <ShieldCheck className="w-3 h-3 text-emerald-400" />
               <span>{t.httpsSecure}</span>
             </div>
+          </div>
+        )}
+
+        {/* Author name badge (bottom-left of the simulated webpage) */}
+        {authorName && (
+          <div className="absolute bottom-2 left-2 z-10 flex items-center space-x-1.5 max-w-[85%] px-2 py-1 rounded-lg bg-slate-950/70 backdrop-blur-md border border-white/10 text-white shadow-md">
+            <span className="w-3.5 h-3.5 rounded-full bg-indigo-500/80 text-white flex items-center justify-center shrink-0">
+              <User className="w-2 h-2" />
+            </span>
+            <span className="truncate text-[10px] font-semibold leading-tight">
+              {authorName}
+            </span>
           </div>
         )}
 

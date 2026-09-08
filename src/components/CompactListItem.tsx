@@ -2,6 +2,7 @@ import React from 'react';
 import { ExternalLink, Pencil, QrCode, Sparkles, Trash2 } from 'lucide-react';
 import { WebProject, Language } from '../types';
 import { translations } from '../translations';
+import { getGoUrl } from '../utils/goLink';
 
 // Icon môn học (dùng riêng cho chế độ rút gọn - chỉ icon, không kèm chữ)
 const SUBJECT_EMOJIS: Record<string, string> = {
@@ -50,7 +51,7 @@ export const CompactListItem: React.FC<CompactListItemProps> = ({
 
   const handleVisit = () => {
     onVisit(project.id, project.url);
-    window.open(project.url, '_blank', 'noopener,noreferrer');
+    window.open(getGoUrl(window.location, project.id), '_blank', 'noopener,noreferrer');
   };
 
   return (

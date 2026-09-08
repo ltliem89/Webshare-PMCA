@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Check, Copy, Download, ExternalLink, QrCode, Smartphone, X } from 'lucide-react';
 import { generateQrDataUrl } from '../utils/screenshot';
+import { getGoUrl } from '../utils/goLink';
 import { WebProject, Language } from '../types';
 import { translations } from '../translations';
 
@@ -23,7 +24,8 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
   useEffect(() => {
     if (project?.url && isOpen) {
-      generateQrDataUrl(project.url).then((url) => {
+      const goUrl = getGoUrl(window.location, project.id);
+      generateQrDataUrl(goUrl).then((url) => {
         setQrSrc(url);
       });
       setCopied(false);
@@ -32,9 +34,11 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
   if (!isOpen || !project) return null;
 
+  const goUrl = getGoUrl(window.location, project.id);
+
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(project.url);
+      await navigator.clipboard.writeText(goUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -108,7 +112,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
           {/* URL box */}
           <div className="mt-3 w-full p-2.5 bg-slate-50 rounded-xl border border-slate-200/80 text-xs font-mono text-slate-700 break-all select-all flex items-center justify-between gap-2">
-            <span className="truncate text-left text-[11px]">{project.url}</span>
+            <span className="truncate text-left text-[11px]">{goUrl}</span>
             <button
               id="qr-copy-url-btn"
               onClick={handleCopy}
@@ -132,7 +136,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
             <a
               id="qr-direct-visit-link"
-              href={project.url}
+              href={goUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center space-x-1.5 px-3 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 shadow-sm transition-colors"

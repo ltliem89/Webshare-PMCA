@@ -13,6 +13,7 @@ import { WebProject, Language } from '../types';
 import { translations } from '../translations';
 import { BrowserMockupFrame } from './BrowserMockupFrame';
 import { formatTimeAgo } from '../utils/screenshot';
+import { getGoUrl } from '../utils/goLink';
 
 interface TimelineLayerCardProps {
   project: WebProject;
@@ -37,6 +38,7 @@ export const TimelineLayerCard: React.FC<TimelineLayerCardProps> = ({
 }) => {
   const t = translations[lang];
   const [isLiked, setIsLiked] = useState(false);
+  const goUrl = getGoUrl(window.location, project.id);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -45,7 +47,7 @@ export const TimelineLayerCard: React.FC<TimelineLayerCardProps> = ({
 
   const handleVisit = () => {
     onVisit(project.id, project.url);
-    window.open(project.url, '_blank', 'noopener,noreferrer');
+    window.open(goUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -69,6 +71,8 @@ export const TimelineLayerCard: React.FC<TimelineLayerCardProps> = ({
           url={project.url}
           title={project.title}
           previewImage={project.previewImage}
+          authorName={project.authorName}
+          displayUrl={goUrl}
           onClick={handleVisit}
           aspectRatio="video"
           lang={lang}

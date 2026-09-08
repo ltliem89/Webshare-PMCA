@@ -12,6 +12,7 @@ import { WebProject, Language } from '../types';
 import { translations } from '../translations';
 import { BrowserMockupFrame } from './BrowserMockupFrame';
 import { formatTimeAgo } from '../utils/screenshot';
+import { getGoUrl } from '../utils/goLink';
 
 interface ProjectCardProps {
   project: WebProject;
@@ -36,6 +37,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   const t = translations[lang];
   const [isLiked, setIsLiked] = useState(false);
+  const goUrl = getGoUrl(window.location, project.id);
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -45,7 +47,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
   const handleVisit = () => {
     onVisit(project.id, project.url);
-    window.open(project.url, '_blank', 'noopener,noreferrer');
+    window.open(goUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -55,10 +57,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         await navigator.share({
           title: project.title,
           text: project.description,
-          url: project.url,
+          url: goUrl,
         });
       } else {
-        await navigator.clipboard.writeText(project.url);
+        await navigator.clipboard.writeText(goUrl);
         alert(t.copied);
       }
     } catch {
@@ -77,6 +79,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           url={project.url}
           title={project.title}
           previewImage={project.previewImage}
+          authorName={project.authorName}
+          displayUrl={goUrl}
           onClick={handleVisit}
           aspectRatio="video"
           lang={lang}
