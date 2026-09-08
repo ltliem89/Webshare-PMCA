@@ -22,30 +22,19 @@ export interface SyncResult {
 }
 
 /**
- * Get stored Google Apps Script Web App URL
+ * Get Google Apps Script Web App URL.
+ * KHÓA CỐ ĐỊNH: hệ thống luôn đồng bộ vào URL mặc định, không cho cấu hình đổi
+ * ở giao diện (ẩn vì lý do bảo mật hệ thống).
  */
 export function getStoredScriptUrl(): string {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY_APPSCRIPT_URL);
-    // Lần đầu truy cập (chưa lưu cấu hình nào): tự động kết nối sẵn với WebHub API
-    if (stored === null) {
-      return DEFAULT_SCRIPT_URL;
-    }
-    return stored;
-  } catch {
-    return DEFAULT_SCRIPT_URL;
-  }
+  return DEFAULT_SCRIPT_URL;
 }
 
 /**
- * Save Google Apps Script Web App URL
+ * Lưu URL Apps Script — đã bị vô hiệu hóa: hệ thống luôn dùng URL cố định DEFAULT_SCRIPT_URL.
  */
-export function setStoredScriptUrl(url: string): void {
-  try {
-    localStorage.setItem(STORAGE_KEY_APPSCRIPT_URL, url.trim());
-  } catch (e) {
-    console.error('Error saving Google Script URL', e);
-  }
+export function setStoredScriptUrl(_url: string): void {
+  // Intentionally ignored – sync is locked to the fixed production URL.
 }
 
 /**
@@ -71,25 +60,17 @@ export function setLastSyncTime(): void {
 }
 
 /**
- * Check if auto-sync is enabled
+ * Auto-sync luôn bật (khóa cố định), không cho tắt ở giao diện.
  */
 export function isAutoSyncEnabled(): boolean {
-  try {
-    return localStorage.getItem(STORAGE_KEY_AUTO_SYNC) !== 'false';
-  } catch {
-    return true;
-  }
+  return true;
 }
 
 /**
- * Set auto-sync toggle
+ * Bật/tắt auto-sync — đã bị vô hiệu hóa: hệ thống luôn tự đồng bộ.
  */
-export function setAutoSyncEnabled(enabled: boolean): void {
-  try {
-    localStorage.setItem(STORAGE_KEY_AUTO_SYNC, enabled ? 'true' : 'false');
-  } catch {
-    // Ignore
-  }
+export function setAutoSyncEnabled(_enabled: boolean): void {
+  // Intentionally ignored – auto-sync is always on.
 }
 
 /**

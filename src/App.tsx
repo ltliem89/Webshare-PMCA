@@ -25,7 +25,6 @@ import { QRCodeModal } from './components/QRCodeModal';
 import { SubmitModal } from './components/SubmitModal';
 import { AdminModal } from './components/AdminModal';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
-import { GoogleSyncModal } from './components/GoogleSyncModal';
 import { Globe, Plus, Sparkles } from 'lucide-react';
 import {
   getStoredScriptUrl,
@@ -306,7 +305,6 @@ export default function App() {
     setIsSubmitOpen(true);
   };
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isGoogleSyncOpen, setIsGoogleSyncOpen] = useState(false);
   const [selectedQRProject, setSelectedQRProject] = useState<WebProject | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<WebProject | null>(null);
 
@@ -729,8 +727,6 @@ const handleUpdateProject = (updated: WebProject) => {
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenSubmit={handleOpenSubmitNew}
         pendingCount={pendingCount}
-        onOpenGoogleSync={() => setIsGoogleSyncOpen(true)}
-        hasGoogleSync={Boolean(getStoredScriptUrl())}
       />
 
       {/* Main Container */}
@@ -921,15 +917,6 @@ const handleUpdateProject = (updated: WebProject) => {
         onRefreshPending={syncPendingFromCloud}
         communityOnly={communityOnly}
         onCommunityOnlyChange={handleCommunityOnlyChange}
-        lang={lang}
-      />
-
-      {/* Google Sheets Apps Script Sync Modal */}
-      <GoogleSyncModal
-        isOpen={isGoogleSyncOpen}
-        onClose={() => setIsGoogleSyncOpen(false)}
-        projects={projects}
-        onSyncProjects={(syncedProjects) => setProjects(syncedProjects)}
         lang={lang}
       />
 

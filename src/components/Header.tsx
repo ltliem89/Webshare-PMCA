@@ -5,7 +5,6 @@ import {
   ShieldCheck,
   ShieldAlert,
   ChevronDown,
-  FileSpreadsheet,
 } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../translations';
@@ -19,8 +18,6 @@ interface HeaderProps {
   onOpenAdmin: () => void;
   onOpenSubmit: () => void;
   pendingCount: number;
-  onOpenGoogleSync?: () => void;
-  hasGoogleSync?: boolean;
 }
 
 const languages: { code: Language; name: string; flag: string }[] = [
@@ -45,8 +42,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdmin,
   onOpenSubmit,
   pendingCount,
-  onOpenGoogleSync,
-  hasGoogleSync,
 }) => {
   const t = translations[lang];
   const [langMenuOpen, setLangMenuOpen] = useState(false);
@@ -139,27 +134,9 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Google Sheets Sync Button */}
-            {onOpenGoogleSync && (
-              <button
-                id="header-google-sheets-btn"
-                onClick={onOpenGoogleSync}
-                className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                  hasGoogleSync
-                    ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
-                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                }`}
-                title={t.googleSyncTab}
-              >
-                <FileSpreadsheet className={`w-3.5 h-3.5 ${hasGoogleSync ? 'text-emerald-600' : 'text-slate-500'}`} />
-                <span className="hidden sm:inline">{t.googleSyncTab}</span>
-                {hasGoogleSync ? (
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                ) : (
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                )}
-              </button>
-            )}
+            {/*
+              Google Sheets sync hidden for security (auto-sync fixed URL only).
+            */}
 
             {/* Admin Portal Toggle */}
             <button

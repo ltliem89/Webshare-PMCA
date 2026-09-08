@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   AlertCircle,
   Check,
@@ -8,7 +8,6 @@ import {
   Copy,
   Download,
   ExternalLink,
-  FileSpreadsheet,
   Globe2,
   KeyRound,
   Lock,
@@ -28,16 +27,6 @@ import { WebProject, Language } from '../types';
 import { translations } from '../translations';
 import { SubmitModal } from './SubmitModal';
 import { extractDomain, formatTimeAgo, getLocaleCode } from '../utils/screenshot';
-import {
-  getStoredScriptUrl,
-  setStoredScriptUrl,
-  getLastSyncTime,
-  isAutoSyncEnabled,
-  setAutoSyncEnabled,
-  fetchProjectsFromSheet,
-  pushProjectsToSheet,
-  GOOGLE_APPS_SCRIPT_CODE,
-} from '../services/googleSync';
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -88,26 +77,14 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [authError, setAuthError] = useState(false);
 
   // Tabs
-  const [activeTab, setActiveTab] = useState<'pending' | 'all' | 'google_sync' | 'backup'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'all' | 'backup'>('pending');
 
-  // Google Apps Script / Drive Sync State
-  const [scriptUrl, setScriptUrl] = useState(() => getStoredScriptUrl());
-  const [isUrlSaved, setIsUrlSaved] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncStatusMsg, setSyncStatusMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
-  const [lastSync, setLastSync] = useState<string | null>(() => getLastSyncTime());
-  const [autoSync, setAutoSync] = useState<boolean>(() => isAutoSyncEnabled());
-  const [isCodeCopied, setIsCodeCopied] = useState(false);
   const [editingProject, setEditingProject] = useState<WebProject | null>(null);
   const [isPendingSyncing, setIsPendingSyncing] = useState(false);
   const [pendingSyncMsg, setPendingSyncMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
   useEffect(() => {
     if (isOpen) {
-      setScriptUrl(getStoredScriptUrl());
-      setLastSync(getLastSyncTime());
-      setAutoSync(isAutoSyncEnabled());
-      setSyncStatusMsg(null);
       // Khi admin mở modal: kéo ngay bài chờ duyệt từ đám mây về
       if (isAdmin && onRefreshPending) {
         handleRefreshPending();
@@ -145,105 +122,6 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const handleUpdateProject = (updated: WebProject) => {
     if (onUpdateProject) onUpdateProject(updated);
     setEditingProject(null);
-  };
-
-  // Save Google Apps Script URL
-  const handleSaveScriptUrl = () => {
-    const clean = scriptUrl.trim();
-    setStoredScriptUrl(clean);
-    setIsUrlSaved(true);
-    setTimeout(() => setIsUrlSaved(false), 2500);
-
-    if (clean) {
-      setSyncStatusMsg({
-        type: 'info',
-        text: t.gsSavedUrlMsg,
-      });
-    } else {
-      setSyncStatusMsg({
-        type: 'info',
-        text: t.gsClearedMsg,
-      });
-    }
-  };
-
-  // Toggle Auto-Sync
-  const handleToggleAutoSync = (enabled: boolean) => {
-    setAutoSync(enabled);
-    setAutoSyncEnabled(enabled);
-  };
-
-  // Test Connection or Fetch Data from Google Sheets
-  const handleFetchFromSheet = async () => {
-    if (!scriptUrl.trim()) {
-      setSyncStatusMsg({
-        type: 'error',
-        text: t.gsNeedUrlFirst,
-      });
-      return;
-    }
-
-    setIsSyncing(true);
-    setSyncStatusMsg(null);
-
-    const result = await fetchProjectsFromSheet(scriptUrl);
-    setIsSyncing(false);
-
-    if (result.success && result.data) {
-      setLastSync(new Date().toISOString());
-      setSyncStatusMsg({
-        type: 'success',
-        text: result.message,
-      });
-
-      if (onSyncProjects && result.data.length > 0) {
-        onSyncProjects(result.data);
-      } else if (onImportData && result.data.length > 0) {
-        onImportData(result.data);
-      }
-    } else {
-      setSyncStatusMsg({
-        type: 'error',
-        text: result.message,
-      });
-    }
-  };
-
-  // Push all projects from Web to Google Sheets
-  const handlePushToSheet = async () => {
-    if (!scriptUrl.trim()) {
-      setSyncStatusMsg({
-        type: 'error',
-        text: t.gsPushNeedUrl,
-      });
-      return;
-    }
-
-    setIsSyncing(true);
-    setSyncStatusMsg(null);
-
-    const result = await pushProjectsToSheet(scriptUrl, projects);
-    setIsSyncing(false);
-
-    if (result.success) {
-      setLastSync(new Date().toISOString());
-      setSyncStatusMsg({
-        type: 'success',
-        text: result.message,
-      });
-    } else {
-      setSyncStatusMsg({
-        type: 'error',
-        text: result.message,
-      });
-    }
-  };
-
-  // Copy Google Apps Script Code
-  const handleCopyScript = () => {
-    navigator.clipboard.writeText(GOOGLE_APPS_SCRIPT_CODE);
-    setIsCodeCopied(true);
-    setTimeout(() => setIsCodeCopied(false), 2500);
   };
 
   // Tải bài chờ duyệt (pending) từ Google Sheets về (cross-device visibility)
@@ -440,24 +318,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                   <span>{t.amTabApproved} ({approvedList.length})</span>
                 </button>
 
-                {/* Tab 3: Google Sheets & Apps Script Sync (Requested) */}
-                <button
-                  id="tab-google-sync-btn"
-                  onClick={() => setActiveTab('google_sync')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-colors ${
-                    activeTab === 'google_sync'
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:bg-slate-200/60'
-                  }`}
-                >
-                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>{t.googleSyncTab}</span>
-                  {scriptUrl ? (
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" title={t.gsConfigured} />
-                  ) : null}
-                </button>
-
-                {/* Tab 4: Backup & JSON */}
+                {/* Tab 3: Backup & JSON */}
                 <button
                   id="tab-backup-btn"
                   onClick={() => setActiveTab('backup')}
@@ -655,248 +516,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                 </div>
               )}
 
-              {/* TAB 3: GOOGLE SHEETS & APPS SCRIPT CLOUD SYNC (The Core Requested Feature) */}
-              {activeTab === 'google_sync' && (
-                <div className="space-y-5">
-                  {/* Top Intro Card */}
-                  <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-2">
-                        <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
-                        <h4 className="text-sm font-bold text-slate-900">
-                          {t.amSyncTitle}
-                        </h4>
-                      </div>
-                      <p className="text-xs text-slate-600 leading-relaxed max-w-2xl">
-                        {t.amSyncDesc}
-                      </p>
-                    </div>
-
-                    <div className="shrink-0 flex items-center space-x-2">
-                      {scriptUrl ? (
-                        <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center space-x-1.5 border border-emerald-300">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          <span>{t.amLinkedCloud}</span>
-                        </span>
-                      ) : (
-                        <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
-                          {t.amNoUrl}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Input Box for Google Apps Script Web App URL */}
-                  <div className="p-5 bg-white border border-slate-200 rounded-2xl shadow-xs space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                        {t.amUrlLabel}
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <div className="relative flex-1">
-                          <input
-                            type="text"
-                            value={scriptUrl}
-                            onChange={(e) => setScriptUrl(e.target.value)}
-                            placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
-                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 pr-10"
-                          />
-                          {scriptUrl && (
-                            <button
-                              onClick={() => setScriptUrl('')}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
-                              title={t.amDeleteLink}
-                            >
-                              ✕
-                            </button>
-                          )}
-                        </div>
-                        <button
-                          onClick={handleSaveScriptUrl}
-                          className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center space-x-1.5 transition-colors shrink-0"
-                        >
-                          <Save className="w-3.5 h-3.5" />
-                          <span>{isUrlSaved ? t.gsSaved : t.gsSaveUrl}</span>
-                        </button>
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1">
-                        {t.amUrlNote}
-                      </p>
-                    </div>
-
-                    {/* Sync Actions Bar */}
-                    <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                      <div className="flex items-center space-x-2">
-                        {/* Fetch from Sheet */}
-                        <button
-                          onClick={handleFetchFromSheet}
-                          disabled={isSyncing}
-                          className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow-sm transition-colors disabled:opacity-50"
-                        >
-                          <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-                          <span>{isSyncing ? t.amSyncing : t.amFetch}</span>
-                        </button>
-
-                        {/* Push to Sheet */}
-                        <button
-                          onClick={handlePushToSheet}
-                          disabled={isSyncing}
-                          className="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors disabled:opacity-50"
-                        >
-                          <Send className="w-3.5 h-3.5 text-indigo-600" />
-                          <span>{t.amPushCount.replace('{count}', String(projects.length))}</span>
-                        </button>
-                      </div>
-
-                      {/* Auto Sync Toggle */}
-                      <label className="flex items-center space-x-2 cursor-pointer select-none text-xs text-slate-700 font-medium self-end sm:self-center">
-                        <input
-                          type="checkbox"
-                          checked={autoSync}
-                          onChange={(e) => handleToggleAutoSync(e.target.checked)}
-                          className="rounded text-emerald-600 focus:ring-emerald-500"
-                        />
-                        <span>{t.amAutoSyncNew}</span>
-                      </label>
-                    </div>
-
-                    {/* BIẾN KIỂM SOÁT CỘNG ĐỒNG: tab "Bài đăng tải" chỉ hiện bài admin duyệt */}
-                    <div className="pt-2 border-t border-slate-100">
-                      <label className="flex items-start space-x-2.5 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={communityOnly}
-                          onChange={(e) => onCommunityOnlyChange(e.target.checked)}
-                          className="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <span className="text-xs text-slate-700 leading-relaxed">
-                          <span className="font-bold block text-slate-800">
-                            Bật chế độ cộng đồng (mặc định)
-                          </span>
-                          <span className="text-[11px] text-slate-500">
-                            Tab "Bài đăng tải" CHỈ hiển thị các bài người dùng gửi và admin ĐÃ DUYỆT.
-                            Tắt để hiện lại mọi bài approved không thuộc mục Nổi tiếng.
-                          </span>
-                        </span>
-                      </label>
-                    </div>
-
-                    {/* Status Alert Banner */}
-                    {syncStatusMsg && (
-                      <div
-                        className={`p-3 rounded-xl text-xs flex items-center space-x-2 ${
-                          syncStatusMsg.type === 'success'
-                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                            : syncStatusMsg.type === 'error'
-                            ? 'bg-rose-50 text-rose-800 border border-rose-200'
-                            : 'bg-indigo-50 text-indigo-800 border border-indigo-200'
-                        }`}
-                      >
-                        {syncStatusMsg.type === 'success' ? (
-                          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
-                        ) : syncStatusMsg.type === 'error' ? (
-                          <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
-                        ) : (
-                          <Zap className="w-4 h-4 shrink-0 text-indigo-600" />
-                        )}
-                        <span className="flex-1">{syncStatusMsg.text}</span>
-                      </div>
-                    )}
-
-                    {lastSync && (
-                      <div className="text-[11px] text-slate-400">
-                        {t.amLastSync}
-                        <strong>{new Date(lastSync).toLocaleString(getLocaleCode(lang))}</strong>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Step by Step Guide & One-Click Copy Apps Script Code */}
-                  <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Code2 className="w-4 h-4 text-indigo-600" />
-                        <h4 className="text-xs font-bold text-slate-900">
-                          {t.gsCodeTitle}
-                        </h4>
-                      </div>
-
-                      <button
-                        onClick={handleCopyScript}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all shadow-xs ${
-                          isCodeCopied
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                        }`}
-                      >
-                        {isCodeCopied ? (
-                          <>
-                            <Check className="w-3.5 h-3.5" />
-                            <span>{t.gsCodeCopied}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3.5 h-3.5" />
-                            <span>{t.amCopyScript}</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {/* 4-Step Instructions */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-600">
-                      <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-1">
-                        <div className="font-bold text-slate-900 flex items-center space-x-1.5">
-                          <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">1</span>
-                          <span>{t.gsStep1}</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500">
-                          {t.gsStep1Desc}
-                        </p>
-                      </div>
-
-                      <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-1">
-                        <div className="font-bold text-slate-900 flex items-center space-x-1.5">
-                          <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">2</span>
-                          <span>{t.gsStep2}</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500">
-                          {t.gsStep2Desc} {t.gsStep3Desc}
-                        </p>
-                      </div>
-
-                      <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-1">
-                        <div className="font-bold text-slate-900 flex items-center space-x-1.5">
-                          <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">3</span>
-                          <span>{t.gsStep4}</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500">
-                          {t.gsStep4Desc1} {t.gsStep4Desc2}
-                        </p>
-                      </div>
-
-                      <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-1">
-                        <div className="font-bold text-slate-900 flex items-center space-x-1.5">
-                          <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">4</span>
-                          <span>{t.gsStep5}</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500">
-                          {t.gsStep5Desc}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Preview of Code Box */}
-                    <div className="relative">
-                      <pre className="p-3.5 bg-slate-900 text-slate-200 rounded-xl text-[11px] font-mono overflow-x-auto max-h-48 border border-slate-800">
-                        {GOOGLE_APPS_SCRIPT_CODE}
-                      </pre>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 4: BACKUP & EXPORT/IMPORT JSON */}
+              {/* TAB 3: BACKUP & EXPORT/IMPORT JSON */}
               {activeTab === 'backup' && (
                 <div className="space-y-4">
                   <div className="p-4 bg-indigo-50/60 border border-indigo-100 rounded-xl">
