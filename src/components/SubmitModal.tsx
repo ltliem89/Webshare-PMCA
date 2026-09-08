@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Globe, Sparkles, Upload, X } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { CheckCircle2, Globe, Search, Sparkles, Upload, X } from 'lucide-react';
 import { BrowserMockupFrame } from './BrowserMockupFrame';
 import { CategoryId, CountryCode, EducationLevelId, Language, VN_SUBJECTS, WebProject } from '../types';
 import { translations } from '../translations';
+import { SOUTHEAST_ASIA_COUNTRIES } from '../data/countries';
 
 interface SubmitModalProps {
   isOpen: boolean;
@@ -29,6 +30,9 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [country, setCountry] = useState<CountryCode>('VN');
+  const [countrySearch, setCountrySearch] = useState('');
+  const [countryOpen, setCountryOpen] = useState(false);
+  const countryRef = useRef<HTMLDivElement>(null);
   const [category, setCategory] = useState<CategoryId>('toan');
   const [educationLevel, setEducationLevel] = useState<EducationLevelId>('general');
   const [authorName, setAuthorName] = useState('');
@@ -62,8 +66,36 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
       setCustomThumbnail('');
       setTagsInput('');
     }
+    setCountrySearch('');
+    setCountryOpen(false);
     setIsSuccess(false);
   }, [isOpen, editingProject]);
+
+  // Lọc danh sách quốc gia theo từ khóa (tên quốc tế hoặc tên Việt)
+  const filteredCountries = useMemo(() => {
+    const q = countrySearch.trim().toLowerCase();
+    if (!q) return SOUTHEAST_ASIA_COUNTRIES;
+    return SOUTHEAST_ASIA_COUNTRIES.filter(
+      (c) =>
+        c.nameEn.toLowerCase().includes(q) ||
+        c.nameVi.toLowerCase().includes(q) ||
+        c.code.toLowerCase() === q
+    );
+  }, [countrySearch]);
+
+  const selectedCountry =
+    SOUTHEAST_ASIA_COUNTRIES.find((c) => c.code === country) || null;
+
+  // Đóng dropdown khi bấm ra ngoài
+  useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
+        setCountryOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -281,6 +313,74 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
                   ))}
                 </select>
               </div>
+            </div>
+
+            {/* Country / Region — ưu tiên Đông Nam Á, có tìm kiếm theo tên quốc tế; mặc định Việt Nam */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                {t.countryLabel}
+              </label>
+              <div className="relative" ref={countryRef}>
+                <button
+                  type="button"
+                  id="btn-select-country"
+                  onClick={() => setCountryOpen((o) => !o)}
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-slate-200 text-xs text-slate-800 bg-white focus:outline-none focus:border-indigo-500"
+                >
+                  <span className="flex items-center gap-2">
+                    <Globe className="w-3.5 h-3.5 text-slate-500" />
+                    {selectedCountry ? `${selectedCountry.nameVi} (${selectedCountry.code})` : t.countryLabel}
+                  </span>
+                  <span className="text-slate-400">{countryOpen ? '▲' : '▼'}</span>
+                </button>
+
+                {countryOpen && (
+                  <div className="absolute z-30 mt-1 w-full bg-white rounded-lg border border-slate-200 shadow-lg overflow-hidden">
+                    {/* Ô tìm kiếm theo tên quốc tế */}
+                    <div className="p-2 border-b border-slate-100">
+                      <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-md border border-slate-100">
+                        <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <input
+                          type="text"
+                          value={countrySearch}
+                          onChange={(e) => setCountrySearch(e.target.value)}
+                          placeholder={t.smCountryPlaceholder}
+                          className="w-full bg-transparent text-xs text-slate-800 focus:outline-none"
+                          autoFocus
+                        />
+                      </div>
+                    </div>
+                    <ul className="max-h-52 overflow-y-auto py-1">
+                      {filteredCountries.map((c) => (
+                        <li key={c.code}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCountry(c.code);
+                              setCountryOpen(false);
+                              setCountrySearch('');
+                            }}
+                            className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-indigo-50 transition-colors ${
+                              c.code === country ? 'text-indigo-600 font-semibold bg-indigo-50/60' : 'text-slate-700'
+                            }`}
+                          >
+                            <span>{c.nameVi}</span>
+                            <span className="text-slate-400">{c.nameEn}</span>
+                          </button>
+                        </li>
+                      ))}
+                      {filteredCountries.length === 0 && (
+                        <li className="px-3 py-2 text-xs text-slate-400">{t.smCountryNoResult}</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+              </div>
+              {selectedCountry && (
+                <p className="mt-1 text-[11px] text-slate-400">
+                  {t.smCountryHint} • {selectedCountry.nameEn} ({selectedCountry.code})
+                </p>
+              )}
             </div>
 
             {/* Author info */}

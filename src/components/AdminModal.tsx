@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { WebProject, Language } from '../types';
 import { translations } from '../translations';
+import { countryDisplayName } from '../data/countries';
 import { SubmitModal } from './SubmitModal';
 import { extractDomain, formatTimeAgo, getLocaleCode } from '../utils/screenshot';
 
@@ -406,7 +407,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                                 {formatTimeAgo(item.createdAt, lang)}
                               </span>
                               <span className="text-xs font-semibold text-indigo-700">
-                                {t.countryNames[item.country] || item.country}
+                                {t.countryNames[item.country] || countryDisplayName(item.country, t.countryNames)}
                               </span>
                               <span className="text-[11px] text-slate-600">
                                 • {t.categoryNames[item.category]} • {t.educationLevelNames[item.educationLevel]}
@@ -482,7 +483,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                           <span className="text-[10px] text-slate-400 font-mono">({extractDomain(item.url)})</span>
                         </div>
                         <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                          {t.categoryNames[item.category]} • {t.countryNames[item.country]} • {t.educationLevelNames[item.educationLevel]} • {t.viewsCount.replace('{count}', String(item.views))}
+                          {t.categoryNames[item.category]} • {t.countryNames[item.country] || countryDisplayName(item.country, t.countryNames)} • {t.educationLevelNames[item.educationLevel]} • {t.viewsCount.replace('{count}', String(item.views))}
                         </p>
                       </div>
 

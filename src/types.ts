@@ -1,4 +1,4 @@
-export type CountryCode = 'VN' | 'US' | 'JP' | 'KR' | 'FR' | 'GB' | 'DE' | 'SG' | 'GLOBAL';
+export type CountryCode = string;
 
 export type CategoryId = 
   | 'math'              // Toán học

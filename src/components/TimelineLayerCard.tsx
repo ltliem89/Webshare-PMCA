@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { WebProject, Language } from '../types';
 import { translations } from '../translations';
+import { countryDisplayName } from '../data/countries';
 import { BrowserMockupFrame } from './BrowserMockupFrame';
 import { formatTimeAgo } from '../utils/screenshot';
 import { getGoUrl } from '../utils/goLink';
@@ -90,7 +91,7 @@ export const TimelineLayerCard: React.FC<TimelineLayerCardProps> = ({
           {/* Metadata chips */}
           <div className="flex flex-wrap items-center gap-1.5 mb-2">
             <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-800">
-              {t.countryNames[project.country] || project.country}
+              {t.countryNames[project.country] || countryDisplayName(project.country, t.countryNames)}
             </span>
             <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
               {t.categoryNames[project.category] || project.category}
