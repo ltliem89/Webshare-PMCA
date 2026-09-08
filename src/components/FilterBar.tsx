@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   AlignLeft,
-  BookOpenText,
   CheckCircle2,
   LayoutGrid,
+  Rocket,
   RotateCcw,
   Sparkles,
   UploadCloud,
@@ -166,9 +166,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             }`}
             title={t.guideTabTitle}
           >
-            <BookOpenText
+            <Rocket
               className={`w-3.5 h-3.5 ${
-                showGuide ? 'text-emerald-300' : 'text-slate-500'
+                showGuide ? 'text-emerald-300 animate-bounce' : 'text-slate-500'
               }`}
             />
             <span className="whitespace-nowrap">{t.guideTab}</span>
