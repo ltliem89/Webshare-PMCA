@@ -851,39 +851,41 @@ const handleUpdateProject = (updated: WebProject) => {
           {/* THÔNG TIN TÁC GIẢ */}
           <div className="mb-8">
             <h2 className="text-sm font-bold uppercase tracking-wider text-slate-800 mb-5">
-              Thông tin tác giả
+              {t.footerAuthorInfo ?? 'Author Information'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[13px]">
               <div className="space-y-1.5 text-slate-600">
                 <p>
                   <span className="font-semibold text-slate-800">
-                    Tác giả &amp; Phát triển:
+                    {t.footerAuthorDev ?? 'Author & Development'}:
                   </span>
                   <span className="ml-1.5">Lê Thanh Liêm</span>
                 </p>
                 <p>
                   <span className="font-semibold text-slate-800">
-                    Lĩnh vực:
+                    {t.footerField ?? 'Field'}:
                   </span>
                   <span className="ml-1.5">
-                    Giáo dục · STEM · Công nghệ · AI
+                    {t.footerFieldValue ?? 'Education · STEM · Technology · AI'}
                   </span>
                 </p>
                 <p>
                   <span className="font-semibold text-slate-800">
-                    Địa điểm:
+                    {t.footerLocation ?? 'Location'}:
                   </span>
                   <span className="ml-1.5">
-                    Thành phố Cần Thơ, Việt Nam
+                    {t.footerLocationValue ?? 'Cần Thơ City, Vietnam'}
                   </span>
                 </p>
               </div>
 
               <div className="space-y-1.5 text-slate-600">
-                <p className="font-semibold text-slate-800">Liên hệ:</p>
+                <p className="font-semibold text-slate-800">
+                  {t.footerContact ?? 'Contact'}:
+                </p>
                 <p>
                   <span className="font-semibold text-slate-800">
-                    Email:
+                    {t.footerEmail ?? 'Email'}:
                   </span>
                   <a
                     href="mailto:ltliem89@gmail.com"
@@ -894,7 +896,7 @@ const handleUpdateProject = (updated: WebProject) => {
                 </p>
                 <p>
                   <span className="font-semibold text-slate-800">
-                    Email công việc:
+                    {t.footerWorkEmail ?? 'Work Email'}:
                   </span>
                   <a
                     href="mailto:liemlt2@fe.edu.vn"
@@ -905,7 +907,7 @@ const handleUpdateProject = (updated: WebProject) => {
                 </p>
                 <p>
                   <span className="font-semibold text-slate-800">
-                    Điện thoại / Zalo / LINE:
+                    {t.footerPhone ?? 'Phone / Zalo / LINE'}:
                   </span>
                   <a
                     href="tel:0978152896"
@@ -924,9 +926,8 @@ const handleUpdateProject = (updated: WebProject) => {
               © {new Date().getFullYear()} Lê Thanh Liêm. All rights reserved.
             </p>
             <p className="mt-2 text-xs leading-6 text-slate-500">
-              Thiết kế, nội dung và phát triển của website thuộc về tác giả,
-              ngoại trừ các thành phần, thư viện, tài nguyên hoặc nội dung của
-              bên thứ ba được sử dụng theo giấy phép tương ứng.
+              {t.footerCopyrightNote ??
+                'The design, content and development of this website belong to the author, except for third-party components, libraries, resources or content used under their respective licenses.'}
             </p>
           </div>
         </div>

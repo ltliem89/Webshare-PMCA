@@ -212,6 +212,17 @@ export interface Translations {
   amImportSuccess: string;
   amResetConfirm: string;
   footerReady: string;
+  footerAuthorInfo?: string;
+  footerAuthorDev?: string;
+  footerField?: string;
+  footerFieldValue?: string;
+  footerLocation?: string;
+  footerLocationValue?: string;
+  footerContact?: string;
+  footerEmail?: string;
+  footerWorkEmail?: string;
+  footerPhone?: string;
+  footerCopyrightNote?: string;
   qrGenerating: string;
   guideTab: string;
   guideTabTitle: string;
@@ -512,6 +523,17 @@ export const translations: Record<Language, Translations> = {
     amImportSuccess: 'Đã nhập thành công {count} website vào hệ thống.',
     amResetConfirm: 'Bạn có chắc muốn khôi phục về danh sách mẫu ban đầu không?',
     footerReady: 'Vercel & GitHub Ready',
+    footerAuthorInfo: 'Thông tin tác giả',
+    footerAuthorDev: 'Tác giả & Phát triển',
+    footerField: 'Lĩnh vực',
+    footerFieldValue: 'Giáo dục · STEM · Công nghệ · AI',
+    footerLocation: 'Địa điểm',
+    footerLocationValue: 'Thành phố Cần Thơ, Việt Nam',
+    footerContact: 'Liên hệ',
+    footerEmail: 'Email',
+    footerWorkEmail: 'Email công việc',
+    footerPhone: 'Điện thoại / Zalo / LINE',
+    footerCopyrightNote: 'Thiết kế, nội dung và phát triển của website thuộc về tác giả, ngoại trừ các thành phần, thư viện, tài nguyên hoặc nội dung của bên thứ ba được sử dụng theo giấy phép tương ứng.',
     countryNames: {
       VN: 'Việt Nam 🇻🇳',
       GLOBAL: 'Toàn cầu / Đa quốc gia 🌐',
@@ -807,6 +829,17 @@ export const translations: Record<Language, Translations> = {
     amImportSuccess: 'Successfully imported {count} websites into the system.',
     amResetConfirm: 'Are you sure you want to restore the original sample list?',
     footerReady: 'Vercel & GitHub Ready',
+    footerAuthorInfo: 'Author Information',
+    footerAuthorDev: 'Author & Development',
+    footerField: 'Field',
+    footerFieldValue: 'Education · STEM · Technology · AI',
+    footerLocation: 'Location',
+    footerLocationValue: 'Cần Thơ City, Vietnam',
+    footerContact: 'Contact',
+    footerEmail: 'Email',
+    footerWorkEmail: 'Work Email',
+    footerPhone: 'Phone / Zalo / LINE',
+    footerCopyrightNote: 'The design, content, and development of this website belong to the author, except for third-party components, libraries, resources, or content used under their respective licenses.',
     countryNames: {
       VN: 'Vietnam 🇻🇳',
       GLOBAL: 'Global / Multi-country 🌐',
