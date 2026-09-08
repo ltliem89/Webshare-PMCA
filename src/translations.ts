@@ -476,7 +476,7 @@ export const translations: Record<Language, Translations> = {
     amAutoSyncNew: 'Tự động đồng bộ khi có bài mới',
     amLastSync: 'Lần đồng bộ gần nhất: ',
     qrGenerating: 'Đang tạo mã QR...',
-    guideTab: 'Hướng dẫn',
+    guideTab: 'Kiến tạo',
     guideTabTitle: 'Hướng dẫn tạo mô phỏng bằng AI (ChatGPT / Gemini)',
     guideTitle: 'Hướng dẫn tạo mô phỏng học tập',
     guideIntro: 'Chỉ cần một file hướng dẫn chuyên biệt, bạn đưa nó cho ChatGPT hoặc Gemini, và để AI tự điều khiển toàn bộ cuộc hội thoại để tạo ra mô phỏng của bạn — từ ý tưởng đến website hoàn chỉnh.',
