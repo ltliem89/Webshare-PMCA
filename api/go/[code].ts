@@ -1,5 +1,4 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { generateGoCode } from '../../src/utils/goLink';
 
 /**
  * URL cố định của Apps Script "WebHub Sync API" — đúng với DEFAULT_SCRIPT_URL
@@ -7,6 +6,27 @@ import { generateGoCode } from '../../src/utils/goLink';
  */
 const SCRIPT_URL =
   'https://script.google.com/macros/s/AKfycbw7QvnRI3e2l_0B7Nl4KDeLEOT3CWo-P_CcjWGD5XIoT7XVBhsiWG3OKEVrOcihLyUm/exec';
+
+const GO_SALT = 'webhub-go-v1';
+
+/**
+ * FNV-1a 32-bit hash → base36, tạo mã ngắn ổn định từ chuỗi bất kỳ.
+ * Phải giữ logic 100% giống src/utils/goLink.ts (generateGoCode) — không thể
+ * import từ thư mục ngoài api/ vì Vercel bundle ESM sẽ không resolve được.
+ */
+function fnv1a(str: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
+function generateGoCode(projectId: string): string {
+  const mixed = `${GO_SALT}:${projectId}`;
+  return fnv1a(mixed).toString(36);
+}
 
 interface ProjectLike {
   id?: unknown;
