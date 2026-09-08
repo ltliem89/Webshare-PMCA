@@ -84,18 +84,27 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
       icon: <Sparkles className="w-5 h-5" />,
       name: t.guideToolStudio,
       desc: t.guideToolStudioDesc,
+      url: 'https://aistudio.google.com',
+      signup: t.guideToolStudioSignup,
+      login: t.guideToolStudioLogin,
       accent: 'bg-violet-50 text-violet-600 border-violet-200',
     },
     {
       icon: <GitBranch className="w-5 h-5" />,
       name: t.guideToolGit,
       desc: t.guideToolGitDesc,
+      url: 'https://github.com',
+      signup: t.guideToolGitSignup,
+      login: t.guideToolGitLogin,
       accent: 'bg-slate-100 text-slate-700 border-slate-300',
     },
     {
       icon: <Rocket className="w-5 h-5" />,
       name: t.guideToolVercel,
       desc: t.guideToolVercelDesc,
+      url: 'https://vercel.com',
+      signup: t.guideToolVercelSignup,
+      login: t.guideToolVercelLogin,
       accent: 'bg-sky-50 text-sky-600 border-sky-200',
     },
   ];
@@ -227,26 +236,61 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
           {t.guideToolsDesc}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {tools.map((tool, idx) => (
-            <React.Fragment key={tool.name}>
-              <div className="rounded-xl bg-slate-800/60 border border-slate-700 p-4">
+        <div className="space-y-4">
+          {tools.map((tool) => (
+            <div key={tool.name} className="rounded-2xl bg-slate-800/60 border border-slate-700 p-4 sm:p-5">
+              {/* Header tool: icon + tên + link */}
+              <div className="flex items-center space-x-3 mb-3">
                 <div
-                  className={`w-10 h-10 rounded-xl border flex items-center justify-center mb-3 ${tool.accent}`}
+                  className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${tool.accent}`}
                 >
                   {tool.icon}
                 </div>
-                <h4 className="text-sm font-bold text-white mb-1">{tool.name}</h4>
-                <p className="text-[11px] sm:text-xs text-slate-400 leading-relaxed">
-                  {tool.desc}
-                </p>
-              </div>
-              {idx < tools.length - 1 && (
-                <div className="hidden md:flex items-center justify-center">
-                  <ArrowRight className="w-5 h-5 text-slate-600" />
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-sm font-bold text-white">{tool.name}</h4>
+                  <p className="text-[10px] text-slate-400 font-mono truncate">{tool.url}</p>
                 </div>
-              )}
-            </React.Fragment>
+                <a
+                  href={tool.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/35 border border-indigo-400/40 text-indigo-300 text-[11px] font-bold transition-all cursor-pointer shrink-0"
+                >
+                  <Globe className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{t.guideToolOpenSite}</span>
+                </a>
+              </div>
+
+              {/* Mô tả ngắn */}
+              <p className="text-[11px] sm:text-xs text-slate-400 leading-relaxed mb-3">
+                {tool.desc}
+              </p>
+
+              {/* 3 bước: tạo tài khoản → đăng nhập → cách dùng */}
+              <div className="space-y-2">
+                <div className="flex items-start space-x-2.5">
+                  <span className="w-5 h-5 rounded-md bg-indigo-500 text-white flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">1</span>
+                  <div className="min-w-0">
+                    <span className="block text-[10px] font-bold text-indigo-300 uppercase tracking-wide">{t.guideToolSignupLabel}</span>
+                    <span className="text-[11px] sm:text-xs text-slate-300 leading-relaxed block">{tool.signup}</span>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-2.5">
+                  <span className="w-5 h-5 rounded-md bg-emerald-500 text-white flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">2</span>
+                  <div className="min-w-0">
+                    <span className="block text-[10px] font-bold text-emerald-300 uppercase tracking-wide">{t.guideToolLoginLabel}</span>
+                    <span className="text-[11px] sm:text-xs text-slate-300 leading-relaxed block">{tool.login}</span>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-2.5">
+                  <span className="w-5 h-5 rounded-md bg-amber-500 text-white flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">3</span>
+                  <div className="min-w-0">
+                    <span className="block text-[10px] font-bold text-amber-300 uppercase tracking-wide">{t.guideToolUseLabel}</span>
+                    <span className="text-[11px] sm:text-xs text-slate-300 leading-relaxed block">{tool.desc}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 
