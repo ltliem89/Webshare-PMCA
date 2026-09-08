@@ -116,7 +116,6 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
       icon: <FileText className="w-4 h-4" />,
       accent: 'bg-emerald-600 text-white',
       extra: downloadExtra,
-      images: [{ src: '/PMCA_Show_Share_2026/guide-4-download.png', alt: t.guideStep3T }],
     },
     {
       title: t.guideStep4T,
