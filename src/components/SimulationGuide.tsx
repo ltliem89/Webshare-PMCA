@@ -28,12 +28,74 @@ interface GuideStep {
   icon: React.ReactNode;
   accent: string;
   images?: { src: string; alt: string }[];
+  extra?: React.ReactNode;
 }
 
 const GUIDE_FILE = 'UNIVERSAL_EDUCATIONAL_SIMULATION_PROMPT_GUIDE_v4.md';
 
 export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit }) => {
   const t = translations[lang];
+
+  const gitSteps = [t.guideGit1, t.guideGit2, t.guideGit3, t.guideGit4, t.guideGit5];
+
+  // Mục con "Tải Prompt Guide" nằm trong Bước 3
+  const downloadExtra = (
+    <div className="mt-3 rounded-xl bg-white border border-emerald-200 p-3.5">
+      <div className="flex items-center space-x-2 mb-2">
+        <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+          <Download className="w-3.5 h-3.5" />
+        </div>
+        <h5 className="text-xs font-extrabold text-slate-900">{t.guideDownloadTitle}</h5>
+      </div>
+      <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed mb-3">{t.guideDownloadDesc}</p>
+      <div className="flex flex-wrap gap-2">
+        <a
+          href={'/' + GUIDE_FILE}
+          download={GUIDE_FILE}
+          className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold shadow-sm shadow-emerald-500/20 transition-all cursor-pointer"
+        >
+          <Download className="w-3.5 h-3.5" />
+          <span>{t.guideDownloadBtn}</span>
+        </a>
+        <a
+          href={'/' + GUIDE_FILE}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer"
+        >
+          <Globe className="w-3.5 h-3.5" />
+          <span className="font-mono text-[10px]">{GUIDE_FILE}</span>
+        </a>
+      </div>
+    </div>
+  );
+
+  // Chi tiết lồng ghép vào đúng bước (Bước 7 = GitHub, Bước 8 = Vercel)
+  const githubExtra = (
+    <ol className="mt-3 space-y-2">
+      {gitSteps.slice(0, 3).map((step, idx) => (
+        <li key={idx} className="flex items-start space-x-2.5">
+          <span className="w-5 h-5 rounded-md bg-orange-500 text-white flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">
+            {idx + 1}
+          </span>
+          <span className="text-[11px] sm:text-xs text-slate-600 leading-relaxed">{step}</span>
+        </li>
+      ))}
+    </ol>
+  );
+
+  const vercelExtra = (
+    <ol className="mt-3 space-y-2">
+      {gitSteps.slice(3).map((step, idx) => (
+        <li key={idx} className="flex items-start space-x-2.5">
+          <span className="w-5 h-5 rounded-md bg-sky-600 text-white flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">
+            {idx + 4}
+          </span>
+          <span className="text-[11px] sm:text-xs text-slate-600 leading-relaxed">{step}</span>
+        </li>
+      ))}
+    </ol>
+  );
 
   const steps: GuideStep[] = [
     {
@@ -53,6 +115,7 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
       desc: t.guideStep3D,
       icon: <FileText className="w-4 h-4" />,
       accent: 'bg-emerald-600 text-white',
+      extra: downloadExtra,
       images: [{ src: '/PMCA_Show_Share_2026/guide-4-download.png', alt: t.guideStep3T }],
     },
     {
@@ -81,6 +144,7 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
       desc: t.guideStep7D,
       icon: <GitBranch className="w-4 h-4" />,
       accent: 'bg-orange-500 text-white',
+      extra: githubExtra,
       images: [{ src: '/PMCA_Show_Share_2026/guide-hd6-github.png', alt: t.guideStep7T }],
     },
     {
@@ -88,6 +152,7 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
       desc: t.guideStep8D,
       icon: <Rocket className="w-4 h-4" />,
       accent: 'bg-sky-600 text-white',
+      extra: vercelExtra,
       images: [{ src: '/PMCA_Show_Share_2026/guide-hd7-vercel.png', alt: t.guideStep8T }],
     },
   ];
@@ -101,10 +166,6 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
     t.guideCriterion6,
     t.guideCriterion7,
   ];
-
-  const preps = [t.guidePrep1, t.guidePrep2, t.guidePrep3, t.guidePrep4, t.guidePrep5];
-
-  const gitSteps = [t.guideGit1, t.guideGit2, t.guideGit3, t.guideGit4, t.guideGit5];
 
   const tools = [
     {
@@ -165,6 +226,29 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
         </div>
       </div>
 
+      {/* Tiêu chí của một sản phẩm học tập tốt */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 sm:p-7 mb-5">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+            <Target className="w-4 h-4" />
+          </div>
+          <h3 className="text-sm sm:text-base font-extrabold text-slate-900">{t.guideCriterionTitle}</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+          {criteria.map((c, idx) => (
+            <div
+              key={idx}
+              className="flex items-start space-x-2.5 rounded-xl bg-indigo-50/60 border border-indigo-100 p-3"
+            >
+              <span className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-[11px] font-extrabold shrink-0">
+                {idx + 1}
+              </span>
+              <span className="text-xs text-slate-700 leading-relaxed">{c}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Timeline 8 bước */}
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 sm:p-7 mb-5">
         <div className="flex items-center space-x-3 mb-5">
@@ -191,6 +275,8 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
                 </div>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{step.desc}</p>
 
+                {step.extra && <div className="mt-3">{step.extra}</div>}
+
                 {step.images && step.images.length > 0 && (
                   <div
                     className={`mt-3 grid gap-2.5 ${step.images.length > 1 ? 'grid-cols-2' : 'grid-cols-1 max-w-sm'}`}
@@ -212,39 +298,6 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
         </div>
       </div>
 
-      {/* Download Prompt Guide */}
-      <div
-        id="guide-download"
-        className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 sm:p-7 mb-5"
-      >
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
-            <Download className="w-4 h-4" />
-          </div>
-          <h3 className="text-sm sm:text-base font-extrabold text-slate-900">{t.guideDownloadTitle}</h3>
-        </div>
-        <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mb-4">{t.guideDownloadDesc}</p>
-        <div className="flex flex-wrap gap-2.5">
-          <a
-            href={'/' + GUIDE_FILE}
-            download={GUIDE_FILE}
-            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm shadow-emerald-500/20 transition-all cursor-pointer"
-          >
-            <Download className="w-4 h-4" />
-            <span>{t.guideDownloadBtn}</span>
-          </a>
-          <a
-            href={'/' + GUIDE_FILE}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition-all cursor-pointer"
-          >
-            <Globe className="w-4 h-4" />
-            <span className="font-mono text-[11px]">{GUIDE_FILE}</span>
-          </a>
-        </div>
-      </div>
-
       {/* Tools journey Studio -> GitHub -> Vercel */}
       <div
         id="guide-tools"
@@ -258,7 +311,6 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
         </div>
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">{t.guideToolsDesc}</p>
 
-        {/* Note dùng chung một Gmail */}
         <div className="flex items-start space-x-2.5 rounded-xl bg-amber-400/10 border border-amber-400/30 p-3.5 mb-4">
           <CheckCircle2 className="w-4 h-4 text-amber-300 mt-0.5 shrink-0" />
           <p className="text-xs sm:text-sm text-amber-100 leading-relaxed">{t.guideAccountNote}</p>
@@ -351,67 +403,6 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
               {idx < 2 && <span className="text-slate-600 text-xs">→</span>}
             </React.Fragment>
           ))}
-        </div>
-      </div>
-
-      {/* Chi tiết GitHub & Vercel */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 sm:p-7 mb-5">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center shrink-0">
-            <GitBranch className="w-4 h-4" />
-          </div>
-          <h3 className="text-sm sm:text-base font-extrabold text-slate-900">{t.guideGitTitle}</h3>
-        </div>
-        <ol className="space-y-3">
-          {gitSteps.map((step, idx) => (
-            <li key={idx} className="flex items-start space-x-2.5">
-              <span className="w-6 h-6 rounded-lg bg-orange-500/10 text-orange-600 border border-orange-200 flex items-center justify-center text-[11px] font-extrabold shrink-0 mt-0.5">
-                {idx + 1}
-              </span>
-              <span className="text-xs sm:text-sm text-slate-600 leading-relaxed">{step}</span>
-            </li>
-          ))}
-        </ol>
-      </div>
-
-      {/* Tiêu chí + Chuẩn bị */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
-          <div className="flex items-center space-x-2.5 mb-4">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
-              <Target className="w-4 h-4" />
-            </div>
-            <h3 className="text-sm font-extrabold text-slate-900">{t.guideCriterionTitle}</h3>
-          </div>
-          <ul className="space-y-2.5">
-            {criteria.map((c, idx) => (
-              <li key={idx} className="flex items-start space-x-2.5">
-                <span className="w-5 h-5 rounded-md bg-indigo-500/10 text-indigo-600 border border-indigo-200 flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">
-                  {idx + 1}
-                </span>
-                <span className="text-xs text-slate-600 leading-relaxed">{c}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
-          <div className="flex items-center space-x-2.5 mb-4">
-            <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-            <h3 className="text-sm font-extrabold text-slate-900">{t.guidePrepTitle}</h3>
-          </div>
-          <ul className="space-y-2.5">
-            {preps.map((p, idx) => (
-              <li key={idx} className="flex items-start space-x-2.5">
-                <span className="w-5 h-5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-200 flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">
-                  {idx + 1}
-                </span>
-                <span className="text-xs text-slate-600 leading-relaxed">{p}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
 
