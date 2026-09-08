@@ -41,7 +41,7 @@ export const TimelineLayerCard: React.FC<TimelineLayerCardProps> = ({
   const goUrl = getGoUrl(
     window.location,
     project.url,
-    { title: project.title, authorName: project.authorName }
+    { title: project.title, authorName: project.authorName, authorEmail: project.authorContact }
   );
   const displayUrl = isAdmin ? undefined : goUrl;
 

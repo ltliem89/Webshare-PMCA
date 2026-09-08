@@ -38,6 +38,7 @@ interface GoPayload {
   u?: string;
   t?: string;
   a?: string;
+  e?: string;
 }
 
 function normalizeUrl(rawUrl: string): string {
@@ -57,9 +58,9 @@ function escapeHtml(value: string): string {
 
 /**
  * GET /go/:code
- * Đổi payload {u, t, a} từ mã trong link, trả về TRANG KHUNG trên domain của mình:
- * khung trình duyệt giả + tên tác giả + iframe nạp mô phỏng. Thanh địa chỉ chỉ
- * hiện /go/<mã> — URL gốc không lộ ra ngoài.
+ * Đổi payload {u, t, a, e} từ mã trong link, trả về TRANG KHUNG trên domain của mình:
+ * khung trình duyệt giả + thông tin tác giả (tên + email liên hệ) + iframe nạp mô
+ * phỏng. URL gốc và cả link /go/<mã> đều không hiện ra giao diện.
  */
 export default function handler(req: IncomingMessage, res: ServerResponse) {
   const urlPath = (req.url || '').split('?')[0];
@@ -91,12 +92,11 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
     (req.headers['x-forwarded-host'] as string) ||
     (req.headers.host as string) ||
     'localhost';
-  const selfUrl = `${proto}://${host}/go/${code}`;
   const homeUrl = `${proto}://${host}/`;
 
   const title = escapeHtml((payload.t || '').trim() || 'Mô phỏng học tập');
   const author = escapeHtml((payload.a || '').trim() || 'Thành viên');
-  const addr = escapeHtml(selfUrl);
+  const email = escapeHtml((payload.e || '').trim());
   const frameSrc = escapeHtml(target);
   const initial = author.trim().charAt(0).toUpperCase();
 
@@ -151,13 +151,18 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
   .dot.r { background: #f87171; }
   .dot.y { background: #fbbf24; }
   .dot.g { background: #34d399; }
-  .address {
+  .author-info {
     flex: 1; min-width: 0;
     background: rgba(148, 163, 184, 0.12);
     border-radius: 8px; padding: 6px 12px;
-    font-size: 12px; font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+    font-size: 12px; font-weight: 600;
     color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: flex; align-items: center; gap: 8px;
   }
+  .author-info .avatar { flex: none; }
+  .author-info .name { color: #e2e8f0; }
+  .author-info .email { color: #818cf8; text-decoration: none; }
+  .author-info .email:hover { text-decoration: underline; }
   .viewport { position: relative; flex: 1; min-height: 0; background: #fff; }
   iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
   .author-badge {
@@ -210,7 +215,11 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
   <div class="frame">
     <div class="chrome">
       <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-      <div class="address">${addr}</div>
+      <div class="author-info">
+        <span class="avatar">${initial}</span>
+        <span class="name">${author}</span>
+        ${email ? `<a class="email" href="mailto:${email}">${email}</a>` : ''}
+      </div>
       <button class="chrome-btn" id="btnCollapse" title="Thu nhỏ" aria-label="Thu nhỏ" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16H3"/></svg>
       </button>

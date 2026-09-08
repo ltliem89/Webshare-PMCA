@@ -56,6 +56,7 @@ export function decodeCodeToText(code: string): string {
 export interface GoLinkMeta {
   title?: string;
   authorName?: string;
+  authorEmail?: string;
 }
 
 /**
@@ -72,6 +73,7 @@ export function getGoUrl(
     u: realUrl,
     t: (meta && meta.title) || '',
     a: (meta && meta.authorName) || '',
+    e: (meta && meta.authorEmail) || '',
   });
   return `${location.origin}/go/${encodeToCode(payload)}`;
 }

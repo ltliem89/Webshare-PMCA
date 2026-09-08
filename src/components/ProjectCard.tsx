@@ -40,7 +40,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const goUrl = getGoUrl(
     window.location,
     project.url,
-    { title: project.title, authorName: project.authorName }
+    { title: project.title, authorName: project.authorName, authorEmail: project.authorContact }
   );
   const displayUrl = isAdmin ? undefined : goUrl;
 
