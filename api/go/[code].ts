@@ -176,7 +176,29 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
     display: flex; align-items: center; justify-content: center;
     font-size: 9px; font-weight: 800; color: #fff;
   }
-  .hint { font-size: 11px; color: #94a3b8; text-align: center; }
+  /* Nút mở rộng / thu nhỏ */
+  .chrome-btn {
+    flex: none;
+    background: rgba(148, 163, 184, 0.15);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: #cbd5e1;
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+  .chrome-btn:hover { background: rgba(148, 163, 184, 0.3); color: #fff; }
+  .chrome-btn svg { width: 15px; height: 15px; }
+  /* Toàn màn hình: khung che cả màn hình */
+  body.is-fullscreen .topbar { display: none; }
+  body.is-fullscreen .frame {
+    position: fixed; inset: 0; z-index: 50;
+    max-width: none; width: 100vw; height: 100vh;
+    border-radius: 0; border: none;
+  }
+  /* Thu nhỏ: chỉ còn thanh trình duyệt giả (ẩn viewport) */
+  body.is-collapsed .viewport { display: none; }
+  body.is-collapsed .frame { flex: 0 0 auto; max-height: 48px; }
 </style>
 </head>
 <body>
@@ -189,6 +211,12 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
     <div class="chrome">
       <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
       <div class="address">${addr}</div>
+      <button class="chrome-btn" id="btnCollapse" title="Thu nhỏ" aria-label="Thu nhỏ" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16H3"/></svg>
+      </button>
+      <button class="chrome-btn" id="btnExpand" title="Mở rộng toàn màn hình" aria-label="Mở rộng toàn màn hình" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5"/><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M16 21h5v-5"/></svg>
+      </button>
     </div>
     <div class="viewport">
       <iframe src="${frameSrc}" title="${title}" allowfullscreen allow="fullscreen; autoplay; geolocation"></iframe>
@@ -196,7 +224,25 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
     </div>
   </div>
 
-  <div class="hint">Tác giả: ${author} · Link gốc được bảo mật</div>
+  <script>
+    (function () {
+      var body = document.body;
+      var btnCollapse = document.getElementById('btnCollapse');
+      var btnExpand = document.getElementById('btnExpand');
+      btnCollapse && btnCollapse.addEventListener('click', function () {
+        body.classList.toggle('is-collapsed');
+        var collapsed = body.classList.contains('is-collapsed');
+        btnCollapse.setAttribute('title', collapsed ? 'Mở rộng' : 'Thu nhỏ');
+        btnCollapse.setAttribute('aria-label', collapsed ? 'Mở rộng' : 'Thu nhỏ');
+      });
+      btnExpand && btnExpand.addEventListener('click', function () {
+        body.classList.toggle('is-fullscreen');
+        var full = body.classList.contains('is-fullscreen');
+        btnExpand.setAttribute('title', full ? 'Thoát toàn màn hình' : 'Mở rộng toàn màn hình');
+        btnExpand.setAttribute('aria-label', full ? 'Thoát toàn màn hình' : 'Mở rộng toàn màn hình');
+      });
+    })();
+  </script>
 </body>
 </html>`);
 }
