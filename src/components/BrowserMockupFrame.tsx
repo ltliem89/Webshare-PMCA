@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ExternalLink, Globe, Lock, ShieldCheck, User } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../translations';
-import { extractDomain, getWebsiteScreenshotUrl } from '../utils/screenshot';
+import { extractDomain, getWebsiteScreenshotUrl, isMshotsTimingThumbnail } from '../utils/screenshot';
 
 interface BrowserMockupFrameProps {
   url: string;
@@ -28,7 +28,11 @@ export const BrowserMockupFrame: React.FC<BrowserMockupFrameProps> = ({
   const t = translations[lang];
   const [imageError, setImageError] = useState(false);
   const domain = extractDomain(displayUrl || url);
-  const screenshotUrl = getWebsiteScreenshotUrl(url, previewImage);
+  // Không dùng preview do mshots sinh theo URL thật (nó chứa link gốc trong URL ảnh).
+  // Sinh lại thumbnail từ link nội bộ /go/<code> → mshots chụp trang sau 302 redirect,
+  // chỉ lộ domain nội bộ chứ không lộ domain mô phỏng thật.
+  const safePreview = !isMshotsTimingThumbnail(previewImage) ? previewImage : undefined;
+  const screenshotUrl = getWebsiteScreenshotUrl(displayUrl || url, safePreview);
 
   const aspectClass =
     aspectRatio === 'wide'

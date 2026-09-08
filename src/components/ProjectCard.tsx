@@ -38,6 +38,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const t = translations[lang];
   const [isLiked, setIsLiked] = useState(false);
   const goUrl = getGoUrl(window.location, project.id);
+  const displayUrl = isAdmin ? undefined : goUrl;
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -47,20 +48,21 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
   const handleVisit = () => {
     onVisit(project.id, project.url);
-    window.open(goUrl, '_blank', 'noopener,noreferrer');
+    window.open(displayUrl || project.url, '_blank', 'noopener,noreferrer');
   };
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    const shareUrl = displayUrl || project.url;
     try {
       if (navigator.share) {
         await navigator.share({
           title: project.title,
           text: project.description,
-          url: goUrl,
+          url: shareUrl,
         });
       } else {
-        await navigator.clipboard.writeText(goUrl);
+        await navigator.clipboard.writeText(shareUrl);
         alert(t.copied);
       }
     } catch {
@@ -80,7 +82,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           title={project.title}
           previewImage={project.previewImage}
           authorName={project.authorName}
-          displayUrl={goUrl}
+          displayUrl={displayUrl}
           onClick={handleVisit}
           aspectRatio="video"
           lang={lang}

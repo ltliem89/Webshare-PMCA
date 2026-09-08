@@ -36,7 +36,6 @@ import {
   deleteSubmissionsFromSheet,
   updateStatsInSheet,
 } from './services/googleSync';
-import { getWebsiteScreenshotUrl } from './utils/screenshot';
 import {
   isCommunityApprovedOnly,
   setCommunityApprovedOnly,
@@ -487,14 +486,15 @@ export default function App() {
   const handleSubmitNewProject = (
     data: Omit<WebProject, 'id' | 'createdAt' | 'views' | 'likes'>
   ) => {
-    // Tá»± táº¡o áº£nh Ä‘áº¡i diá»‡n (screenshot) náº¿u ngÆ°á»i dĂ¹ng khĂ´ng táº£i áº£nh lĂªn
-    const thumbnail =
-      (data.previewImage && data.previewImage.trim()) ||
-      getWebsiteScreenshotUrl(data.url);
+    const id = `proj-${Date.now()}`;
+    // Không auto-tạo thumbnail tại thời điểm submit: project đang pending nên
+    // link che /go/<code> chưa hoạt động → mshots sẽ chụp trang 404 bị cache.
+    // BrowserMockupFrame sẽ tự sinh thumbnail từ go-link khi bài đã được duyệt.
+    const thumbnail = (data.previewImage && data.previewImage.trim()) || undefined;
 
     const newProject: WebProject = {
       ...data,
-      id: `proj-${Date.now()}`,
+      id,
       status: 'pending', // Chá» admin duyá»‡t trÆ°á»›c khi hiá»ƒn thá»‹ cĂ´ng khai
       isUserSubmission: true, // BĂ i ngÆ°á»i dĂ¹ng Ä‘Äƒng â†’ thuá»™c tab "BĂ i Ä‘Äƒng táº£i" khi Ä‘Æ°á»£c duyá»‡t
       createdAt: new Date().toISOString(),
@@ -886,6 +886,7 @@ const handleUpdateProject = (updated: WebProject) => {
         isOpen={!!selectedQRProject}
         onClose={() => setSelectedQRProject(null)}
         lang={lang}
+        isAdmin={isAdmin}
       />
 
       {/* Website Submission Modal (cũng dùng cho Admin chỉnh sửa bài) */}

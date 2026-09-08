@@ -39,6 +39,7 @@ export const TimelineLayerCard: React.FC<TimelineLayerCardProps> = ({
   const t = translations[lang];
   const [isLiked, setIsLiked] = useState(false);
   const goUrl = getGoUrl(window.location, project.id);
+  const displayUrl = isAdmin ? undefined : goUrl;
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -47,7 +48,7 @@ export const TimelineLayerCard: React.FC<TimelineLayerCardProps> = ({
 
   const handleVisit = () => {
     onVisit(project.id, project.url);
-    window.open(goUrl, '_blank', 'noopener,noreferrer');
+    window.open(displayUrl || project.url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -72,7 +73,7 @@ export const TimelineLayerCard: React.FC<TimelineLayerCardProps> = ({
           title={project.title}
           previewImage={project.previewImage}
           authorName={project.authorName}
-          displayUrl={goUrl}
+          displayUrl={displayUrl}
           onClick={handleVisit}
           aspectRatio="video"
           lang={lang}

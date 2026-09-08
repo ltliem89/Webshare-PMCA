@@ -10,6 +10,7 @@ interface QRCodeModalProps {
   isOpen: boolean;
   onClose: () => void;
   lang: Language;
+  isAdmin: boolean;
 }
 
 export const QRCodeModal: React.FC<QRCodeModalProps> = ({
@@ -17,6 +18,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
   isOpen,
   onClose,
   lang,
+  isAdmin,
 }) => {
   const [qrSrc, setQrSrc] = useState<string>('');
   const [copied, setCopied] = useState(false);
@@ -24,21 +26,21 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
   useEffect(() => {
     if (project?.url && isOpen) {
-      const goUrl = getGoUrl(window.location, project.id);
-      generateQrDataUrl(goUrl).then((url) => {
+      const accessUrl = isAdmin ? project.url : getGoUrl(window.location, project.id);
+      generateQrDataUrl(accessUrl).then((url) => {
         setQrSrc(url);
       });
       setCopied(false);
     }
-  }, [project, isOpen]);
+  }, [project, isOpen, isAdmin]);
 
   if (!isOpen || !project) return null;
 
-  const goUrl = getGoUrl(window.location, project.id);
+  const accessUrl = isAdmin ? project.url : getGoUrl(window.location, project.id);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(goUrl);
+      await navigator.clipboard.writeText(accessUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -112,7 +114,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
           {/* URL box */}
           <div className="mt-3 w-full p-2.5 bg-slate-50 rounded-xl border border-slate-200/80 text-xs font-mono text-slate-700 break-all select-all flex items-center justify-between gap-2">
-            <span className="truncate text-left text-[11px]">{goUrl}</span>
+            <span className="truncate text-left text-[11px]">{accessUrl}</span>
             <button
               id="qr-copy-url-btn"
               onClick={handleCopy}
@@ -136,7 +138,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
             <a
               id="qr-direct-visit-link"
-              href={goUrl}
+              href={accessUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center space-x-1.5 px-3 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 shadow-sm transition-colors"
