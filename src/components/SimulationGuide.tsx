@@ -8,11 +8,9 @@ import {
   Globe,
   MessageSquareText,
   Rocket,
-  Share2,
   Sparkles,
   Target,
   UploadCloud,
-  Users,
   Wand2,
   Wrench,
 } from 'lucide-react';
@@ -41,65 +39,57 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
     {
       title: t.guideStep1T,
       desc: t.guideStep1D,
-      icon: <Users className="w-4 h-4" />,
-      accent: 'bg-slate-900 text-white',
-    },
-    {
-      title: t.guideStep2T,
-      desc: t.guideStep2D,
       icon: <Target className="w-4 h-4" />,
       accent: 'bg-indigo-600 text-white',
     },
     {
-      title: t.guideStep3T,
-      desc: t.guideStep3D,
+      title: t.guideStep2T,
+      desc: t.guideStep2D,
       icon: <MessageSquareText className="w-4 h-4" />,
       accent: 'bg-violet-600 text-white',
     },
     {
-      title: t.guideStep4T,
-      desc: t.guideStep4D,
+      title: t.guideStep3T,
+      desc: t.guideStep3D,
       icon: <FileText className="w-4 h-4" />,
       accent: 'bg-emerald-600 text-white',
-      images: [{ src: '/PMCA_Show_Share_2026/guide-4-download.png', alt: 'Prompt Guide v4' }],
+      images: [{ src: '/PMCA_Show_Share_2026/guide-4-download.png', alt: t.guideStep3T }],
+    },
+    {
+      title: t.guideStep4T,
+      desc: t.guideStep4D,
+      icon: <Wand2 className="w-4 h-4" />,
+      accent: 'bg-amber-500 text-white',
+      images: [{ src: '/PMCA_Show_Share_2026/guide-5-empower-ai.png', alt: t.guideStep4T }],
     },
     {
       title: t.guideStep5T,
       desc: t.guideStep5D,
-      icon: <Wand2 className="w-4 h-4" />,
-      accent: 'bg-amber-500 text-white',
-      images: [{ src: '/PMCA_Show_Share_2026/guide-5-empower-ai.png', alt: t.guideStep5T }],
+      icon: <Wrench className="w-4 h-4" />,
+      accent: 'bg-rose-500 text-white',
+      images: [{ src: '/PMCA_Show_Share_2026/guide-6-ai-studio.png', alt: t.guideStep5T }],
     },
     {
       title: t.guideStep6T,
       desc: t.guideStep6D,
-      icon: <Wrench className="w-4 h-4" />,
-      accent: 'bg-rose-500 text-white',
-      images: [
-        { src: '/PMCA_Show_Share_2026/guide-6-ai-studio.png', alt: 'AI Studio' },
-        { src: '/PMCA_Show_Share_2026/guide-6-test.png', alt: 'Thử nghiệm' },
-      ],
+      icon: <CheckCircle2 className="w-4 h-4" />,
+      accent: 'bg-teal-600 text-white',
+      images: [{ src: '/PMCA_Show_Share_2026/guide-6-test.png', alt: t.guideStep6T }],
     },
     {
       title: t.guideStep7T,
       desc: t.guideStep7D,
       icon: <GitBranch className="w-4 h-4" />,
       accent: 'bg-orange-500 text-white',
+      images: [{ src: '/PMCA_Show_Share_2026/guide-hd6-github.png', alt: t.guideStep7T }],
     },
     {
       title: t.guideStep8T,
       desc: t.guideStep8D,
-      icon: <Share2 className="w-4 h-4" />,
-      accent: 'bg-teal-600 text-white',
+      icon: <Rocket className="w-4 h-4" />,
+      accent: 'bg-sky-600 text-white',
+      images: [{ src: '/PMCA_Show_Share_2026/guide-hd7-vercel.png', alt: t.guideStep8T }],
     },
-  ];
-
-  const roles = [
-    { label: 'Prompter', text: t.guideRole1 },
-    { label: 'Designer', text: t.guideRole2 },
-    { label: 'Builder', text: t.guideRole3 },
-    { label: 'Verifier', text: t.guideRole4 },
-    { label: 'Presenter', text: t.guideRole5 },
   ];
 
   const criteria = [
@@ -179,7 +169,7 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 sm:p-7 mb-5">
         <div className="flex items-center space-x-3 mb-5">
           <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
-            <Users className="w-4 h-4" />
+            <Target className="w-4 h-4" />
           </div>
           <h3 className="text-sm sm:text-base font-extrabold text-slate-900">{t.guideTitle}</h3>
         </div>
@@ -384,27 +374,8 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
         </ol>
       </div>
 
-      {/* Vai trò + Tiêu chí + Chuẩn bị */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
-          <div className="flex items-center space-x-2.5 mb-4">
-            <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
-              <Users className="w-4 h-4" />
-            </div>
-            <h3 className="text-sm font-extrabold text-slate-900">{t.guideRoleTitle}</h3>
-          </div>
-          <ul className="space-y-2.5">
-            {roles.map((role) => (
-              <li key={role.label} className="flex items-start space-x-2.5">
-                <span className="w-14 shrink-0 rounded-md bg-slate-100 border border-slate-200 text-slate-500 text-[10px] font-extrabold uppercase tracking-wide text-center py-0.5 mt-0.5">
-                  {role.label}
-                </span>
-                <span className="text-xs text-slate-600 leading-relaxed">{role.text}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
+      {/* Tiêu chí + Chuẩn bị */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
         <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
           <div className="flex items-center space-x-2.5 mb-4">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
