@@ -51,7 +51,7 @@ export const CompactListItem: React.FC<CompactListItemProps> = ({
 
   const handleVisit = () => {
     onVisit(project.id, project.url);
-    window.open(isAdmin ? project.url : getGoUrl(window.location, project.url, { title: project.title, authorName: project.authorName, authorEmail: project.authorContact }), '_blank', 'noopener,noreferrer');
+    window.open(isAdmin ? project.url : (project.goLink || getGoUrl(window.location, project.url, { title: project.title, authorName: project.authorName, authorEmail: project.authorContact })), '_blank', 'noopener,noreferrer');
   };
 
   return (

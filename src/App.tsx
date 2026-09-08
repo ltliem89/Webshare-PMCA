@@ -29,6 +29,7 @@ import { Globe, Plus, Sparkles } from 'lucide-react';
 import {
   getStoredScriptUrl,
   isAutoSyncEnabled,
+  ensureGoLink,
   pushSingleProjectToSheet,
   upsertProjectToSheet,
   fetchProjectsFromSheet,
@@ -501,15 +502,19 @@ export default function App() {
       views: 1,
       likes: 0,
       previewImage: thumbnail,
+      goLink: '',
     };
-    setProjects((prev) => [newProject, ...prev]);
+    // Tạo goLink lần đầu (link /go/<mã>) và lưu vào cột GoLink trên Google Sheets;
+    // sau này chỉ đọc ra dùng, không sinh lại.
+    const newProjectWithGoLink = ensureGoLink(newProject);
+    setProjects((prev) => [newProjectWithGoLink, ...prev]);
     // Chuyá»ƒn vá» tab "BĂ i Ä‘Äƒng táº£i" máº·c Ä‘á»‹nh
     setFilters((prev) => ({ ...prev, onlyFamous: false }));
 
     // Äáº©y bĂ i má»›i (tráº¡ng thĂ¡i pending) lĂªn Google Sheets náº¿u Ä‘Ă£ cáº¥u hĂ¬nh
     const scriptUrl = getStoredScriptUrl();
     if (scriptUrl && isAutoSyncEnabled()) {
-      pushSingleProjectToSheet(scriptUrl, newProject);
+      pushSingleProjectToSheet(scriptUrl, newProjectWithGoLink);
     }
   };
 

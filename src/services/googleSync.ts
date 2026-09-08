@@ -47,6 +47,15 @@ function withGoLink(project: WebProject): WebProject {
 }
 
 /**
+ * Ưu tiên link /go/<mã> ĐÃ LƯU trong cột GoLink. Chỉ sinh mới khi chưa có
+ * (lần đầu tạo bài / lần đầu đồng bộ) để go-link được ổn định, không đổi mỗi lần.
+ */
+export function ensureGoLink(project: WebProject): WebProject {
+  if (project.goLink) return project;
+  return withGoLink(project);
+}
+
+/**
  * Get Google Apps Script Web App URL.
  * KHÓA CỐ ĐỊNH: hệ thống luôn đồng bộ vào URL mặc định, không cho cấu hình đổi
  * ở giao diện (ẩn vì lý do bảo mật hệ thống).
@@ -210,7 +219,7 @@ export async function fetchProjectsFromSheet(scriptUrl: string): Promise<SyncRes
             String(item.isUserSubmission) === '1'
           ) || !isFamous,
         };
-      });
+      }).map(ensureGoLink);
 
       setLastSyncTime();
       return {
@@ -266,7 +275,7 @@ export async function pushProjectsToSheet(scriptUrl: string, projects: WebProjec
   try {
     const payload = JSON.stringify({
       action: 'syncAll',
-      projects: projects.map(withGoLink),
+      projects: projects.map(ensureGoLink),
       timestamp: new Date().toISOString(),
     });
 
@@ -311,7 +320,7 @@ export async function pushSingleProjectToSheet(scriptUrl: string, project: WebPr
       },
       body: JSON.stringify({
         action: 'addProject',
-        project: withGoLink(project),
+        project: ensureGoLink(project),
       }),
     });
   } catch (e) {
@@ -337,7 +346,7 @@ export async function upsertProjectToSheet(scriptUrl: string, project: WebProjec
       },
       body: JSON.stringify({
         action: 'upsertProject',
-        project: withGoLink(project),
+        project: ensureGoLink(project),
       }),
     });
   } catch (e) {
@@ -440,7 +449,7 @@ export async function fetchSubmissionsFromSheet(scriptUrl: string): Promise<Sync
         isFamous: isFamous,
         isUserSubmission: isUserSubmission,
       };
-    });
+    }).map(ensureGoLink);
 
     return { success: true, message: `Đã tải ${projects.length} dự án mới từ Google Sheets`, count: projects.length, data: projects };
   } catch (err: any) {
