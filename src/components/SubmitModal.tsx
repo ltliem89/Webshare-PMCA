@@ -3,7 +3,7 @@ import { CheckCircle2, Globe, Search, Sparkles, Upload, X } from 'lucide-react';
 import { BrowserMockupFrame } from './BrowserMockupFrame';
 import { CategoryId, CountryCode, EducationLevelId, Language, VN_SUBJECTS, WebProject } from '../types';
 import { translations } from '../translations';
-import { SOUTHEAST_ASIA_COUNTRIES } from '../data/countries';
+import { ALL_COUNTRIES } from '../data/countries';
 
 interface SubmitModalProps {
   isOpen: boolean;
@@ -74,8 +74,8 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
   // Lọc danh sách quốc gia theo từ khóa (tên quốc tế hoặc tên Việt)
   const filteredCountries = useMemo(() => {
     const q = countrySearch.trim().toLowerCase();
-    if (!q) return SOUTHEAST_ASIA_COUNTRIES;
-    return SOUTHEAST_ASIA_COUNTRIES.filter(
+    if (!q) return ALL_COUNTRIES;
+    return ALL_COUNTRIES.filter(
       (c) =>
         c.nameEn.toLowerCase().includes(q) ||
         c.nameVi.toLowerCase().includes(q) ||
@@ -84,7 +84,7 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
   }, [countrySearch]);
 
   const selectedCountry =
-    SOUTHEAST_ASIA_COUNTRIES.find((c) => c.code === country) || null;
+    ALL_COUNTRIES.find((c) => c.code === country) || null;
 
   // Đóng dropdown khi bấm ra ngoài
   useEffect(() => {
@@ -329,7 +329,7 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
                 >
                   <span className="flex items-center gap-2">
                     <Globe className="w-3.5 h-3.5 text-slate-500" />
-                    {selectedCountry ? `${selectedCountry.nameVi} (${selectedCountry.code})` : t.countryLabel}
+                    {selectedCountry ? `${selectedCountry.nameEn} (${selectedCountry.code})` : t.countryLabel}
                   </span>
                   <span className="text-slate-400">{countryOpen ? '▲' : '▼'}</span>
                 </button>
@@ -364,8 +364,8 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
                               c.code === country ? 'text-indigo-600 font-semibold bg-indigo-50/60' : 'text-slate-700'
                             }`}
                           >
-                            <span>{c.nameVi}</span>
-                            <span className="text-slate-400">{c.nameEn}</span>
+                            <span>{c.nameEn}</span>
+                            <span className="text-slate-400">{c.code}</span>
                           </button>
                         </li>
                       ))}
