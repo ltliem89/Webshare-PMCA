@@ -185,7 +185,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "ĐH Colorado Boulder (Mỹ)",
   "authorContact": "phet.colorado.edu",
-  "createdAt": "2026-09-08T04:35:42.983Z",
+  "createdAt": "2026-09-08T04:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Vật lý",
@@ -208,7 +208,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "GeoGebra Global Team",
   "authorContact": "geogebra.org",
-  "createdAt": "2026-09-07T09:35:42.983Z",
+  "createdAt": "2026-09-07T09:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Toán học",
@@ -231,7 +231,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Desmos Studio (Mỹ)",
   "authorContact": "desmos.com",
-  "createdAt": "2026-09-07T03:35:42.983Z",
+  "createdAt": "2026-09-07T03:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Toán học",
@@ -254,7 +254,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "MIT Media Lab (Hoa Kỳ)",
   "authorContact": "scratch.mit.edu",
-  "createdAt": "2026-09-06T09:35:42.983Z",
+  "createdAt": "2026-09-06T09:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Tin học",
@@ -277,7 +277,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Code.org (Hoa Kỳ)",
   "authorContact": "code.org",
-  "createdAt": "2026-09-06T03:35:42.983Z",
+  "createdAt": "2026-09-06T03:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Tin học",
@@ -300,7 +300,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Michael Dayah (Ptable)",
   "authorContact": "ptable.com",
-  "createdAt": "2026-09-05T21:35:42.983Z",
+  "createdAt": "2026-09-05T21:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Hóa học",
@@ -323,7 +323,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Chemix Team",
   "authorContact": "chemix.org",
-  "createdAt": "2026-09-05T15:35:42.983Z",
+  "createdAt": "2026-09-05T15:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Hóa học",
@@ -346,7 +346,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "BioDigital Team (Hoa Kỳ)",
   "authorContact": "human.biodigital.com",
-  "createdAt": "2026-09-05T03:35:42.983Z",
+  "createdAt": "2026-09-05T03:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Sinh học",
@@ -369,7 +369,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Innerbody Research (Hoa Kỳ)",
   "authorContact": "innerbody.com",
-  "createdAt": "2026-09-04T21:35:42.983Z",
+  "createdAt": "2026-09-04T21:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Sinh học",
@@ -392,7 +392,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "The Physics Classroom (Hoa Kỳ)",
   "authorContact": "physicsclassroom.com",
-  "createdAt": "2026-09-04T15:35:42.983Z",
+  "createdAt": "2026-09-04T15:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Vật lý",
@@ -415,7 +415,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "The Physics Aviary (Hoa Kỳ)",
   "authorContact": "thephysicsaviary.com",
-  "createdAt": "2026-09-04T09:35:42.983Z",
+  "createdAt": "2026-09-04T09:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Vật lý",
@@ -438,7 +438,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Paul Falstad (Hoa Kỳ)",
   "authorContact": "falstad.com",
-  "createdAt": "2026-09-04T03:35:42.983Z",
+  "createdAt": "2026-09-04T03:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1555626906-fcf10d6851b4?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Vật lý",
@@ -461,7 +461,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "NetSim & Tetcos Labs",
   "authorContact": "tetcos.com",
-  "createdAt": "2026-09-03T21:35:42.983Z",
+  "createdAt": "2026-09-03T21:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Tin học",
@@ -484,7 +484,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Autodesk (Hoa Kỳ)",
   "authorContact": "tinkercad.com",
-  "createdAt": "2026-09-03T09:35:42.983Z",
+  "createdAt": "2026-09-03T09:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1615800098779-1be32e60cca3?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "STEM",
@@ -507,7 +507,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Wolfram Research",
   "authorContact": "demonstrations.wolfram.com",
-  "createdAt": "2026-09-02T21:35:42.983Z",
+  "createdAt": "2026-09-02T21:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Toán học",
@@ -530,7 +530,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "Google (Hoa Kỳ)",
   "authorContact": "earth.google.com",
-  "createdAt": "2026-09-02T09:35:42.983Z",
+  "createdAt": "2026-09-02T09:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Địa lý",
@@ -553,7 +553,7 @@ const SEED_FOR_SHEET = [
   "isFamous": true,
   "authorName": "NASA (Hoa Kỳ)",
   "authorContact": "spaceplace.nasa.gov",
-  "createdAt": "2026-09-01T21:35:42.983Z",
+  "createdAt": "2026-09-01T21:44:30.899Z",
   "previewImage": "https://images.unsplash.com/photo-1454789548928-9efd52dc4031?w=800&auto=format&fit=crop&q=80",
   "tags": [
    "Khoa học tự nhiên",
@@ -613,25 +613,14 @@ function doPost(e) {
       : "{}";
     const payload = JSON.parse(rawBody);
 
-    // 1. Đồng bộ dữ liệu ĐÃ DUYỆT lên MAIN_SHEET (chỉ lấy status approved, khởi tạo hoặc ghi đè)
+    // 1. Đồng bộ dữ liệu ĐÃ DUYỆT lên MAIN_SHEET (UPSERT: giữ nguyên dòng cũ, chỉ cập nhật/ghi thêm)
     if (payload.action === "syncAll" && Array.isArray(payload.projects)) {
       const sheet = ensureSheet(MAIN_SHEET);
-      const lastRow = sheet.getLastRow();
-      if (lastRow > 1) {
-        sheet.deleteRows(2, lastRow - 1);
-      }
-
-      const newRows = payload.projects
-        .filter(function (p) { return String(p.status || "approved") === "approved"; })
-        .map(projectToRow);
-
-      if (newRows.length > 0) {
-        sheet.getRange(2, 1, newRows.length, newRows[0].length).setValues(newRows);
-      }
-
+      const approved = payload.projects.filter(function (p) { return String(p.status || "approved") === "approved"; });
+      approved.forEach(function (p) { upsertRow(sheet, p); });
       return createJsonResponse({
         status: "success",
-        message: "Đã đồng bộ toàn bộ " + newRows.length + " mô phỏng đã duyệt lên tab WebHub_Projects thành công!"
+        message: "Đã đồng bộ toàn bộ " + approved.length + " mô phỏng đã duyệt lên tab WebHub_Projects thành công!"
       });
     }
 
@@ -728,6 +717,25 @@ function doPost(e) {
         }
       }
       return createJsonResponse({ status: "success", message: "Đã cập nhật thống kê " + updated + " mô phỏng", updated: updated });
+    }
+
+    // 8. Cập nhật CHỈ cột GoLink (cột 18) theo ID — không đụng cột nào khác.
+    //    payload.items = [{ id, goLink }, ...]
+    if (payload.action === "updateGoLinks" && Array.isArray(payload.items)) {
+      const sheet = ensureSheet(MAIN_SHEET);
+      const data = sheet.getDataRange().getValues();
+      let updated = 0;
+      for (let i = 1; i < data.length; i++) {
+        const rowId = String(data[i][0]);
+        for (let k = 0; k < payload.items.length; k++) {
+          if (String(payload.items[k].id) === rowId && payload.items[k].goLink) {
+            sheet.getRange(i + 1, 18).setValue(payload.items[k].goLink);
+            updated++;
+            break;
+          }
+        }
+      }
+      return createJsonResponse({ status: "success", message: "Đã cập nhật GoLink cho " + updated + " mô phỏng", updated: updated });
     }
 
     return createJsonResponse({ status: "ignored", message: "Không có hành động phù hợp" });

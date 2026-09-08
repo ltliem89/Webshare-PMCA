@@ -727,25 +727,14 @@ function doPost(e) {
       : "{}";
     const payload = JSON.parse(rawBody);
 
-    // 1. Đồng bộ dữ liệu ĐÃ DUYỆT lên MAIN_SHEET (chỉ lấy status approved, khởi tạo hoặc ghi đè)
+    // 1. Đồng bộ dữ liệu ĐÃ DUYỆT lên MAIN_SHEET (UPSERT: giữ nguyên dòng cũ, chỉ cập nhật/ghi thêm)
     if (payload.action === "syncAll" && Array.isArray(payload.projects)) {
       const sheet = ensureSheet(MAIN_SHEET);
-      const lastRow = sheet.getLastRow();
-      if (lastRow > 1) {
-        sheet.deleteRows(2, lastRow - 1);
-      }
-
-      const newRows = payload.projects
-        .filter(function (p) { return String(p.status || "approved") === "approved"; })
-        .map(projectToRow);
-
-      if (newRows.length > 0) {
-        sheet.getRange(2, 1, newRows.length, newRows[0].length).setValues(newRows);
-      }
-
+      const approved = payload.projects.filter(function (p) { return String(p.status || "approved") === "approved"; });
+      approved.forEach(function (p) { upsertRow(sheet, p); });
       return createJsonResponse({
         status: "success",
-        message: "Đã đồng bộ toàn bộ " + newRows.length + " mô phỏng đã duyệt lên tab WebHub_Projects thành công!"
+        message: "Đã đồng bộ toàn bộ " + approved.length + " mô phỏng đã duyệt lên tab WebHub_Projects thành công!"
       });
     }
 
@@ -842,6 +831,25 @@ function doPost(e) {
         }
       }
       return createJsonResponse({ status: "success", message: "Đã cập nhật thống kê " + updated + " mô phỏng", updated: updated });
+    }
+
+    // 8. Cập nhật CHỈ cột GoLink (cột 18) theo ID — không đụng cột nào khác.
+    //    payload.items = [{ id, goLink }, ...]
+    if (payload.action === "updateGoLinks" && Array.isArray(payload.items)) {
+      const sheet = ensureSheet(MAIN_SHEET);
+      const data = sheet.getDataRange().getValues();
+      let updated = 0;
+      for (let i = 1; i < data.length; i++) {
+        const rowId = String(data[i][0]);
+        for (let k = 0; k < payload.items.length; k++) {
+          if (String(payload.items[k].id) === rowId && payload.items[k].goLink) {
+            sheet.getRange(i + 1, 18).setValue(payload.items[k].goLink);
+            updated++;
+            break;
+          }
+        }
+      }
+      return createJsonResponse({ status: "success", message: "Đã cập nhật GoLink cho " + updated + " mô phỏng", updated: updated });
     }
 
     return createJsonResponse({ status: "ignored", message: "Không có hành động phù hợp" });
