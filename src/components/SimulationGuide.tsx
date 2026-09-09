@@ -49,45 +49,50 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
         <h5 className="text-xs font-extrabold text-slate-900">{t.guideDownloadTitle}</h5>
       </div>
       <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed mb-3">{t.guideDownloadDesc}</p>
-      <div className="flex flex-wrap gap-2">
-        <a
-          href={'/' + GUIDE_FILE}
-          download={GUIDE_FILE}
-          className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold shadow-sm shadow-emerald-500/20 transition-all cursor-pointer"
-        >
-          <Download className="w-3.5 h-3.5" />
-          <span>{t.guideDownloadBtn}</span>
-        </a>
-        <a
-          href={'/' + GUIDE_FILE}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer"
-        >
-          <Globe className="w-3.5 h-3.5" />
-          <span className="font-mono text-[10px]">{GUIDE_FILE}</span>
-        </a>
-      </div>
-      <div className="mt-3 pt-3 border-t border-slate-100">
-        <p className="text-[10px] sm:text-[11px] font-bold text-slate-700 mb-2">🌐 GUIDE v7.1 — English version</p>
-        <div className="flex flex-wrap gap-2">
-          <a
-            href={'/' + GUIDE_FILE_EN}
-            download={GUIDE_FILE_EN}
-            className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold shadow-sm shadow-indigo-500/20 transition-all cursor-pointer"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Download (EN)</span>
-          </a>
-          <a
-            href={'/' + GUIDE_FILE_EN}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer"
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span className="font-mono text-[10px]">{GUIDE_FILE_EN}</span>
-          </a>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3">
+          <p className="text-[10px] sm:text-[11px] font-extrabold text-emerald-700 mb-2">{t.guideDownloadBtn}</p>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={'/' + GUIDE_FILE}
+              download={GUIDE_FILE}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold shadow-sm shadow-emerald-500/20 transition-all cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>GUIDE v7</span>
+            </a>
+            <a
+              href={'/' + GUIDE_FILE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span className="font-mono text-[10px]">v7.md</span>
+            </a>
+          </div>
+        </div>
+        <div className="rounded-xl border border-indigo-200 bg-indigo-50/50 p-3">
+          <p className="text-[10px] sm:text-[11px] font-extrabold text-indigo-700 mb-2">GUIDE v7.1 — English version</p>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={'/' + GUIDE_FILE_EN}
+              download={GUIDE_FILE_EN}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold shadow-sm shadow-indigo-500/20 transition-all cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download (EN)</span>
+            </a>
+            <a
+              href={'/' + GUIDE_FILE_EN}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span className="font-mono text-[10px]">v7.1.md</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
