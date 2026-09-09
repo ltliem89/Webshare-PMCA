@@ -3,7 +3,6 @@ import {
   AlignLeft,
   CheckCircle2,
   LayoutGrid,
-  Rocket,
   RotateCcw,
   Sparkles,
   UploadCloud,
@@ -18,6 +17,7 @@ import {
   ViewMode,
 } from '../types';
 import { translations } from '../translations';
+import { RocketFlying } from './RocketFlying';
 
 interface FilterBarProps {
   filters: FilterState;
@@ -166,7 +166,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             }`}
             title={t.guideTabTitle}
           >
-            <Rocket
+            <RocketFlying
               className={`w-4 h-4 shrink-0 animate-rocket ${
                 showGuide ? 'fill-indigo-400 text-indigo-300 drop-shadow-[0_0_6px_rgba(129,140,248,0.9)]' : 'text-indigo-500'
               }`}

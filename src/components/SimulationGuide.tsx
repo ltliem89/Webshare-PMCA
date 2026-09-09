@@ -7,7 +7,6 @@ import {
   GitBranch,
   Globe,
   MessageSquareText,
-  Rocket,
   Sparkles,
   Target,
   UploadCloud,
@@ -16,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../translations';
+import { RocketFlying } from './RocketFlying';
 
 interface SimulationGuideProps {
   lang: Language;
@@ -177,7 +177,7 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
     {
       title: t.guideStep8T,
       desc: t.guideStep8D,
-      icon: <Rocket className="w-4 h-4" />,
+      icon: <RocketFlying className="w-4 h-4" />,
       accent: 'bg-sky-600 text-white',
       extra: vercelExtra,
       images: [{ src: '/PMCA_Show_Share_2026/guide-hd7-vercel.png', alt: t.guideStep8T }],
@@ -214,7 +214,7 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
       accent: 'bg-slate-100 text-slate-700 border-slate-300',
     },
     {
-      icon: <Rocket className="w-5 h-5" />,
+      icon: <RocketFlying className="w-5 h-5" />,
       name: t.guideToolVercel,
       desc: t.guideToolVercelDesc,
       url: 'https://vercel.com',
@@ -423,7 +423,7 @@ export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit
                 ) : idx === 1 ? (
                   <GitBranch className="w-3 h-3 text-slate-300" />
                 ) : (
-                  <Rocket className="w-3 h-3 text-sky-300" />
+                  <RocketFlying className="w-3 h-3 text-sky-300" />
                 )}
                 <span>{label}</span>
               </span>

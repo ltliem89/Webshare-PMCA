@@ -33,3 +33,9 @@ body {
   50% { transform: translateY(-4px) rotate(12deg); }
 }
 
+/* Đuôi lửa đỏ của icon tên lửa (RocketFlying) — nhấp nháy như lửa đang cháy */
+@keyframes rocket-flame-flicker {
+  0%, 100% { transform: rotate(135deg) scale(1); opacity: 1; }
+  50% { transform: rotate(135deg) scale(0.9, 1.15); opacity: 0.85; }
+}
+
