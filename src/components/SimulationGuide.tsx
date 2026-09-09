@@ -31,7 +31,7 @@ interface GuideStep {
   extra?: React.ReactNode;
 }
 
-const GUIDE_FILE = 'UNIVERSAL_EDUCATIONAL_SIMULATION_PROMPT_GUIDE_v4.md';
+const GUIDE_FILE = 'UNIVERSAL_EDUCATIONAL_SIMULATION_PROMPT_GUIDE_v7.md';
 
 export const SimulationGuide: React.FC<SimulationGuideProps> = ({ lang, onSubmit }) => {
   const t = translations[lang];
