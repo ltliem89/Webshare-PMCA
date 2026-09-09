@@ -43,6 +43,6 @@ body {
 }
 @keyframes rocket-flame-spark-fly {
   0% { transform: translate(0, 0) scale(1); opacity: 1; }
-  100% { transform: translate(-14px, 18px) scale(0.4); opacity: 0; }
+  100% { transform: translate(0, 22px) scale(0.4); opacity: 0; }
 }
 
