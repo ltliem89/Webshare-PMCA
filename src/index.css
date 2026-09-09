@@ -33,16 +33,14 @@ body {
   50% { transform: translateY(-4px) rotate(12deg); }
 }
 
-/* Đuôi lửa đỏ của icon tên lửa (RocketFlying) — lửa phụt ra phía sau như đang bay */
+/* Ngọn lửa phụt ra phía sau của icon tên lửa 🚀 (RocketFlying) — nhấp nháy như đang cháy */
+.rocket-flame-ember {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: rocket-flame-burst 0.32s ease-in-out infinite;
+}
 @keyframes rocket-flame-burst {
   0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.18, 1.05); opacity: 0.92; }
-}
-.rocket-flame-spark {
-  animation: rocket-flame-spark-fly 0.45s ease-out infinite;
-}
-@keyframes rocket-flame-spark-fly {
-  0% { transform: translate(0, 0) scale(1); opacity: 1; }
-  100% { transform: translate(0, 22px) scale(0.4); opacity: 0; }
+  50% { transform: scale(1.18, 0.92); opacity: 0.85; }
 }
 

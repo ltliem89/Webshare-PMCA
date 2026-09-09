@@ -1,65 +1,28 @@
 import React from 'react';
-import { Rocket } from 'lucide-react';
 
 interface RocketFlyingProps {
   className?: string;
 }
 
+// Emoji tên lửa 🚀 (U+1F680) — nguồn: https://www.emojiall.com/vi/emoji/%F0%9F%9A%80
+// Tên lửa bay chéo lên phải, lửa phụt ra phía sau (dưới-trái)
 export const RocketFlying: React.FC<RocketFlyingProps> = ({ className }) => (
   <span className={`relative inline-flex items-center justify-center shrink-0 ${className ?? ''}`}>
-    {/* Luồng lửa phụt ra phía sau — phía dưới, canh giữa theo chiều ngang của tên lửa */}
     <svg
-      viewBox="0 0 100 100"
-      className="absolute"
-      style={{
-        left: '50%',
-        top: '65%',
-        width: '80%',
-        height: '150%',
-        marginLeft: '-40%',
-        zIndex: 0,
-        overflow: 'visible',
-        filter: 'drop-shadow(0 2px 5px rgba(239,68,68,0.6))',
-        transformOrigin: '50% 0%',
-        animation: 'rocket-flame-burst 0.3s ease-in-out infinite',
-      }}
+      viewBox="0 0 36 36"
+      className="w-full h-full"
+      style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.25))' }}
     >
-      <defs>
-        <linearGradient id="rocket-flame-grad" x1="50" y1="0" x2="50" y2="100" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#fca5a5" />
-          <stop offset="45%" stopColor="#ef4444" />
-          <stop offset="100%" stopColor="#dc2626" />
-        </linearGradient>
-      </defs>
-      <ellipse cx="50" cy="12" rx="24" ry="56" fill="url(#rocket-flame-grad)" />
-      <ellipse cx="50" cy="20" rx="18" ry="48" fill="#f97316" />
-      <ellipse cx="50" cy="28" rx="13" ry="38" fill="#fbbf24" />
-      <ellipse cx="50" cy="35" rx="8" ry="26" fill="#fef3c7" />
-      <circle
-        className="rocket-flame-spark"
-        cx="50"
-        cy="62"
-        r="3"
-        fill="#f87171"
-        style={{ transformBox: 'fill-box', transformOrigin: 'center', animationDelay: '0s' }}
+      <path fill="#A0041E" d="M1 17l8-7 16 1 1 16-7 8s.001-5.999-6-12-12-6-12-6z" />
+      <path
+        className="rocket-flame-ember"
+        fill="#FFAC33"
+        d="M.973 35s-.036-7.979 2.985-11S15 21.187 15 21.187 14.999 29 11.999 32c-3 3-11.026 3-11.026 3z"
       />
-      <circle
-        className="rocket-flame-spark"
-        cx="50"
-        cy="70"
-        r="2"
-        fill="#facc15"
-        style={{ transformBox: 'fill-box', transformOrigin: 'center', animationDelay: '0.12s' }}
-      />
-      <circle
-        className="rocket-flame-spark"
-        cx="50"
-        cy="68"
-        r="2.2"
-        fill="#fb923c"
-        style={{ transformBox: 'fill-box', transformOrigin: 'center', animationDelay: '0.06s' }}
-      />
+      <circle fill="#FFCC4D" cx="8.999" cy="27" r="4" />
+      <path fill="#55ACEE" d="M35.999 0s-10 0-22 10c-6 5-6 14-4 16s11 2 16-4c10-12 10-22 10-22z" />
+      <path d="M26.999 5c-1.623 0-3.013.971-3.641 2.36.502-.227 1.055-.36 1.641-.36 2.209 0 4 1.791 4 4 0 .586-.133 1.139-.359 1.64 1.389-.627 2.359-2.017 2.359-3.64 0-2.209-1.791-4-4-4z" />
+      <path fill="#A0041E" d="M8 28s0-4 1-5 13.001-10.999 14-10-9.001 13-10.001 14S8 28 8 28z" />
     </svg>
-    <Rocket className="absolute w-full h-full" style={{ zIndex: 1 }} strokeWidth={2} />
   </span>
 );
