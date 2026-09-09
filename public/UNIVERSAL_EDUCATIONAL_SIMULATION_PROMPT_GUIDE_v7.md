@@ -522,11 +522,29 @@ Thiếu tài khoản → rẽ nhánh PHASE 4 → xong quay lại.
 
 ### 6.8. PHASE 8 — VERCEL
 
-1. `vercel.com` → **Add New Project** → kết nối GitHub (cùng email).
-2. **Import repository** → chọn repo vừa tạo → **Deploy**.
-3. Nhận link dạng `https://[tên].vercel.app`.
+**Mục tiêu: đưa mã từ GitHub lên web, nhận link web mô phỏng để tặng học sinh.**
 
-`CHECKPOINT 09 — VERCEL_DEPLOYED` khi deploy xong.
+1. Mở `vercel.com` → Đăng nhập bằng **cùng email đã dùng GitHub** (nếu có
+   **Continue with GitHub** thì bấm vào đó cho khỏi nhập lại).
+2. Bấm **Add New Project**.
+3. **Kết nối GitHub với Vercel** (chỉ cần lần đầu): Vercel hỏi
+   **Install Vercel on GitHub / Connect GitHub Account** → bấm **Install** hoặc **Allow**
+   → chọn **All repositories** → **Install**. Từ nay Vercel nhìn thấy toàn bộ repo GitHub
+   của bạn.
+4. Tại màn hình **Import Git Repository**, tìm đúng repo vừa tạo (vd `ai-quiz-lop5`) →
+   bấm **Import**.
+5. Bấm **Deploy** — giữ nguyên cấu hình mặc định, không cần đổi gì.
+6. Đợi khoảng 1–2 phút; khi thấy màn hình xanh **Your project is ready / Congratulations**
+   → link web mô phỏng hiện ra dạng:
+
+   ```
+   https://[tên-dự-án].vercel.app
+   ```
+
+7. **Copy link đó** → mở thử trên điện thoại → chính là link mô phỏng để chia sẻ với
+   học sinh ở PHASE 9–10.
+
+`CHECKPOINT 09 — VERCEL_DEPLOYED` khi có link, giáo viên xác nhận.
 Lưu ý: deploy có thể mất 1–2 phút → dùng status `WAITING_FOR_EXTERNAL_SYSTEM`,
 đừng bắt giáo viên đợi vô nghĩa.
 

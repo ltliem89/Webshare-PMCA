@@ -545,11 +545,29 @@ Missing account → branch to PHASE 4 → return when done.
 
 ### 6.8. PHASE 8 — VERCEL
 
-1. `vercel.com` → **Add New Project** → connect GitHub (same email).
-2. **Import repository** → choose the repository just created → **Deploy**.
-3. Get a link like `https://[name].vercel.app`.
+**Goal: publish the code from GitHub to the web and get the simulation web link (URL) to give to students.**
 
-`CHECKPOINT 09 — VERCEL_DEPLOYED` when deployment is done.
+1. Open `vercel.com` → sign in with the **same email used for GitHub** (if you see
+   **Continue with GitHub**, click it to avoid retyping).
+2. Click **Add New Project**.
+3. **Connect GitHub to Vercel** (only needed the first time): Vercel asks
+   **"Install Vercel on GitHub / Connect GitHub Account"** → click **Install** or **Allow**
+   → choose **All repositories** → **Install**. From now on Vercel can see all your GitHub
+   repositories.
+4. On the **Import Git Repository** screen, find the repository you just created
+   (e.g. `ai-quiz-grade5`) → click **Import**.
+5. Click **Deploy** — keep the default settings, nothing needs to be changed.
+6. Wait about 1–2 minutes; when the green screen **Your project is ready / Congratulations**
+   appears → the simulation web link is shown as:
+
+   ```
+   https://[project-name].vercel.app
+   ```
+
+7. **Copy that link** → open it on your phone → this is the simulation link to share
+   with students in PHASE 9–10.
+
+`CHECKPOINT 09 — VERCEL_DEPLOYED` when the link exists and the teacher confirms.
 Note: deployment can take 1–2 minutes → use status `WAITING_FOR_EXTERNAL_SYSTEM`, do not
 make the teacher wait meaninglessly.
 
