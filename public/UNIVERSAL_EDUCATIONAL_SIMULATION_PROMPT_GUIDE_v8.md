@@ -532,6 +532,52 @@ Nhắc lại lý do: V8 mặc định **GitHub làm nơi chứa mã, Vercel làm
 cần server riêng hoặc chứa secret → không deploy được lên Vercel Free → yêu cầu viết lại
 theo deploy-ready trước khi đi tiếp.
 
+### 6.5.3. 5 LỖI DEPLOY THƯỜNG GẶP — CHỐNG TỪ LÚC EXPORT, TRƯỚC KHI PUSH
+
+Nếu app là **một file HTML duy nhất** (Mục 6.5.2) thì 5 lỗi dưới đây gần như không bao giờ
+xảy ra. Nếu bộ code Export là **dự án nhiều file (React/Vite)**, AI phải **tự kiểm trước khi
+đưa lên GitHub** — nếu thấy lỗi thì sửa ngay trong bộ code rồi mới push:
+
+1. **`[vite:build-html] Failed to resolve /src/main.tsx from index.html`**
+   (build dừng, "0 modules transformed"). Nguyên nhân: bộ Export thiếu `src/main.tsx`, hoặc
+   `index.html` trỏ nhầm đường dẫn. Khắc phục: kiểm tra đủ các file
+   `index.html` + `src/main.tsx` + `package.json` + `vite.config.ts` + `tsconfig.json`
+   cùng nằm ở đúng vị trí; đường dẫn trong `index.html` là **tương đối** (`./src/main.tsx`).
+   V8 ưu tiên yêu cầu AI Studio xuất **1 file duy nhất** để né hẳn lỗi này.
+2. **`Warning: Detected "engines": { "node": ">=18.0.0" } ... will automatically upgrade`**
+   → dải phiên bản mở khiến Vercel tự nâng Node major. Khắc phục: trong `package.json`
+   ghim cụ thể:
+   ```json
+   "engines": { "node": "20.x || 22.x" }
+   ```
+3. **`2 moderate severity vulnerabilities` + `npm warn allow-scripts`** (protobufjs, esbuild,
+   express/qs…) → dư gói backend thừa. Khắc phục: gỡ khỏi `package.json` các gói không dùng
+   tới (vd `express`, `qs`, `@google/genai`, `dotenv`, `tsx`), chạy lại `npm install` cho
+   tới khi thấy `found 0 vulnerabilities`; thêm file `.npmrc`:
+   ```
+   fund=false
+   audit=false
+   ```
+   (tắt tiếng các dòng `npm fund`/`npm audit` khi build).
+4. **`(!) Some chunks are larger than 500 kB`** → chưa chia nhỏ bundle. Khắc phục: thêm vào
+   `vite.config.ts`:
+   ```ts
+   build: {
+     chunkSizeWarningLimit: 1200,
+     rollupOptions: { output: { manualChunks: {
+       'vendor-react': ['react', 'react-dom'],
+       'vendor-icons': ['lucide-react'],
+     } } },
+   },
+   ```
+5. **Thiếu `tsconfig.json`** → TypeScript/`npm run lint` không nhận `@/*`, alias có thể lỗi.
+   Khắc phục: đảm bảo bộ Export có `tsconfig.json` (kèm `paths` cho `@/*`) ở thư mục gốc.
+
+**Cổng bắt buộc trước PHASE 7**: AI phải xác nhận các việc sau bằng lời của giáo viên khi
+chạy thử → bộ Export **đủ 5 mục cấu hình/phần quyết định ở trên** + `npm run build` chạy
+thành công (thấy `built in ~X s`) → mới được kéo lên GitHub. Còn lại chỉ là cảnh báo vàng → xử
+lý theo Mục 6.8.1, không lan man.
+
 ### 6.6. PHASE 6 — TEST & IMPROVE
 
 **Ai chạy được trước, đúng khoa học sau, xong mới tính tới đẹp.** Thứ tự kiểm tra:
@@ -559,7 +605,8 @@ Chưa đạt → danh sách lệnh sửa cụ thể (từng lệnh một); sửa
 
 ### 6.7. PHASE 7 — GITHUB
 
-Cổng vào: giáo viên đã **duyệt prototype** (teacher acceptance — xem DoD Mục 11).
+Cổng vào: giáo viên đã **duyệt prototype** (teacher acceptance — xem DoD Mục 11) **và bộ
+code đã qua kiểm tra 5 lỗi deploy (Mục 6.5.3)**.
 Chưa duyệt mà vội sang GitHub → quay lại PHASE 6 cho tới khi giáo viên gật đầu.
 
 Nhánh đủ tài khoản → hướng dẫn (cùng email chung):

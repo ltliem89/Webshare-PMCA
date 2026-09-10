@@ -558,6 +558,52 @@ Why it matters: V8 defaults are **GitHub as code hosting, Vercel as web builder*
 code needs its own server or contains secrets → it cannot deploy on Vercel Free → rewrite
 it deploy-ready before moving on.
 
+### 6.5.3. THE 5 COMMON DEPLOY ERRORS — PREVENT THEM AT EXPORT, BEFORE PUSH
+
+If the app is a **single standalone HTML file** (Section 6.5.2), the 5 errors below almost
+never happen. If the exported code is a **multi-file React/Vite project**, the AI must
+**check it before it goes to GitHub** — fix any error inside the code set first, then push:
+
+1. **`[vite:build-html] Failed to resolve /src/main.tsx from index.html`**
+   (build stops, "0 modules transformed"). Cause: the export is missing `src/main.tsx`, or
+   `index.html` points to the wrong path. Fix: make sure `index.html` + `src/main.tsx` +
+   `package.json` + `vite.config.ts` + `tsconfig.json` all exist in the right places; the
+   path in `index.html` is **relative** (`./src/main.tsx`). V8 prefers a **single-file**
+   export to avoid this entirely.
+2. **`Warning: Detected "engines": { "node": ">=18.0.0" } ... will automatically upgrade`**
+   → an open version range makes Vercel jump Node majors. Fix: pin it in `package.json`:
+   ```json
+   "engines": { "node": "20.x || 22.x" }
+   ```
+3. **`2 moderate severity vulnerabilities` + `npm warn allow-scripts`** (protobufjs, esbuild,
+   express/qs…) → leftover unused backend packages. Fix: remove unused packages from
+   `package.json` (e.g. `express`, `qs`, `@google/genai`, `dotenv`, `tsx`), rerun
+   `npm install` until `found 0 vulnerabilities`; add a `.npmrc` file:
+   ```
+   fund=false
+   audit=false
+   ```
+   (silences the `npm fund` / `npm audit` lines during build).
+4. **`(!) Some chunks are larger than 500 kB`** → the bundle is not split. Fix: add to
+   `vite.config.ts`:
+   ```ts
+   build: {
+     chunkSizeWarningLimit: 1200,
+     rollupOptions: { output: { manualChunks: {
+       'vendor-react': ['react', 'react-dom'],
+       'vendor-icons': ['lucide-react'],
+     } } },
+   },
+   ```
+5. **Missing `tsconfig.json`** → TypeScript / `npm run lint` does not know `@/*`, aliases may
+   break. Fix: ensure the export set contains a `tsconfig.json` (with `paths` for `@/*`) at
+   the project root.
+
+**Mandatory gate before PHASE 7**: the AI must confirm, in the teacher's own words while
+testing, that the export **has all 5 config items above** and `npm run build` succeeds
+(you see `built in ~X s`) → only then may it be pushed to GitHub. Anything left is just a
+yellow warning → handle per Section 6.8.1, do not dig in.
+
 ### 6.6. PHASE 6 — TEST & IMPROVE
 
 **Runs first, scientifically correct second, then beauty.** Order of checks:
@@ -587,7 +633,8 @@ when the teacher confirms.
 ### 6.7. PHASE 7 — GITHUB
 
 Entry gate: the teacher has **approved the prototype** (teacher acceptance — see DoD,
-Section 11). Moving to GitHub before approval → return to PHASE 6 until the teacher approves.
+Section 11) **and the code has passed the 5-deploy-error check (Section 6.5.3)**.
+Moving to GitHub before approval → return to PHASE 6 until the teacher approves.
 GitHub is the **default code hosting step for every V8 app** (Section 6.5.2): the exported
 set must already be deploy-ready (a single `index.html` at the root, no secrets).
 
