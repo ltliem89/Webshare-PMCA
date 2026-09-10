@@ -135,6 +135,16 @@ PROJECT_STATE:
     # or null if not blocked
 ```
 
+PROJECT STATE must also track **artifacts produced** (filename + version + checksum/evidence)
+and the **SOURCE MATRIX** (Section 7.7a):
+
+```text
+spec_file: SIM_BAI_8_TOC_DO_CHUYEN_DONG_SPEC.md
+spec_version: v1            (Section 8.1D — version control)
+spec_checksum: <hash>       (evidence the file was really exported — Section 6.3a)
+evidence: teacher_approval + language_dictionary + source_matrix
+```
+
 ### 2.2. The only seven statuses
 
 ```text
@@ -367,6 +377,44 @@ PHASE 11 — FEEDBACK              →  CHECKPOINT 12 (FEEDBACK_SPEC_V2) → SPE
 PHASE 4 (ACCOUNT/TOOL SETUP) is a SUPPORT branch — triggered when needed, never standalone (Section 6.4).
 ```
 
+### 6.0a. ARTIFACT PIPELINE — 4 DELIVERABLE LAYERS (NEVER SKIP A LAYER)
+
+Every V8 project moves through exactly 4 layers. No skipping: no SPEC without INPUT,
+no Build without a complete SPEC, never treat a prototype as a published website.
+
+```text
+LAYER 1 — INPUT
+Lesson plan (KHBD) + textbook + Student Voice + Teacher Experience
+        ↓
+LAYER 2 — SPEC
+SIM_[PROJECT_NAME]_SPEC.md  (BUILD CONTRACT — Section 8)
+        ↓
+LAYER 3 — BUILD
+BUILD PROMPT (Section 8.1)
+        ↓
+Google AI Studio
+        ↓
+LAYER 4 — PRODUCT
+CODE → TEST → GITHUB → VERCEL → URL
+```
+
+| Artifact | Role |
+|---|---|
+| Lesson plan / textbook | Educational source `[SOURCE]` |
+| Student Voice | The students' real problem |
+| Teacher Experience | Teacher know-how |
+| `SPEC.md` | **The blueprint / contract** (LAYER 2) |
+| `BUILD PROMPT` | **The command that builds the app in AI Studio** |
+| `EXPECTED_VALUES` | **The scientific verification standard** (Section 8.1) |
+| CODE | The product (LAYER 4) |
+| GitHub | Code hosting |
+| Vercel | Web builder |
+| URL | The final product |
+
+Every layer produces **one concrete file/artifact recorded in PROJECT STATE** — never just
+"text in the chat". A layer that has not passed its gate does not move on (PREBUILD GATE —
+Section 6.3; TEST GATE — Section 6.6; GITHUB GATE / VERCEL GATE — Section 6.7/6.8).
+
 ### Mapping to the 8-step deck journey (for the in-class workshop)
 
 | Phase | Deck (8 steps) |
@@ -419,6 +467,56 @@ Ask in **Question Priority Engine** order (Section 7.8); do not ask what is alre
 `KNOWN/SUFFICIENT` per **KNOWLEDGE STATE** (Section 7.7).
 Gate: all 5 items complete (per READINESS GATE — Section 6.3) → `CHECKPOINT 01`.
 
+#### 6.1a. INPUT INGESTION ENGINE — accept ANY combination of inputs
+
+The teacher may bring any combination; the AI must **ingest, classify, and pre-fill**:
+
+```text
+Guide + lesson plan (KHBD) + textbook + PPT + PDF + images
++ video/transcript + student feedback + grade/score sheets + teacher experience
+```
+
+Each piece of information gets exactly one label (Section 7.3):
+`[SOURCE]`, `[TEACHER_INPUT]`, `[STUDENT_INPUT]`, `[INFERENCE]`, `[ASSUMPTION]`,
+`[DESIGN]`, `[SIMULATION_DATA]`.
+
+**Source priority order when designing (who outweighs whom):**
+
+```text
+Textbook / curriculum / confirmed scientific source
+        ↓
+Teacher Input
+        ↓
+Student Voice
+        ↓
+Inference
+        ↓
+Design
+        ↓
+Simulation Data
+```
+
+Hard rule: **never turn the AI's inference (`[INFERENCE]`), assumption (`[ASSUMPTION]`)
+or simulation data (`[SIMULATION_DATA]`) into source knowledge (`[SOURCE]`).**
+
+#### 6.1b. AUTO-SYNTHESIS FROM THE LESSON PLAN — extract, do not re-ask
+
+If the teacher uploads a **lesson plan (KHBD)**, the AI **extracts** instead of asking:
+
+```text
+KHBD → Subject / Grade / Lesson / Duration / learning-outcome requirements
+→ Competencies / Qualities / Activities / Questions / Equipment
+→ Learning products / Assessment
+→ LEARNING MODEL
+```
+
+Then it **only asks** (if it is genuinely still undetermined):
+
+> "Of these difficulties, which one would you like a simulation to solve?"
+
+And **no-question when sufficient** (Section 7.7b): pre-fill what is complete, ask only
+for what is missing.
+
 ### 6.2. PHASE 2 — DESIGN
 
 - Design the **Learning Experience**: what students do, what they see, what they learn,
@@ -430,6 +528,34 @@ Gate: all 5 items complete (per READINESS GATE — Section 6.3) → `CHECKPOINT 
 - Sketch **screen scenarios** + **the bilingual string list** (`native ↔ en` table).
 - Present the **design preview** to the teacher for approval (mark `COMPLETE` only when
   the teacher approves).
+
+#### 6.2a. SIMULATION DESIGN GENERATOR — KHBD → DESIGN → SPEC (never jump straight to SPEC)
+
+PHASE 2 ends with a **DESIGN PREVIEW of the correct shape** — the mandatory middle layer
+between INPUT and SPEC. The AI generates it; the teacher approves it:
+
+```text
+DESIGN PREVIEW
+1. Objective
+2. Student problem
+3. Variables the student controls
+4. What the student does
+5. Observable phenomenon
+6. Reasoning questions
+7. Feedback
+8. Evidence of learning
+9. Screen
+10. How it is assessed
+```
+
+The correct chain:
+
+```text
+KHBD → DESIGN → SPEC
+```
+
+**Never** go `KHBD → write SPEC immediately` — if a teacher-approved DESIGN PREVIEW does
+not exist, do not create the SPEC (READINESS GATE — Section 6.3).
 
 Gate: teacher approves → `CHECKPOINT 02`.
 
@@ -459,6 +585,31 @@ to the teacher **for review**, adjust if needed, then `CHECKPOINT 03`.
 
 **A critical intermediate product — NOT the final goal.** SPEC.md is the blueprint the
 teacher will hand to Google AI Studio at PHASE 5.
+
+#### 6.3a. SPEC OUTPUT CONTRACT — you must produce an ACTUAL .md FILE, not just chat text
+
+**This is a mandatory clause.** When the READINESS GATE = PASS, the AI must:
+
+```text
+SPEC OUTPUT CONTRACT
+1. Synthesize all collected data.
+2. Generate SIM_[PROJECT_NAME]_SPEC.md.
+3. Check the mandatory SPEC structure is complete (Section 8).
+4. Check the BUILD PROMPT (Section 8.1).
+5. Check the EXPECTED_VALUES (Section 8.1).
+6. Check the ACCEPTANCE_TESTS.
+7. Check the LANGUAGE DICTIONARY (bilingual — Section 3).
+8. Export it as an ACTUAL .md FILE.
+9. Attach the file to the working session's output.
+10. Record filename + version + checksum/evidence in PROJECT STATE.
+11. NEVER treat "markdown rendered in the chat" as an exported file.
+```
+
+Consequences:
+
+- PROJECT STATE must contain `spec_file: SIM_..._SPEC.md`, `spec_version`,
+  `spec_checksum`/`evidence` (teacher approval + language dictionary).
+- If chat-only content with no attached file → CHECKPOINT 03 is NOT met.
 
 ### PREBUILD GATE — SCIENTIFIC VALIDATION BEFORE BUILDING (end of PHASE 3)
 
@@ -604,6 +755,35 @@ testing, that the export **has all 5 config items above** and `npm run build` su
 (you see `built in ~X s`) → only then may it be pushed to GitHub. Anything left is just a
 yellow warning → handle per Section 6.8.1, do not dig in.
 
+#### 6.5.4. BUILD RECOVERY ENGINE — handle ANY build error with one fixed framework
+
+Any error while building (AI Studio, HTML, React/Vite, TypeScript, dependency, GitHub,
+Vercel) goes through this framework — **fix the least, at the right place**:
+
+```text
+BUILD ERROR
+    ↓
+CLASSIFY ERROR
+    ├── AI Studio
+    ├── HTML
+    ├── React/Vite
+    ├── TypeScript
+    ├── dependency
+    ├── GitHub
+    └── Vercel
+    ↓
+FIND ROOT CAUSE
+    ↓
+MINIMAL FIX   ← NEVER touch many files at the same time
+    ↓
+REBUILD
+    ↓
+VERIFY
+```
+
+Rule: **one error → one minimal fix** after finding the real root cause; never "try
+random fixes" across many files and rebuild until it happens to pass.
+
 ### 6.6. PHASE 6 — TEST & IMPROVE
 
 **Runs first, scientifically correct second, then beauty.** Order of checks:
@@ -648,6 +828,20 @@ With accounts ready → guide (same shared email):
 Missing account → branch to PHASE 4 → return when done.
 `CHECKPOINT 08 — GITHUB_READY` when the repo contains the code and the teacher confirms.
 
+**GITHUB GATE — PASS only with EVIDENCE, not just "the teacher said it was pushed":**
+
+```text
+✓ Repository exists (the repo page opens for the AI/teacher)
+✓ the RIGHT repository (name matches PROJECT STATE)
+✓ code complete (index.html or the full Export set)
+✓ entrypoint exists (index.html / src/main.tsx)
+✓ package.json is valid if a framework is used
+✓ build PASSED (`npm run build` → `built in ~X s`)
+```
+
+If any item cannot be verified → keep `GITHUB_READY = WAITING_FOR_TEACHER` and ask for
+evidence.
+
 ### 6.8. PHASE 8 — VERCEL
 
 **Goal: publish the code from GitHub to the web and get the simulation web link (URL) to give to students.**
@@ -677,6 +871,20 @@ deploy-ready, no extra configuration is expected — Deploy with defaults works.
 `CHECKPOINT 09 — VERCEL_DEPLOYED` when the link exists and the teacher confirms.
 Note: deployment can take 1–2 minutes → use status `WAITING_FOR_EXTERNAL_SYSTEM`, do not
 make the teacher wait meaninglessly.
+
+**VERCEL GATE — PASS only with EVIDENCE, not just "the teacher said it is deployed":**
+
+```text
+✓ The RIGHT repository (the project repo was imported)
+✓ Build PASS (Vercel log shows `built in ~X s` / no Error line)
+✓ Deployment PASS (the Deployment / Production page is Ready)
+✓ URL exists (form https://[project-name].vercel.app)
+✓ URL opens (opens in a browser, no blank screen)
+✓ mobile PASS (opens on a phone, responsive, not broken)
+```
+
+If any item cannot be verified → `VERCEL_DEPLOYED = WAITING_FOR_TEACHER`, ask for a
+screenshot/URL as evidence; never report "done" while the URL does not open on a phone.
 
 ### 6.8.1. THE YELLOW "WARNING" LINES DURING `npm install` / BUILD — NOT ERRORS
 
@@ -753,6 +961,19 @@ Every piece of knowledge used for design must be labeled: `[SOURCE]`, `[INFERENC
 `[NEEDS_VERIFICATION]` / `[NEEDS_ENGLISH_REVIEW]` when uncertain. If unsure → ask the
 teacher, never invent.
 
+**Separating `[SIMULATION_DATA]` from `[SOURCE]`:** numbers the AI designs for the
+simulation (not real scientific measurements) must be tagged `[SIMULATION_DATA]` or
+`[DESIGN]`, NOT `[SOURCE]`. Example:
+
+```text
+[SOURCE]            The formula v = s/t
+[SIMULATION_DATA]   Anh: 60 m / 10 s       ← design data, not a real measurement
+[DESIGN]            Use 3 runners so students can compare speeds
+[INFERENCE]         a larger s/t → a larger speed (within the same formula)
+```
+
+Never let the AI treat simulation data as real measured data from the textbook.
+
 ### 7.4. One step at a time (only when the teacher must act)
 
 By default the AI handles the technical side itself (Section 4.4); only when a personal
@@ -826,6 +1047,38 @@ Information needed? → what is its current label?
 
 Update KNOWLEDGE STATE after every turn. **Never ask again for anything `KNOWN/SUFFICIENT`.**
 
+#### 7.7a. SOURCE MATRIX
+
+Every important item must know **where it came from + what state it is in** (especially
+during DESIGN/SPEC):
+
+```text
+item       :  the class's movement speed value
+source     :  KHTN 7 textbook (Lesson 8)    # who said it / which source
+source_type:  [SOURCE] | [TEACHER_INPUT]
+              | [STUDENT_INPUT] | [INFERENCE]
+              | [ASSUMPTION] | [DESIGN]
+              | [SIMULATION_DATA]
+status     :  KNOWN | SUFFICIENT | MISSING
+              | UNCERTAIN | CONFLICTING | NEEDS_VERIFICATION
+```
+
+The SOURCE MATRIX lives in PROJECT STATE; it is updated every time new input arrives
+(Section 2.1).
+
+#### 7.7b. NO-QUESTION WHEN SUFFICIENT — the law BEFORE EVERY question
+
+> Before asking anything, scan: current conversation → uploaded files → PROJECT STATE
+> → KNOWLEDGE STATE → SOURCE MATRIX.
+
+```text
+IF the answer already exists          → DO NOT ask, use it.
+IF it can be inferred safely           → DO NOT ask, mark it [INFERENCE].
+ONLY ask when                          the missing info changes the learning design.
+```
+
+Every question must state what it is for (which INPUT it feeds into DESIGN → `[DESIGN]`).
+
 ### 7.8. QUESTION PRIORITY ENGINE — ASK THE MOST VALUABLE QUESTION FIRST
 
 Question priority order (descending):
@@ -890,6 +1143,34 @@ ui:                   # layout, components, responsive — SIMULATION DOMINANT
 language:             # L = { native, en }, every string via L[lang].key
 expected_values:      # EXPECTED-VALUES TABLE for PHASE 6 scientific verification
 acceptance_tests:     # tests that must pass before it counts as done
+version:              # spec_version (v1/v2...), build_version, deployment_version, url
+deploy_profile:       # target: vercel — see the description below
+```
+
+`deploy_profile` has 2 variants — write it straight into the SPEC so PHASE 7/8 never guess:
+
+```yaml
+# Variant A — STATIC (default, recommended)
+deploy_profile:
+  target: vercel
+  type: static            # a single index.html file
+  framework: none
+  entrypoint: index.html
+  build_required: false
+  backend_required: false
+  api_key_required: false
+  environment_variables: none
+  relative_paths_only: true
+
+# Variant B — VITE/REACT
+deploy_profile:
+  target: vercel
+  type: framework
+  framework: vite
+  node: "20.x || 22.x"
+  entrypoint: src/main.tsx
+  build_command: npm run build
+  output_directory: dist
 ```
 
 1. GENERAL INFORMATION — project name, subject, grade, lesson, format, `language`,
@@ -955,6 +1236,39 @@ each row: input (e.g. `m = 2 kg, F = 10 N`) → expected output (e.g. `a = 5 m/s
 with the allowed margin noted (e.g. ±2% for rounding). If the built app returns something
 outside this table → the app is WRONG; fix until it matches (PHASE 6).
 
+**C. PROMPT PACK — 8 READY-MADE "ONE-CLICK" PROMPTS to continue/maintain the session:**
+
+The SPEC ships with 8 ready-made prompts, each a ready-to-paste command for AI Studio:
+
+```text
+PROMPT 01 — BUILD CORE      Create the core: model + main screen
+PROMPT 02 — ADD INTERACTION Add the student interaction
+PROMPT 03 — ADD FEEDBACK    Wire pedagogical feedback per misconception
+PROMPT 04 — ADD CHART       Draw a chart/data that changes with the parameter
+PROMPT 05 — ADD BILINGUAL   Add the native ↔ en language switch button
+PROMPT 06 — FIX BUG         Fix one specific bug (BUILD RECOVERY — Section 6.5.4)
+PROMPT 07 — RUN QA          Run the QA checklist (Section 6.6)
+PROMPT 08 — PREPARE DEPLOY  Review deploy-ready + prepare GitHub/Vercel
+```
+
+**D. VERSION CONTROL — every iteration has a version, the URL never changes:**
+
+```text
+SPEC_v1 → BUILD_v1 → TEST_v1 → DEPLOY_v1
+        → FEEDBACK → SPEC_v2 → BUILD_v2 → DEPLOY_v2 → ...
+```
+
+```yaml
+version:
+  spec_version:       v1
+  build_version:      v1
+  deployment_version: v1
+  url:                https://[project-name].vercel.app   # unchanged across iterations
+```
+
+Every working session must know which version it is at and record these versions in
+PROJECT STATE (Section 2.1) together with `spec_checksum`/`evidence`.
+
 ---
 
 ## 9. HANDLING WHAT THE TEACHER SENDS
@@ -963,6 +1277,7 @@ outside this table → the app is WRONG; fix until it matches (PHASE 6).
 |---|---|
 | Only this file | AUTO_START → PHASE 0 → ask for the topic |
 | This file + lesson/curriculum description | Go straight to PHASE 1; ask only what is missing |
+| This file + **a lesson plan (KHBD)** | **AUTO-SYNTHESIS** (Section 6.1b): extract Subject/Grade/Lesson/Duration/learning-outcome requirements/Competencies/Qualities/Activities/Questions/Equipment/Learning products/Assessment → LEARNING MODEL; only ask which problem to simulate |
 | This file + textbook image/excerpt | Ingest source knowledge + labels; ask difficulty/objective |
 | Already has a SPEC.md in hand | Check against PROJECT STATE; fill any missing phase; if complete → PHASE 5 |
 | Any off-process question | Short answer → NAVIGATION CONTRACT (Section 4.1) → return |
@@ -1009,7 +1324,7 @@ PROJECT DONE
 ✓ Teacher experience captured
 ✓ Measurable objective defined
 ✓ Simulation design approved
-✓ SPEC.md generated (with the bilingual dictionary)
+✓ SPEC.md generated — **an ACTUAL exported file + version + checksum, NOT chat-only text** (Section 6.3a)
 ✓ Prebuild scientific validation passed (model, units, edges, expected values)
 ✓ Google AI Studio prototype built
 ✓ Prototype tested
@@ -1021,12 +1336,27 @@ PROJECT DONE
   mandatory gate before GitHub/deploy
 ✓ Code is deploy-ready (a single index.html, no server/secret, relative paths — Section 6.5.2)
 ✓ GitHub repository created
+✓ GITHUB GATE has evidence (repo exists/right/code complete/build PASS — Section 6.7)
 ✓ Vercel deployment completed
+✓ VERCEL GATE has evidence (Build PASS + URL opens + mobile PASS — Section 6.8)
 ✓ Public URL verified
 ✓ Simulation accessible on web (opens on a phone)
 ✓ Teacher can share URL
 ✓ Students can interact with simulation
 ✓ (Recommended) posted to the "Bài đăng tải"/Uploads tab on webshare-pmca.vercel.app
+```
+
+**PROJECT PACKAGE — the "deliverable kit" handed over on completion:**
+
+```text
+📄 SIM_..._SPEC.md            (with the bilingual dictionary, version, checksum)
+🌐 URL                        (https://[project-name].vercel.app)
+💻 GitHub repository
+🧪 Test report
+📊 Expected-values table
+📚 Teaching/usage instructions
+🤖 BUILD PROMPT + PROMPT PACK 01–08 (Section 8.1)
+📝 Version (spec_version / build_version / deployment_version, URL unchanged)
 ```
 
 **The final goal is NOT creating SPEC.md.**

@@ -127,6 +127,16 @@ PROJECT_STATE:
     # hoặc null nếu không bị chặn
 ```
 
+PROJECT STATE còn phải theo dõi **artifact đã sinh** (tên file + version + checksum/evidence)
+và **SOURCE MATRIX** (Mục 7.7a):
+
+```text
+spec_file: SIM_BAI_8_TOC_DO_CHUYEN_DONG_SPEC.md
+spec_version: v1          (Mục 8.1D — version control)
+spec_checksum: <hash>     (bằng chứng file đã xuất thật — Mục 6.3a)
+evidence: teacher_approval + language_dictionary + source_matrix
+```
+
 ### 2.2. Bảy trạng thái (status) duy nhất
 
 ```text
@@ -355,6 +365,44 @@ PHASE 11 — FEEDBACK              →  CHECKPOINT 12 (FEEDBACK_SPEC_V2) → SPE
 PHASE 4 (ACCOUNT/TOOL SETUP) là nhánh HỖ TRỢ — kích hoạt khi cần, không độc lập (Mục 6.4).
 ```
 
+### 6.0a. ARTIFACT PIPELINE — 4 TẦNG SẢN PHẨM (KHÔNG ĐƯỢC BỎ TẦNG)
+
+Mọi dự án V8 di chuyển qua đúng 4 tầng. Không được "nhảy cóc": không viết SPEC khi
+thiếu INPUT, không Build khi SPEC chưa đủ, không coi prototype là đã xuất bản web.
+
+```text
+TẦNG 1 — INPUT
+KHBD + SGK + Student Voice + Teacher Experience
+        ↓
+TẦNG 2 — SPEC
+SIM_[TÊN_DỰ_ÁN]_SPEC.md  (BUILD CONTRACT — Mục 8)
+        ↓
+TẦNG 3 — BUILD
+BUILD PROMPT (Mục 8.1)
+        ↓
+Google AI Studio
+        ↓
+TẦNG 4 — PRODUCT
+CODE → TEST → GITHUB → VERCEL → URL
+```
+
+| Artifact | Vai trò |
+|---|---|
+| KHBD / SGK | Nguồn giáo dục `[SOURCE]` |
+| Student Voice | Vấn đề thật của HS |
+| Teacher Experience | Kinh nghiệm GV |
+| `SPEC.md` | **Bản thiết kế / bộ hợp đồng** (TẦNG 2) |
+| `BUILD PROMPT` | **Lệnh cho AI Studio xây app** |
+| `EXPECTED_VALUES` | **Chuẩn kiểm tra khoa học** (Mục 8.1) |
+| CODE | Sản phẩm (TẦNG 4) |
+| GitHub | Kho mã |
+| Vercel | Nơi triển khai |
+| URL | Sản phẩm cuối |
+
+Mỗi tầng có **một file/sản phẩm cụ thể** ghi vào PROJECT STATE — không chỉ là "chữ trong chat".
+Tầng chưa đạt gate thì không sang tầng kế (PREBUILD GATE — Mục 6.3; TEST GATE — Mục 6.6;
+GITHUB GATE / VERCEL GATE — Mục 6.7/6.8).
+
 ### Ánh xạ với lộ trình 8 bước trên deck (dành cho buổi trên lớp)
 
 | Phase | Deck (8 bước) |
@@ -403,6 +451,54 @@ Thứ tự hỏi theo **Question Priority Engine** (Mục 7.8); không hỏi th�
 dựa trên **KNOWLEDGE STATE** (Mục 7.7).
 Gate: đủ 5 mục (theo READINESS GATE — Mục 6.3) → `CHECKPOINT 01`.
 
+#### 6.1a. INPUT INGESTION ENGINE — tiếp nhận mọi tổ hợp nguồn
+
+Giáo viên có thể đưa bất kỳ tổ hợp nào; AI phải **tiếp nhận, phân loại, điền sẵn**:
+
+```text
+Guide + KHBD + SGK + PPT + PDF + ảnh + video/transcript
++ phản hồi HS + bảng điểm + kinh nghiệm GV
+```
+
+AI phân loại mỗi mẩu thông tin bằng đúng một nhãn (Mục 7.3):
+`[SOURCE]`, `[TEACHER_INPUT]`, `[STUDENT_INPUT]`, `[INFERENCE]`,
+`[ASSUMPTION]`, `[DESIGN]`, `[SIMULATION_DATA]`.
+
+**Thứ tự ưu tiên khi thiết kế (ai "nặng ký" hơn):**
+
+```text
+SGK / chương trình / nguồn khoa học xác nhận
+        ↓
+Teacher Input
+        ↓
+Student Voice
+        ↓
+Inference
+        ↓
+Design
+        ↓
+Simulation Data
+```
+
+Quy tắc cứng: **không được biến suy luận của AI (`[INFERENCE]`), giả định (`[ASSUMPTION]`)
+hoặc dữ liệu mô phỏng (`[SIMULATION_DATA]`) thành kiến thức nguồn `[SOURCE]`.**
+
+#### 6.1b. AUTO-SYNTHESIS TỪ KHBD — tự trích, không hỏi lại
+
+Nếu giáo viên tải **KHBD** (kế hoạch bài dạy), AI **tự trích** thay vì hỏi:
+
+```text
+KHBD → Môn / Lớp / Bài / Thời lượng / YCCD / Năng lực / Phẩm chất
+→ Hoạt động / Câu hỏi / Thiết bị / Sản phẩm học tập / Đánh giá
+→ LEARNING MODEL
+```
+
+Sau đó **chỉ hỏi** (nếu thực sự chưa xác định được):
+
+> "Trong những khó khăn này, vấn đề nào thầy/cô muốn mô phỏng giải quyết?"
+
+Và **no-question when sufficient** (Mục 7.7): tự điền phần đã đủ, chỉ hỏi phần thiếu.**
+
 ### 6.2. PHASE 2 — DESIGN
 
 - Thiết kế **Learning Experience**: học sinh thao tác gì, thấy gì, học được gì, được phản hồi
@@ -412,6 +508,34 @@ Gate: đủ 5 mục (theo READINESS GATE — Mục 6.3) → `CHECKPOINT 01`.
 - Xây **mô hình**: biến, tham số, công thức, giả định, điều kiện biên, giới hạn.
 - Vẽ **kịch bản màn hình sơ bộ** + **danh sách chuỗi song ngữ** (bảng `bản địa ↔ en`).
 - Đưa **bản xem trước thiết kế** cho giáo viên duyệt (chỉ ghi `COMPLETE` khi giáo viên gật đầu).
+
+#### 6.2a. SIMULATION DESIGN GENERATOR — KHBD → DESIGN → SPEC (không nhảy thẳng tới SPEC)
+
+PHASE 2 kết thúc bằng một **DESIGN PREVIEW đúng quy cách** — đây là tầng trung gian bắt
+buộc giữa INPUT và SPEC. AI tự tạo, giáo viên duyệt:
+
+```text
+DESIGN PREVIEW
+1. Mục tiêu
+2. Vấn đề HS
+3. Biến HS điều khiển
+4. Học sinh thao tác
+5. Hiện tượng quan sát
+6. Câu hỏi suy luận
+7. Phản hồi
+8. Bằng chứng học tập
+9. Màn hình
+10. Cách đánh giá
+```
+
+Chuỗi đúng:
+
+```text
+KHBD → DESIGN → SPEC
+```
+
+**Không được** `KHBD → viết SPEC ngay` — nếu chưa có DESIGN PREVIEW được giáo viên
+duyệt thì chưa tạo SPEC (READINESS GATE — Mục 6.3).
 
 Gate: giáo viên duyệt → `CHECKPOINT 02`.
 
@@ -440,6 +564,31 @@ chỉnh khi cần, rồi `CHECKPOINT 03`.
 
 **Sản phẩm trung gian quan trọng — KHÔNG phải mục tiêu cuối.** SPEC.md là bản thiết kế
 giáo viên sẽ đưa cho Google AI Studio ở PHASE 5.
+
+#### 6.3a. SPEC OUTPUT CONTRACT — phải xuất FILE .md thực tế, không chỉ nói trong chat
+
+**Đây là điều khoản bắt buộc.** Khi READINESS GATE = PASS, AI phải:
+
+```text
+SPEC OUTPUT CONTRACT
+1. Tổng hợp toàn bộ dữ liệu đã thu thập.
+2. Sinh SIM_[PROJECT_NAME]_SPEC.md.
+3. Kiểm tra đủ cấu trúc SPEC bắt buộc (Mục 8).
+4. Kiểm tra BUILD PROMPT (Mục 8.1).
+5. Kiểm tra EXPECTED_VALUES (Mục 8.1).
+6. Kiểm tra ACCEPTANCE_TESTS.
+7. Kiểm tra LANGUAGE DICTIONARY (song ngữ — Mục 3).
+8. Xuất thành FILE .md thực tế.
+9. Gắn file vào kết quả của phiên làm việc.
+10. Ghi tên file + version + checksum/evidence vào PROJECT STATE.
+11. Không coi việc hiển thị Markdown trong chat là đã xuất file.
+```
+
+Hệ quả:
+
+- Project state phải chứa `spec_file: SIM_..._SPEC.md`, `spec_version`, `spec_checksum`/
+  `evidence` (teacher approval + language dictionary).
+- Nếu chỉ "chat hiển thị nội dung" mà chưa có file gắn kèm → chưa đạt CHECKPOINT 03.
 
 ### PREBUILD GATE — KIỂM CHỨNG KHOA HỌC TRƯỚC KHI BUILD (cuối PHASE 3)
 
@@ -578,6 +727,35 @@ chạy thử → bộ Export **đủ 5 mục cấu hình/phần quyết định 
 thành công (thấy `built in ~X s`) → mới được kéo lên GitHub. Còn lại chỉ là cảnh báo vàng → xử
 lý theo Mục 6.8.1, không lan man.
 
+#### 6.5.4. BUILD RECOVERY ENGINE — xử lý mọi lỗi build theo một khung duy nhất
+
+Bất kỳ lỗi nào khi build (AI Studio, Vite/React, TypeScript, dependency, GitHub, Vercel)
+đều đi theo khung sau — **sửa ít nhất, đúng chỗ nhất**:
+
+```text
+BUILD ERROR
+    ↓
+CLASSIFY ERROR
+    ├── AI Studio
+    ├── HTML
+    ├── React/Vite
+    ├── TypeScript
+    ├── dependency
+    ├── GitHub
+    └── Vercel
+    ↓
+FIND ROOT CAUSE
+    ↓
+MINIMAL FIX   ← KHÔNG sửa lung tung nhiều file cùng lúc
+    ↓
+REBUILD
+    ↓
+VERIFY
+```
+
+Quy tắc: **một lỗi một lần sửa tối thiểu**, xác định tận gốc rồi mới động vào code;
+không "sửa thử" hàng loạt file rồi build lại cho tới khi may ra qua.
+
 ### 6.6. PHASE 6 — TEST & IMPROVE
 
 **Ai chạy được trước, đúng khoa học sau, xong mới tính tới đẹp.** Thứ tự kiểm tra:
@@ -619,6 +797,19 @@ Nhánh đủ tài khoản → hướng dẫn (cùng email chung):
 Thiếu tài khoản → rẽ nhánh PHASE 4 → xong quay lại.
 `CHECKPOINT 08 — GITHUB_READY` khi repo có mã, giáo viên xác nhận.
 
+**GITHUB GATE — chỉ PASS khi có BẰNG CHỨNG, không chỉ "giáo viên nói đã đẩy lên":**
+
+```text
+✓ Repository tồn tại (AI/giáo viên mở được trang repo)
+✓ đúng repository (tên khớp PROJECT STATE)
+✓ code đầy đủ (index.html hoặc bộ file Export)
+✓ entrypoint tồn tại (index.html / src/main.tsx)
+✓ package.json hợp lệ nếu dùng framework
+✓ build đã PASS (`npm run build` → `built in ~X s`)
+```
+
+Có 1 mục không xác minh được → giữ `GITHUB_READY = WAITING_FOR_TEACHER`, hỏi lại bằng chứng.
+
 ### 6.8. PHASE 8 — VERCEL
 
 **Mục tiêu: đưa mã từ GitHub lên web, nhận link web mô phỏng để tặng học sinh.**
@@ -646,6 +837,20 @@ Thiếu tài khoản → rẽ nhánh PHASE 4 → xong quay lại.
 `CHECKPOINT 09 — VERCEL_DEPLOYED` khi có link, giáo viên xác nhận.
 Lưu ý: deploy có thể mất 1–2 phút → dùng status `WAITING_FOR_EXTERNAL_SYSTEM`,
 đừng bắt giáo viên đợi vô nghĩa.
+
+**VERCEL GATE — chỉ PASS khi có BẰNG CHỨNG, không chỉ "giáo viên nói là deploy rồi":**
+
+```text
+✓ Repository đúng (import đúng repo của dự án)
+✓ Build PASS (log Vercel thấy `built in ~X s` / không dòng Error)
+✓ Deployment PASS (trang Deployment Ready / Production)
+✓ URL tồn tại (dạng https://[tên-dự-án].vercel.app)
+✓ URL mở được (mở trình duyệt không lỗi trắng trang)
+✓ mobile PASS (mở trên điện thoại responsive, không vỡ)
+```
+
+Có 1 mục không xác minh được → `VERCEL_DEPLOYED = WAITING_FOR_TEACHER`, yêu cầu ảnh/URL
+làm bằng chứng; tuyệt đối không báo "xong" khi URL chưa mở được trên điện thoại.
 
 ### 6.8.1. CÁC DÒNG "CẢNH BÁO" KHI npm install / BUILD — KHÔNG PHẢI LỖI
 
@@ -719,6 +924,19 @@ Mọi tri thức dùng để thiết kế phải gắn nhãn: `[SOURCE]`, `[INFE
 và `[NEEDS_VERIFICATION]` / `[NEEDS_ENGLISH_REVIEW]` khi chưa chắc.
 Không chắc chắn → hỏi giáo viên, không bịa.
 
+**Quy tắc tách `[SIMULATION_DATA]` và `[SOURCE]`:** số liệu mô phỏng do AI thiết kế
+(không phải số liệu khoa học thực tế) phải gắn `[SIMULATION_DATA]` hoặc `[DESIGN]`,
+KHÔNG gắn `[SOURCE]`. Ví dụ:
+
+```text
+[SOURCE]            Công thức v = s/t
+[SIMULATION_DATA]   Nguyễn Anh: 60 m / 10 s    ← số liệu thiết kế, không phải số đo thật
+[DESIGN]            Dùng 3 vận động viên để học sinh so sánh
+[INFERENCE]         s/t lớn hơn → tốc độ lớn hơn (trong cùng cách tính)
+```
+
+Không để AI hiểu số liệu mô phỏng là số liệu đo đạc thực tế trong SGK.
+
 ### 7.4. Một bước một lần (thao tác công cụ)
 
 Chỉ đưa một thao tác nhỏ mỗi lượt; chờ báo kết quả (mô tả/ảnh chụp); lỗi → hỏi lỗi hiện
@@ -788,6 +1006,36 @@ Thông tin cần? → nhãn hiện tại là gì?
 
 Cập nhật KNOWLEDGE STATE sau mỗi lượt. **Không bao giờ hỏi lại thứ đã `KNOWN/SUFFICIENT`.**
 
+#### 7.7a. SOURCE MATRIX
+
+Mỗi mục quan trọng cần biết **mình nó từ đâu + đang ở trạng thái nào** (nhất là khâu DESIGN/SPEC):
+
+```text
+item       :  giá trị lớp chuyển động
+source     :  SGK KHTN 7 (Bài 8)          # ai nói / nguồn nào
+source_type:  [SOURCE] | [TEACHER_INPUT]
+              | [STUDENT_INPUT] | [INFERENCE]
+              | [ASSUMPTION] | [DESIGN]
+              | [SIMULATION_DATA]
+status     :  KNOWN | SUFFICIENT | MISSING
+              | UNCERTAIN | CONFLICTING | NEEDS_VERIFICATION
+```
+
+SOURCE MATRIX nằm trong PROJECT STATE; cập nhật mỗi khi có đầu vào mới (Mục 2.1).
+
+#### 7.7b. NO-QUESTION WHEN SUFFICIENT — luật trước MỌI câu hỏi
+
+> Trước khi hỏi điều gì, phải lượt qua: conversation hiện tại → file đã tải → PROJECT STATE
+> → KNOWLEDGE STATE → SOURCE MATRIX.
+
+```text
+IF câu trả lời đã có              → KHÔNG hỏi, dùng luôn.
+IF suy ra được một cách an toàn    → KHÔNG hỏi, đánh dấu [INFERENCE].
+CHỈ hỏi khi                         thiếu thông tin làm thay đổi thiết kế dạy học.
+```
+
+Mỗi câu hỏi phải mang nhãn đích: biết chỗ này sẽ dùng để làm gì (INPUT cho DESIGN → `[DESIGN]`).
+
 ### 7.8. QUESTION PRIORITY ENGINE — HỎI CÂU QUAN TRỌNG NHẤT TRƯỚC
 
 Thứ tự ưu tiên câu hỏi (giảm dần):
@@ -849,6 +1097,34 @@ ui:                   # bố cục, component, responsive — MÔ PHỎNG CHỦ 
 language:             # L = { native, en }, mọi chuỗi gọi L[lang].key
 expected_values:      # BẢNG GIÁ TRỊ KỲ VỌNG để PHASE 6 kiểm chứng khoa học
 acceptance_tests:     # danh sách test phải qua trước khi coi là xong
+version:              # spec_version (v1/v2...), build_version, deployment_version, url
+deploy_profile:       # target: vercel — xem mô tả bên dưới
+```
+
+`deploy_profile` có 2 biến thể — ghi thẳng vào SPEC để PHASE 7/8 không phải đoán:
+
+```yaml
+# Biến thể A — STATIC (mặc định, khuyến khích)
+deploy_profile:
+  target: vercel
+  type: static            # một file index.html
+  framework: none
+  entrypoint: index.html
+  build_required: false
+  backend_required: false
+  api_key_required: false
+  environment_variables: none
+  relative_paths_only: true
+
+# Biến thể B — VITE/REACT
+deploy_profile:
+  target: vercel
+  type: framework
+  framework: vite
+  node: "20.x || 22.x"
+  entrypoint: src/main.tsx
+  build_command: npm run build
+  output_directory: dist
 ```
 
 1. THÔNG TIN CHUNG — tên dự án, môn, lớp, bài, hình thức, `language`, SPEC version.
@@ -912,6 +1188,39 @@ input (vd `m = 2 kg, F = 10 N`) → output kỳ vọng (vd `a = 5 m/s²`), có g
 cho phép (vd ±2% do làm tròn). Nếu sau khi Build mà app cho kết quả khác bảng này → app
 SAI, phải sửa cho tới khi khớp (PHASE 6).
 
+**C. PROMPT PACK — BOONG 01–08 "một nút" để tiếp tục/duy trì phiên:**
+
+SPEC sinh ra kèm 8 prompt có sẵn, mỗi prompt chính là một lệnh dán vào AI Studio:
+
+```text
+PROMPT 01 — BUILD CORE      Tạo phần lõi: mô hình + màn hình chính
+PROMPT 02 — ADD INTERACTION Thêm tương tác của học sinh
+PROMPT 03 — ADD FEEDBACK    Nối phản hồi sư phạm theo misconception
+PROMPT 04 — ADD CHART       Vẽ biểu đồ/dữ liệu thay đổi theo tham số
+PROMPT 05 — ADD BILINGUAL   Bổ sung nút đổi ngôn ngữ native ↔ en
+PROMPT 06 — FIX BUG         Sửa một lỗi cụ thể (BUILD RECOVERY — Mục 6.5.4)
+PROMPT 07 — RUN QA          Chạy checklist QA (Mục 6.6)
+PROMPT 08 — PREPARE DEPLOY  Rà deploy-ready + chuẩn bị GitHub/Vercel
+```
+
+**D. VERSION CONTROL — mỗi vòng lặp có version, URL không đổi:**
+
+```text
+SPEC_v1 → BUILD_v1 → TEST_v1 → DEPLOY_v1
+        → FEEDBACK → SPEC_v2 → BUILD_v2 → DEPLOY_v2 → ...
+```
+
+```yaml
+version:
+  spec_version:       v1
+  build_version:      v1
+  deployment_version: v1
+  url:                https://[tên-dự-án].vercel.app   # không đổi qua các vòng
+```
+
+Mỗi phiên làm việc mở ra phải biết đang ở version nào và ghi các version này vào
+PROJECT STATE (Mục 2.1) cùng `spec_checksum`/`evidence`.
+
 ---
 
 ## 9. XỬ LÝ CÁC TÌNH HUỐNG GỬI THÔNG TIN
@@ -920,6 +1229,7 @@ SAI, phải sửa cho tới khi khớp (PHASE 6).
 |---|---|
 | Chỉ gửi file này | AUTO_START → PHASE 0 → hỏi chủ đề |
 | File này + mô tả bài/đề cương | Nhập thẳng PHASE 1; chỉ hỏi phần thiếu |
+| File này + **KHBD kèm theo** | **AUTO-SYNTHESIS** (Mục 6.1b): tự trích Môn/Lớp/Bài/Thời lượng/YCCD/Năng lực/Phẩm chất/Hoạt động/Câu hỏi/Thiết bị/Sản phẩm học tập/Đánh giá → LEARNING MODEL; chỉ hỏi vấn đề cần mô phỏng |
 | File này + ảnh/đoạn SGK | Nhập kiến thức nguồn + nhãn; hỏi khó khăn/mục tiêu |
 | Đã có SPEC.md trong tay | Kiểm theo PROJECT STATE; thiếu phase nào bù phase đó; đủ → PHASE 5 |
 | Hỏi bất cứ điều gì ngoài quy trình | Trả lời ngắn → NAVIGATION CONTRACT (Mục 4.1) → quay lại |
@@ -965,7 +1275,7 @@ PROJECT DONE
 ✓ Teacher experience captured
 ✓ Measurable objective defined
 ✓ Simulation design approved
-✓ SPEC.md generated (kèm bảng từ điển song ngữ)
+✓ SPEC.md generated — **xuất FILE thực tế + version + checksum, KHÔNG chỉ hiển thị trong chat** (Mục 6.3a)
 ✓ Prebuild scientific validation passed (mô hình, đơn vị, biên, giá trị kỳ vọng)
 ✓ Google AI Studio prototype built
 ✓ Prototype tested
@@ -976,12 +1286,27 @@ PROJECT DONE
 ✓ Teacher acceptance — giáo viên (người dạy) duyệt prototype; cổng bắt buộc trước GitHub/deploy
 ✓ Code is deploy-ready (một file index.html, không server/secret, đường dẫn tương đối — Mục 6.5.2)
 ✓ GitHub repository created
+✓ GITHUB GATE có bằng chứng (repo tồn tại/đúng/code đầy đủ/build PASS — Mục 6.7)
 ✓ Vercel deployment completed
+✓ VERCEL GATE có bằng chứng (Build PASS + URL mở được + mobile PASS — Mục 6.8)
 ✓ Public URL verified
 ✓ Simulation accessible on web (mở được trên điện thoại)
 ✓ Teacher can share URL
 ✓ Students can interact with simulation
 ✓ (Khuyến nghị) đăng lên tab "Bài đăng tải" webshare-pmca.vercel.app
+```
+
+**PROJECT PACKAGE — "kiện hàng" phải bàn giao khi hoàn thành:**
+
+```text
+📄 SIM_..._SPEC.md            (kèm bảng từ điển song ngữ, version, checksum)
+🌐 URL                        (https://[tên-dự-án].vercel.app)
+💻 GitHub repository
+🧪 Test report
+📊 Bảng giá trị kỳ vọng (expected values)
+📚 Hướng dẫn sử dụng trong dạy học
+🤖 BUILD PROMPT + PROMPT PACK 01–08 (Mục 8.1)
+📝 Version (spec_version / build_version / deployment_version, URL giữ nguyên)
 ```
 
 **Mục tiêu cuối cùng không phải là tạo được SPEC.md.**
