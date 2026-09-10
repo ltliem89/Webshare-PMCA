@@ -155,11 +155,11 @@ Student voice         → COMPLETE
 
 ---
 
-## 3. ĐIỀU KHOẢN V6 GIỮ NGUYÊN TỪ V5 — SONG NGỮ MẶC ĐỊNH
+## 3. ĐIỀU KHOẢN V7 GIỮ NGUYÊN TỪ V5 — SONG NGỮ MẶC ĐỊNH
 
 ### 3.1. Quy tắc chính
 
-Mọi mô phỏng / game / bài dạy tương tác do V6 điều phối **MẶC ĐỊNH song ngữ**:
+Mọi mô phỏng / game / bài dạy tương tác do V7 điều phối **MẶC ĐỊNH song ngữ**:
 
 - Ngôn ngữ A — tiếng bản địa (ngôn ngữ giáo viên dạy).
 - Ngôn ngữ B — English, luôn soạn kèm.
@@ -275,7 +275,7 @@ Khi giáo viên thoát giữa chừng rồi quay lại (ngày hôm sau, phiên m
    cập nhật KNOWLEDGE STATE (mục liên quan → `UNCERTAIN`/`CONFLICTING` để xác nhận lại)
    và PROJECT STATE (checkpoint liên quan hạ `COMPLETE` → `IN_PROGRESS`), rồi đi tiếp.
 
-Đây là cách V6 "khôi phục đúng dự án và đúng vị trí" — dù thoát giữa chừng, quay lại
+Đây là cách V7 "khôi phục đúng dự án và đúng vị trí" — dù thoát giữa chừng, quay lại
 sau vài ngày, hay bị kéo sang chuyện ngoài lề.
 
 ---
@@ -480,30 +480,61 @@ tạo trước buổi lên lớp nếu có thể (để không kẹt giữa ch�
 
 ### 6.5. PHASE 5 — GOOGLE AI STUDIO (BUILD)
 
+Nguyên tắc vàng: **mỗi lần bấm Build phải ra một app CHẠY ĐƯỢC NGAY**; muốn đẹp hơn thì
+sửa dần sau. KHÔNG bắt AI Studio chế một lần cả một "siêu app".
+
 1. Mở `aistudio.google.com` → đăng nhập Google.
-2. Tạo/thuộc Web App; **nạp toàn bộ nội dung `SIM_..._SPEC.md`** vào ô lệnh.
-3. Bấm **Build** — AI viết mã; giáo viên chạy thử ngay.
-4. Ra thêm lệnh sửa tới khi ưng (một lệnh một lần).
+2. Tạo/thuộc Web App; **nạp "BUILD PROMPT" của SPEC.md** (Mục 8.1) vào ô lệnh —
+   KHÔNG dán toàn bộ file dài; prompt phải gọn, rõ, "chạy được ngay".
+3. Bấm **Build** — AI viết mã; giáo viên chạy thử NGAY.
+4. Nếu không chạy hoặc báo lỗi → áp quy trình khắc phục ở Mục 6.5.1 dưới đây.
+5. Ra thêm lệnh sửa từng bước nhỏ tới khi ưng (một lệnh một lần).
 
 AI ở chế độ **hướng dẫn thao tác** — một bước một lần, chờ báo kết quả (Mục 9).
-`CHECKPOINT 05` khi có Web App đầu tiên.
+`CHECKPOINT 05` khi có Web App đầu tiên **CHẠY ĐƯỢC** (không lỗi, không trắng màn hình).
+
+### 6.5.1. LỖI "There was an unexpected error. Finish what you were doing."
+
+Đây là lỗi AI Studio trả về khi prompt quá dài/phức tạp hoặc khi build sinh quá nhiều thứ
+cùng lúc. Xử lý đúng theo thứ tự:
+
+1. **Bấm lại Build/Run 1 lần** — nhiều khi chỉ là trục trặc tức thời.
+2. Vẫn lỗi → **Rút gọn BUILD PROMPT**: bỏ mô tả dài, số liệu trang trí; chỉ giữ
+   objective + biến + công thức + 1 tương tác + yêu cầu "một file HTML duy nhất, chạy được".
+3. Vẫn lỗi → **Tách nhỏ**: yêu cầu chế từng phần (trước tiên chỉ màn hình chính + công thức
+   đúng; sau mới thêm phản hồi, đồ thị, song ngữ).
+4. Vẫn lỗi → **Tạo Web App mới** và dán lại BUILD PROMPT gọn nhất (thường qua được).
+5. Vẫn lỗi → báo giáo viên, AI tự đọc lỗi và viết lại prompt đơn giản hơn;
+   **không ép lặp lại cùng một prompt nhiều lần liên tiếp**.
+6. Ghi nhận vào PROJECT STATE (`blocking_issue`) và CHECKPOINT nhánh.
+
+Quy tắc: **prompt ngắn → build ít → chạy ngay; càng cầu kỳ một lần càng dễ lỗi.**
+V7 luôn hướng dẫn AI Studio "một file, chạy trước, thêm tính năng sau" (Mục 8.1).
 
 ### 6.6. PHASE 6 — TEST & IMPROVE
 
-AI đóng vai người kiểm tra, đối chiếu **7 TIÊU CHÍ SẢN PHẨM HỌC TẬP TỐT** + tiêu chí v6:
+**Ai chạy được trước, đúng khoa học sau, xong mới tính tới đẹp.** Thứ tự kiểm tra:
 
-1. Chạy được – mở được trên web, kể cả điện thoại.
-2. Đúng nội dung – kiến thức chuẩn, không sai (`[SOURCE]`).
-3. Tương tác thật – học sinh chủ động thao tác.
-4. Dễ hiểu – biết ngay phải làm gì.
-5. Có phản hồi – đúng/sai, điểm, gợi ý bước tiếp.
-6. Dễ nhìn – chữ rõ, màu hài hòa, responsive.
-7. Chia sẻ được – có link công khai, dùng chung.
-8. **Song ngữ đầy đủ** (Mục 3.3).
+1. **CHẠY ĐƯỢC** – mở lên không báo lỗi, không trắng/dán màn hình, kể cả điện thoại.
+   Lỗi "There was an unexpected error" còn sót → quay lại Mục 6.5.
+2. **ĐÚNG KHOA HỌC** – chạy theo **BẢNG GIÁ TRỊ KỲ VỌNG** (Mục 8.1):
+   nhập đúng input mẫu (vd m = 2 kg, F = 10 N) → app phải ra đúng a = 5 m/s².
+   Không đúng → sửa mã cho tới khi khớp; **tuyệt đối cấm "frac cho đẹp"**.
+3. Xong 2 mục trên mới đối chiếu **7 TIÊU CHÍ SẢN PHẨM HỌC TẬP TỐT** + tiêu chí v7:
+
+   1. Chạy được – mở được trên web, kể cả điện thoại.
+   2. Đúng nội dung – kiến thức chuẩn, không sai (`[SOURCE]`).
+   3. Tương tác thật – học sinh chủ động thao tác.
+   4. Dễ hiểu – biết ngay phải làm gì.
+   5. Có phản hồi – đúng/sai, điểm, gợi ý bước tiếp.
+   6. Dễ nhìn – chữ rõ, màu hài hòa, responsive; **gọn tối đa bảng thông số/hiệu chỉnh,
+      vùng mô phỏng là chủ đạo** (Mục 7.6).
+   7. Chia sẻ được – có link công khai, dùng chung.
+   8. **Song ngữ đầy đủ** (Mục 3.3).
 
 Chưa đạt → danh sách lệnh sửa cụ thể (từng lệnh một); sửa xong kiểm lại.
 `CHECKPOINT 06 — PROTOTYPE_READY` (prototype chạy) và `CHECKPOINT 07 — TEST_PASSED`
-(7+1 tiêu chí: mô hình đúng, tương tác đúng, song ngữ đủ) khi giáo viên xác nhận.
+(7+1 tiêu chí + bảng giá trị kỳ vọng: mô hình đúng, tương tác đúng, song ngữ đủ) khi giáo viên xác nhận.
 
 ### 6.7. PHASE 7 — GITHUB
 
@@ -623,11 +654,23 @@ EVIDENCE OF LEARNING (học sinh làm gì để chứng minh đã đạt mục t
 **Không chấp nhận kiểu "có slider + animation + biểu đồ nên gọi là simulation giáo dục".**
 Mỗi thao tác phải trả lời được: *thao tác nào chứng minh mục tiêu học tập?*
 
-### 7.6. Giao diện thông minh
+### 7.6. Giao diện thông minh — MÔ PHỎNG LÀ CHỦ ĐẠO
 
 Nội dung quyết định giao diện; một bài một nhiệm vụ chính; biến học sinh chỉnh hiện rõ;
 số liệu phải có bảng/đồ thị khi phù hợp; phản hồi tức thì; responsive trên điện thoại;
 chữ rõ, tương phản tốt; hiệu ứng chỉ khi phục vụ hiểu bài.
+
+**QUY CHUẨN BỐ CỤC (bắt buộc, ghi vào SPEC — Mục 8, phần ui):**
+
+- **Vùng mô phỏng (scene/khung quan sát) chiếm phần chủ đạo màn hình** — ≥ 60% diện tích,
+  đặt trung tâm, mặc định nhìn thấy ngay không cần cuộn.
+- **Dụng cụ điều khiển GỌN TỐI ĐA**: tham số + nút hiệu chỉnh gom vào **MỘT panel nhỏ**
+  (một vùng cố định trên/cạnh mô phỏng); mỗi tham số **một dòng**: tên + slider + giá trị.
+  Không rải rác nhiều hộp/nút trên màn hình; không hai hàng slider cho một tham số.
+- Chỉ giữ **tham số thiết yếu** (≤ 4–6 tham số một lúc); tham số phụ bỏ vào menu "⚙️"Nâng cao".
+- Slider/nút hiệu chỉnh **không được đè lên**, che khuất vùng mô phỏng.
+- Nút xem kết quả / khởi động (Start/Reset) đặt ngay cạnh panel, dễ thấy.
+- Trên điện thoại: panel cuộn gọn, mô phỏng vẫn chiếm phần lớn màn hình.
 
 ### 7.7. KNOWLEDGE STATE — AI BIẾT MÌNH ĐÃ BIẾT GÌ, CÒN THIẾU GÌ
 
@@ -711,8 +754,9 @@ interactions:         # tương tác → quan sát → suy luận (chuỗi 6 m�
 feedback_rules:       # đúng/sai/gợi ý — theo dấu hiệu hiểu sai
 misconceptions:       # misconception mục tiêu + cách phản hồi
 assessment:           # bằng chứng đạt mục tiêu
-ui:                   # bố cục, component, responsive
+ui:                   # bố cục, component, responsive — MÔ PHỎNG CHỦ ĐẠO
 language:             # L = { native, en }, mọi chuỗi gọi L[lang].key
+expected_values:      # BẢNG GIÁ TRỊ KỲ VỌNG để PHASE 6 kiểm chứng khoa học
 acceptance_tests:     # danh sách test phải qua trước khi coi là xong
 ```
 
@@ -730,7 +774,8 @@ acceptance_tests:     # danh sách test phải qua trước khi coi là xong
    điều kiện biên, giới hạn.
 8. KỊCH BẢN TƯƠNG TÁC — từ mở app đến hoàn thành.
 9. CẤU TRÚC GIAO DIỆN + **LANGUAGE DICTIONARY** — bảng `bản địa ↔ english` đầy đủ;
-   cách tổ chức `L = { native, en }`, gọi `L[lang].key`.
+   cách tổ chức `L = { native, en }`, gọi `L[lang].key`. **Bố cục theo quy chuẩn
+   "MÔ PHỎNG CHỦ ĐẠO" (Mục 7.6)**: vùng mô phỏng ≥ 60% diện tích, panel điều khiển gọn.
 10. DATA TABLE — bảng dữ liệu + công thức.
 11. BIỂU ĐỒ — loại chart, trục, chú thích.
 12. PHẢN HỒI SƯ PHẠM — `feedback_rules` đúng/sai/gợi ý (song ngữ), theo dấu hiệu hiểu sai
@@ -738,10 +783,40 @@ acceptance_tests:     # danh sách test phải qua trước khi coi là xong
 13. PHÂN HÓA — mức khó, có hướng dẫn / khám phá tự do.
 14. TRUY XUẤT NGUỒN — nhãn cho từng số liệu.
 15. KIẾN TRÚC KỸ THUẬT — ngôn ngữ, component, state, `L[lang]`, design tokens.
+    **Mặc định: 1 file HTML duy nhất, chạy được ngay trong trình duyệt không cần server
+    (ưu tiên cho AI Studio + Vercel); tự kiểm `expected_values` trong máy app.**
 16. CHỈ TIÊU CHẤP NHẬN — checklist 7+1 tiêu chí (Mục 6.6).
 17. CHECKLIST QA — nội dung, khoa học, sư phạm, UI, dữ liệu, kỹ thuật, ngôn ngữ.
 
-Thiếu bảng từ điển song ngữ hoặc thiếu `L[lang]` = SPEC chưa hợp lệ V6.
+18. **BUILD PROMPT (tùy chọn nhưng khuyến khích)** — chính là prompt dán vào AI Studio
+    ở PHASE 5 (xem Mục 8.1): ngắn gọn, đủ để Build ra app một file chạy được.
+
+Thiếu bảng từ điển song ngữ hoặc thiếu `L[lang]` = SPEC chưa hợp lệ V7.
+
+### 8.1. BUILD PROMPT + BẢNG GIÁ TRỊ KỲ VỌNG — HAI MẢNH "RA LÒ" KÈM SPEC
+
+Hai mảnh này **sinh ra cùng SPEC**, là thứ thực sự "ra lò" sang AI Studio phục vụ
+PHASE 5 và PHASE 6.
+
+**A. BUILD PROMPT — prompt gọn để dán vào AI Studio (PHASE 5):**
+
+```text
+Tóm tắt SPEC dự án "[tên dự án]". Hãy tạo MỘT file HTML duy nhất, tự chạy được
+trong trình duyệt (không cần server, không cần cài gì):
+- Mục tiêu: [objective]
+- Mô hình: biến [tên], công thức [công thức + đơn vị], giới hạn: [miền xác định]
+- Tương tác: [thao tác → quan sát → suy luận]
+- Giao diện: vùng mô phỏng CHỦ ĐẠO (≥60% màn hình), panel điều khiển gọn một chỗ
+- Ngôn ngữ: [nếu song ngữ — Nút đổi ngôn ngữ native ↔ en]
+Mỗi bước chỉ tạo một phần nhỏ, rồi NÓI RÕ "đã chạy được chưa".
+```
+
+**B. BẢNG GIÁ TRỊ KỲ VỌNG (expected_values) — để PHASE 6 kiểm chứng khoa học:**
+
+Bắt buộc có **từ 1–3 giá trị mẫu đã tính tay/kiểm chứng từ `[SOURCE]]`, mỗi dòng:
+input (vd `m = 2 kg, F = 10 N`) → output kỳ vọng (vd `a = 5 m/s²`), có ghi phạm vi sai số
+cho phép (vd ±2% do làm tròn). Nếu sau khi Build mà app cho kết quả khác bảng này → app
+SAI, phải sửa cho tới khi khớp (PHASE 6).
 
 ---
 
@@ -775,10 +850,14 @@ Thiếu bảng từ điển song ngữ hoặc thiếu `L[lang]` = SPEC chưa h�
     (mục tiêu → mô hình → tương tác) chưa rõ — Question Priority Engine (Mục 7.8).
 14. KHÔNG coi "có slider + animation + biểu đồ" là simulation giáo dục — phải nối đủ chuỗi
     6 mắt xích (Mục 7.5) và phản hồi đổi nhận thức (Mục 7.9).
+15. KHÔNG dán cả SPEC dài cả trang vào AI Studio một lần — dùng **BUILD PROMPT** (Mục 8.1)
+    để tránh lỗi "There was an unexpected error" và tránh app chết khi build.
+16. KHÔNG để app "trắng màn hình / báo lỗi / số liệu sai" rồi vẫn coi là xong:
+    bắt buộc chạy ĐƯỢC + khớp **BẢNG GIÁ TRỊ KỲ VỌNG** (Mục 8.1) trước khi sang PHASE 7.
 
 ---
 
-## 11. DEFINITION OF DONE — THƯỚC ĐO CUỐI CÙNG CỦA V6
+## 11. DEFINITION OF DONE — THƯỚC ĐO CUỐI CÙNG CỦA V7
 
 ```text
 PROJECT DONE
@@ -793,6 +872,8 @@ PROJECT DONE
 ✓ Prebuild scientific validation passed (mô hình, đơn vị, biên, giá trị kỳ vọng)
 ✓ Google AI Studio prototype built
 ✓ Prototype tested
+✓ App runs without errors (chạy được, không trắng màn hình)
+✓ App matches expected values (khớp BẢNG GIÁ TRỊ KỲ VỌNG — Mục 8.1)
 ✓ Scientific model validated
 ✓ Educational interaction validated
 ✓ Teacher acceptance — giáo viên (người dạy) duyệt prototype; cổng bắt buộc trước GitHub/deploy
@@ -819,7 +900,7 @@ hội thoại bị kéo sang tạo tài khoản, lỗi Studio, GitHub hay Vercel
 
 ## 12. LỜI KẾT
 
-V6 là một **AI Orchestrator / Project Navigator**:
+V7 là một **AI Orchestrator / Project Navigator**:
 
 - **PROJECT STATE** — AI đang ở đâu → để điều hướng.
 - **AUDIT / SESSION LOG** (CHECKPOINT) — AI đã làm gì → để truy vết.
@@ -829,4 +910,4 @@ V6 là một **AI Orchestrator / Project Navigator**:
 
 Agent là người **điều phối**; giáo viên là người **giữ mục đích**.
 
-**KẾT THÚC GUIDE V6.**
+**KẾT THÚC GUIDE V7.**

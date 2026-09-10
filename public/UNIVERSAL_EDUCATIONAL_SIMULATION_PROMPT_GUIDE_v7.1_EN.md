@@ -503,30 +503,65 @@ set up before class if possible (to avoid stalling halfway).
 
 ### 6.5. PHASE 5 — GOOGLE AI STUDIO (BUILD)
 
+Golden rule: **each Build click must produce an app that RUNS immediately**; polish later.
+NEVER ask AI Studio to craft a whole "super app" in one shot.
+
 1. Open `aistudio.google.com` → sign in with Google.
-2. Create/own a Web App; **load the entire content of `SIM_..._SPEC.md`** into the prompt box.
-3. Click **Build** — the AI writes the code; the teacher runs it immediately.
-4. Keep giving fix instructions until satisfied (one instruction at a time).
+2. Create/own a Web App; **load the "BUILD PROMPT" of `SIM_..._SPEC.md`** (Section 8.1) into
+   the prompt box — do NOT paste the entire long file; the prompt must be short, clear,
+   "runs right away".
+3. Click **Build** — the AI writes the code; the teacher runs it IMMEDIATELY.
+4. If it does not run or reports an error → follow the recovery procedure in Section 6.5.1.
+5. Keep giving small fix instructions until satisfied (one instruction at a time).
 
 The AI works in **operation-guidance mode** — one step at a time, waiting for results
-(Section 9). `CHECKPOINT 05` when the first Web App exists.
+(Section 9). `CHECKPOINT 05` when the first Web App **RUNS** (no error, no blank screen).
+
+### 6.5.1. THE ERROR "There was an unexpected error. Finish what you were doing."
+
+This is the error AI Studio returns when the prompt is too long/complex or when a build
+tries to generate too much at once. Handle it in this exact order:
+
+1. **Click Build/Run again once** — often it is just a temporary glitch.
+2. Still failing → **Shorten the BUILD PROMPT**: drop long descriptions and decorative
+   numbers; keep only objective + variables + formula + 1 interaction + "single self-running
+   HTML file".
+3. Still failing → **Split into small pieces**: ask for one part first (main screen +
+   correct formula), then add feedback, charts, bilingualism later.
+4. Still failing → **Create a new Web App** and paste the shortest BUILD PROMPT (usually passes).
+5. Still failing → tell the teacher, the AI reads the error itself and rewrites a simpler
+   prompt; **never hammer the same prompt repeatedly**.
+6. Log it into PROJECT STATE (`blocking_issue`) and the branch CHECKPOINT.
+
+Rule: **short prompt → small build → runs immediately; the more you cram into one shot,
+the more likely it fails.** V7 always guides AI Studio to "one file, run first, add features
+after" (Section 8.1).
 
 ### 6.6. PHASE 6 — TEST & IMPROVE
 
-The AI acts as a tester, checking the **7 CRITERIA OF A GOOD LEARNING PRODUCT** + the v7 criterion:
+**Runs first, scientifically correct second, then beauty.** Order of checks:
 
-1. Runs — opens on the web, including on a phone.
-2. Content correct — sound knowledge, no errors (`[SOURCE]`).
-3. Genuinely interactive — the student actively operates it.
-4. Easy to understand — it is obvious what to do.
-5. Provides feedback — right/wrong, score, next-step hints.
-6. Pleasant to look at — clear text, harmonious colors, responsive.
-7. Shareable — a public link, usable by many.
-8. **Complete bilingualism** (Section 3.3).
+1. **RUNS** – opens with no error, no blank/frozen screen, including on a phone.
+   Any leftover "There was an unexpected error" → go back to Section 6.5.
+2. **SCIENTIFICALLY CORRECT** – test with the **EXPECTED-VALUES TABLE** (Section 8.1):
+   enter the sample input (e.g. m = 2 kg, F = 10 N) → the app must output exactly a = 5 m/s².
+   If not → fix the code until it matches; **never "fudge it to look nice"**.
+3. Only after the two above, check the **7 CRITERIA OF A GOOD LEARNING PRODUCT** + the v7 criterion:
+
+   1. Runs — opens on the web, including on a phone.
+   2. Content correct — sound knowledge, no errors (`[SOURCE]`).
+   3. Genuinely interactive — the student actively operates it.
+   4. Easy to understand — it is obvious what to do.
+   5. Provides feedback — right/wrong, score, next-step hints.
+   6. Pleasant to look at — clear text, harmonious colors, responsive;
+      **control panel as compact as possible, the simulation area dominant** (Section 7.6).
+   7. Shareable — a public link, usable by many.
+   8. **Complete bilingualism** (Section 3.3).
 
 If not met → a concrete list of fix instructions (one at a time); after each fix, re-check.
 `CHECKPOINT 06 — PROTOTYPE_READY` (prototype runs) and `CHECKPOINT 07 — TEST_PASSED`
-(7+1 criteria: model right, interaction right, bilingualism complete) when the teacher confirms.
+(7+1 criteria + expected-values table: model right, interaction right, bilingualism complete)
+when the teacher confirms.
 
 ### 6.7. PHASE 7 — GITHUB
 
@@ -657,6 +692,19 @@ Content dictates the interface; one lesson, one main task; the adjustable variab
 visible; numbers get tables/charts when appropriate; feedback is immediate; responsive
 on phones; clear text, good contrast; effects only when they serve understanding.
 
+**LAYOUT RULES (mandatory, written into the SPEC — Section 8, `ui`):**
+
+- **The simulation area (scene/observation stage) is the DOMINANT part of the screen** —
+  at least 60% of the area, centered, visible without scrolling by default.
+- **Controls are as COMPACT as possible**: all variables + adjustment widgets grouped into
+  **ONE small panel** (a fixed zone above or beside the simulation); each variable **one row**:
+  name + slider + value. No controls scattered across the screen; no double slider rows.
+- Keep only **essential variables** (≤ 4–6 at a time); secondary ones go into an
+  "⚙️ Advanced" menu.
+- Sliders/buttons must **never cover or hide** the simulation area.
+- Start/Reset buttons sit right beside the panel, easy to find.
+- On phones: the panel scrolls compactly, the simulation still fills most of the screen.
+
 ### 7.7. KNOWLEDGE STATE — WHAT THE AI KNOWS, WHAT IT LACKS
 
 Every piece of project information carries **one status**; ask only when really needed:
@@ -742,8 +790,9 @@ interactions:         # action → observation → reasoning (6-link chain)
 feedback_rules:       # right/wrong/hint — based on misconception signs
 misconceptions:       # target misconception + how to respond
 assessment:           # evidence of achieving the objective
-ui:                   # layout, components, responsive
+ui:                   # layout, components, responsive — SIMULATION DOMINANT
 language:             # L = { native, en }, every string via L[lang].key
+expected_values:      # EXPECTED-VALUES TABLE for PHASE 6 scientific verification
 acceptance_tests:     # tests that must pass before it counts as done
 ```
 
@@ -762,7 +811,9 @@ acceptance_tests:     # tests that must pass before it counts as done
    boundary conditions, limits.
 8. INTERACTION SCENARIO — from opening the app to completing the task.
 9. INTERFACE STRUCTURE + **LANGUAGE DICTIONARY** — complete `native ↔ english` table;
-   how to organize `L = { native, en }`, call `L[lang].key`.
+   how to organize `L = { native, en }`, call `L[lang].key`. **Layout per the
+   "SIMULATION DOMINANT" rule (Section 7.6)**: simulation area ≥ 60% of the screen,
+   compact control panel.
 10. DATA TABLE — data table + formulas.
 11. CHARTS — chart type, axes, legends.
 12. PEDAGOGICAL FEEDBACK — `feedback_rules` right/wrong/hint (bilingual), per
@@ -770,10 +821,40 @@ acceptance_tests:     # tests that must pass before it counts as done
 13. DIFFERENTIATION — difficulty levels, guided / free-exploration modes.
 14. SOURCE TRACEABILITY — label for every number.
 15. TECHNICAL ARCHITECTURE — language, components, state, `L[lang]`, design tokens.
+    **Default: a single HTML file that runs directly in the browser with no server
+    (best for AI Studio + Vercel); the app self-checks `expected_values`.**
 16. ACCEPTANCE CRITERIA — the 7+1 criterion checklist (Section 6.6).
 17. QA CHECKLIST — content, science, pedagogy, UI, data, technical, language.
 
+18. **BUILD PROMPT (optional but recommended)** — the exact prompt pasted into AI Studio
+    in PHASE 5 (see Section 8.1): short, enough to build a runnable one-file app.
+
 Missing the bilingual dictionary or `L[lang]` = SPEC invalid in V7.
+
+### 8.1. BUILD PROMPT + EXPECTED-VALUES TABLE — THE TWO PARTS SHIPPED WITH THE SPEC
+
+These two parts are **generated together with the SPEC**; they are what actually goes over
+to AI Studio for PHASE 5 and PHASE 6.
+
+**A. BUILD PROMPT — the compact prompt to paste into AI Studio (PHASE 5):**
+
+```text
+Summary of the SPEC for the project "[project name]". Create exactly ONE self-contained
+HTML file that runs by itself in the browser (no server, nothing to install):
+- Objective: [objective]
+- Model: variables [names], formula [formula + units], limits: [domain]
+- Interaction: [action → observation → reasoning]
+- Interface: simulation area DOMINANT (≥60% of the screen), compact control panel
+- Language: [if bilingual — a native ↔ en language switch button]
+Build one small part at a time, then clearly state "does it run yet".
+```
+
+**B. EXPECTED-VALUES TABLE (`expected_values`) — for PHASE 6 scientific verification:**
+
+Must contain **1–3 sample values already computed by hand/verified from `[SOURCE]`**,
+each row: input (e.g. `m = 2 kg, F = 10 N`) → expected output (e.g. `a = 5 m/s²`),
+with the allowed margin noted (e.g. ±2% for rounding). If the built app returns something
+outside this table → the app is WRONG; fix until it matches (PHASE 6).
 
 ---
 
@@ -808,6 +889,10 @@ Missing the bilingual dictionary or `L[lang]` = SPEC invalid in V7.
     Question Priority Engine (Section 7.8).
 14. NEVER treat "sliders + animations + charts" as an educational simulation — the
     6-link chain (Section 7.5) and misconception-changing feedback (Section 7.9) are required.
+15. NEVER paste the whole long SPEC into AI Studio at once — use the **BUILD PROMPT**
+    (Section 8.1) to avoid the "There was an unexpected error" error and dead builds.
+16. NEVER consider an app done while it is "blank / erroring / scientifically wrong":
+    it must RUN and match the **EXPECTED-VALUES TABLE** (Section 8.1) before PHASE 7.
 
 ---
 
@@ -826,6 +911,8 @@ PROJECT DONE
 ✓ Prebuild scientific validation passed (model, units, edges, expected values)
 ✓ Google AI Studio prototype built
 ✓ Prototype tested
+✓ App runs without errors (no blank screen)
+✓ App matches expected values (the EXPECTED-VALUES TABLE — Section 8.1)
 ✓ Scientific model validated
 ✓ Educational interaction validated
 ✓ Teacher acceptance — the teacher (the one who teaches) approves the prototype;
