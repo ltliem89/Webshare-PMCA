@@ -537,6 +537,27 @@ Rule: **short prompt → small build → runs immediately; the more you cram int
 the more likely it fails.** V8 always guides AI Studio to "one file, run first, add features
 after" (Section 8.1).
 
+### 6.5.2. DEPLOY-READY BY DEFAULT — THE APP IS BUILT TO GO TO GITHUB + VERCEL
+
+Every V8 app **by default must go through GitHub (PHASE 7) and Vercel (PHASE 8)** — there
+is no "app that only lives in AI Studio". So **from the very first Build, require code that
+is deploy-ready**:
+
+1. **A SINGLE `index.html` file at the root** (JS/CSS embedded) — or minimal enough that
+   Vercel builds it straight away with no configuration. No backend/server, no private API keys.
+2. No **secrets/account keys** in the code (no API key, no token, no email).
+3. No absolute path dependencies: use **relative paths**; opening the root `/` runs the app.
+   No `.env`, no database.
+4. If **data/JSON** is needed → embed it in the file or load it from the same folder
+   (relative); do not call external APIs.
+5. When done, **Export/Get Code** must yield a clean file set: few files, clear names,
+   `index.html` at the root — ready to push to GitHub and let Vercel build the web
+   (PHASE 7–8).
+
+Why it matters: V8 defaults are **GitHub as code hosting, Vercel as web builder**. If the
+code needs its own server or contains secrets → it cannot deploy on Vercel Free → rewrite
+it deploy-ready before moving on.
+
 ### 6.6. PHASE 6 — TEST & IMPROVE
 
 **Runs first, scientifically correct second, then beauty.** Order of checks:
@@ -567,6 +588,8 @@ when the teacher confirms.
 
 Entry gate: the teacher has **approved the prototype** (teacher acceptance — see DoD,
 Section 11). Moving to GitHub before approval → return to PHASE 6 until the teacher approves.
+GitHub is the **default code hosting step for every V8 app** (Section 6.5.2): the exported
+set must already be deploy-ready (a single `index.html` at the root, no secrets).
 
 With accounts ready → guide (same shared email):
 
@@ -581,6 +604,8 @@ Missing account → branch to PHASE 4 → return when done.
 ### 6.8. PHASE 8 — VERCEL
 
 **Goal: publish the code from GitHub to the web and get the simulation web link (URL) to give to students.**
+Vercel is the **default web builder for every V8 app** (Section 6.5.2); because the code is
+deploy-ready, no extra configuration is expected — Deploy with defaults works.
 
 1. Open `vercel.com` → sign in with the **same email used for GitHub** (if you see
    **Continue with GitHub**, click it to avoid retyping).
@@ -821,8 +846,9 @@ acceptance_tests:     # tests that must pass before it counts as done
 13. DIFFERENTIATION — difficulty levels, guided / free-exploration modes.
 14. SOURCE TRACEABILITY — label for every number.
 15. TECHNICAL ARCHITECTURE — language, components, state, `L[lang]`, design tokens.
-    **Default: a single HTML file that runs directly in the browser with no server
-    (best for AI Studio + Vercel); the app self-checks `expected_values`.**
+    **Default: a SINGLE `index.html` file, deploy-ready for GITHUB + VERCEL
+    (runs directly in the browser, no server/API key/secret, relative paths);
+    the app self-checks `expected_values` (see Section 6.5.2).**
 16. ACCEPTANCE CRITERIA — the 7+1 criterion checklist (Section 6.6).
 17. QA CHECKLIST — content, science, pedagogy, UI, data, technical, language.
 
@@ -846,6 +872,8 @@ HTML file that runs by itself in the browser (no server, nothing to install):
 - Interaction: [action → observation → reasoning]
 - Interface: simulation area DOMINANT (≥60% of the screen), compact control panel
 - Language: [if bilingual — a native ↔ en language switch button]
+- Deploy-ready: a single index.html at the root, no backend, no API key/secret,
+  relative paths, ready to push to GitHub + Vercel (Section 6.5.2)
 Build one small part at a time, then clearly state "does it run yet".
 ```
 
@@ -893,6 +921,9 @@ outside this table → the app is WRONG; fix until it matches (PHASE 6).
     (Section 8.1) to avoid the "There was an unexpected error" error and dead builds.
 16. NEVER consider an app done while it is "blank / erroring / scientifically wrong":
     it must RUN and match the **EXPECTED-VALUES TABLE** (Section 8.1) before PHASE 7.
+17. NEVER mark an app done when it needs its own server/API keys/secrets — every V8 app
+    must be **deploy-ready for GitHub + Vercel** (Section 6.5.2); rewrite until it deploys
+    on Vercel.
 
 ---
 
@@ -917,6 +948,7 @@ PROJECT DONE
 ✓ Educational interaction validated
 ✓ Teacher acceptance — the teacher (the one who teaches) approves the prototype;
   mandatory gate before GitHub/deploy
+✓ Code is deploy-ready (a single index.html, no server/secret, relative paths — Section 6.5.2)
 ✓ GitHub repository created
 ✓ Vercel deployment completed
 ✓ Public URL verified

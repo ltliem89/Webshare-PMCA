@@ -511,6 +511,27 @@ cùng lúc. Xử lý đúng theo thứ tự:
 Quy tắc: **prompt ngắn → build ít → chạy ngay; càng cầu kỳ một lần càng dễ lỗi.**
 V8 luôn hướng dẫn AI Studio "một file, chạy trước, thêm tính năng sau" (Mục 8.1).
 
+### 6.5.2. DEPLOY-READY MẶC ĐỊNH — APP SINH RA LÀ ĐỂ ĐƯA LÊN GITHUB + VERCEL
+
+Mọi app trong V8 **mặc định phải qua GitHub (PHASE 7) và Vercel (PHASE 8)** — không có
+"app chỉ nằm trong AI Studio". Vì vậy **ngay từ lúc Build, yêu cầu code đã deploy-ready**:
+
+1. **MỘT file `index.html` duy nhất ở gốc** (JS/CSS đính kèm trong file) — hoặc tối giản
+   tới mức Vercel dựng được ngay, không cần cấu hình. Không cần backend/server, không cần
+   API key của riêng app.
+2. Không chứa **bí mật/khóa tài khoản** nào (không API key, không token, không email)
+   trong code.
+3. Không phụ thuộc đường dẫn tuyệt đối: dùng đường dẫn **tương đối**, mở đường gốc `/`
+   là chạy. Không cần `.env`, không cần database.
+4. Nhàm nếu cần **JSON/dữ liệu** → nhúng thẳng vào file hoặc tải từ cùng thư mục
+   (tương đối), không gọi API ngoài.
+5. Khi Build xong, **Export/Get Code** ra phải là bộ file sạch: ít file, tên rõ ràng,
+   `index.html` nằm ở gốc — sẵn sàng kéo lên GitHub rồi để Vercel dựng web (PHASE 7–8).
+
+Nhắc lại lý do: V8 mặc định **GitHub làm nơi chứa mã, Vercel làm nơi dựng web**. Nếu mã
+cần server riêng hoặc chứa secret → không deploy được lên Vercel Free → yêu cầu viết lại
+theo deploy-ready trước khi đi tiếp.
+
 ### 6.6. PHASE 6 — TEST & IMPROVE
 
 **Ai chạy được trước, đúng khoa học sau, xong mới tính tới đẹp.** Thứ tự kiểm tra:
@@ -783,8 +804,9 @@ acceptance_tests:     # danh sách test phải qua trước khi coi là xong
 13. PHÂN HÓA — mức khó, có hướng dẫn / khám phá tự do.
 14. TRUY XUẤT NGUỒN — nhãn cho từng số liệu.
 15. KIẾN TRÚC KỸ THUẬT — ngôn ngữ, component, state, `L[lang]`, design tokens.
-    **Mặc định: 1 file HTML duy nhất, chạy được ngay trong trình duyệt không cần server
-    (ưu tiên cho AI Studio + Vercel); tự kiểm `expected_values` trong máy app.**
+    **Mặc định: MỘT file `index.html` duy nhất, deploy-ready cho GITHUB + VERCEL
+    (chạy được ngay trong trình duyệt, không server/API key/secret, đường dẫn tương đối);
+    tự kiểm `expected_values` trong máy app (xem Mục 6.5.2).**
 16. CHỈ TIÊU CHẤP NHẬN — checklist 7+1 tiêu chí (Mục 6.6).
 17. CHECKLIST QA — nội dung, khoa học, sư phạm, UI, dữ liệu, kỹ thuật, ngôn ngữ.
 
@@ -808,6 +830,8 @@ trong trình duyệt (không cần server, không cần cài gì):
 - Tương tác: [thao tác → quan sát → suy luận]
 - Giao diện: vùng mô phỏng CHỦ ĐẠO (≥60% màn hình), panel điều khiển gọn một chỗ
 - Ngôn ngữ: [nếu song ngữ — Nút đổi ngôn ngữ native ↔ en]
+- Deploy-ready: MỘT file index.html ở gốc, không backend, không API key/secret,
+  đường dẫn tương đối, sẵn sàng đưa lên GitHub + Vercel (Mục 6.5.2)
 Mỗi bước chỉ tạo một phần nhỏ, rồi NÓI RÕ "đã chạy được chưa".
 ```
 
@@ -854,6 +878,9 @@ SAI, phải sửa cho tới khi khớp (PHASE 6).
     để tránh lỗi "There was an unexpected error" và tránh app chết khi build.
 16. KHÔNG để app "trắng màn hình / báo lỗi / số liệu sai" rồi vẫn coi là xong:
     bắt buộc chạy ĐƯỢC + khớp **BẢNG GIÁ TRỊ KỲ VỌNG** (Mục 8.1) trước khi sang PHASE 7.
+17. KHÔNG để app cần server riêng/API key/secret mà SDK coi là xong — mọi app của V8 phải
+    **deploy-ready cho GitHub + Vercel** (Mục 6.5.2), nếu không phải viết lại cho tới khi
+    deploy được trên Vercel.
 
 ---
 
@@ -877,6 +904,7 @@ PROJECT DONE
 ✓ Scientific model validated
 ✓ Educational interaction validated
 ✓ Teacher acceptance — giáo viên (người dạy) duyệt prototype; cổng bắt buộc trước GitHub/deploy
+✓ Code is deploy-ready (một file index.html, không server/secret, đường dẫn tương đối — Mục 6.5.2)
 ✓ GitHub repository created
 ✓ Vercel deployment completed
 ✓ Public URL verified
