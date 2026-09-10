@@ -631,6 +631,30 @@ deploy-ready, no extra configuration is expected — Deploy with defaults works.
 Note: deployment can take 1–2 minutes → use status `WAITING_FOR_EXTERNAL_SYSTEM`, do not
 make the teacher wait meaninglessly.
 
+### 6.8.1. THE YELLOW "WARNING" LINES DURING `npm install` / BUILD — NOT ERRORS
+
+Running `npm install` / `npm run build` (and on Vercel deploy) prints many yellow warning
+lines. The AI must recognize them and judge: **the app SUCCEEDED when you see `found 0
+vulnerabilities` + a `built in ~X s` line / `Your project is ready`**. Common warnings and
+how to handle them:
+
+- `found 0 vulnerabilities` → good, no security holes; NOT an alarm.
+- `Detected "engines": { "node": ">=18.0.0" } ... will automatically upgrade ...`
+  → Vercel says it will use the newest Node build; harmless, keep the defaults.
+- `npm warn allow-scripts ... (postinstall: node install.js)` (esbuild/protobufjs)
+  → npm security notice about install scripts; the app still installs and runs fine;
+  ignore it or run `npm approve-scripts ...` to silence it.
+- `2 moderate severity vulnerabilities` → comes from leftover backend packages
+  (e.g. `express`/`qs`); the V8 standard is: **the app is a single static HTML file
+  (Section 6.5.2), so such packages should never exist**; if seen, drop the backend
+  framework → rerun `npm install` → it becomes `0 vulnerabilities`.
+- `(!) Some chunks are larger than 500 kB` → Vite bundle-size notice; the app still runs,
+  it is not an error; no action needed.
+
+Rule: only act on lines that **start with `Error`/`failed`/`✖`** or when **no link is
+produced**. For yellow warnings, tell the teacher briefly "this is just a notice, nothing is
+wrong" and CONTINUE — do not go deep into technicalities.
+
 ### 6.9. PHASE 9 — PUBLIC WEBSITE
 
 - Open the link on a **phone** (a network other than the lab Wi-Fi).

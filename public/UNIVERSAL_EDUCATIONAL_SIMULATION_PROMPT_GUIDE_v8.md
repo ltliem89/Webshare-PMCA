@@ -600,6 +600,29 @@ Thiếu tài khoản → rẽ nhánh PHASE 4 → xong quay lại.
 Lưu ý: deploy có thể mất 1–2 phút → dùng status `WAITING_FOR_EXTERNAL_SYSTEM`,
 đừng bắt giáo viên đợi vô nghĩa.
 
+### 6.8.1. CÁC DÒNG "CẢNH BÁO" KHI npm install / BUILD — KHÔNG PHẢI LỖI
+
+Khi chạy `npm install` / `npm run build` (và khi Vercel deploy), xuất hiện nhiều dòng cảnh
+báo vàng. AI phải nhận diện và đánh giá: **app THÀNH CÔNG khi có dòng `found 0
+vulnerabilities` + dòng `built in ~X s` / `Your project is ready`**. Các cảnh báo phổ biến
+và cách xử lý:
+
+- `found 0 vulnerabilities` → tốt, không có lỗ hổng an ninh; KHÔNG phải báo động.
+- `Detected "engines": { "node": ">=18.0.0" } ... will automatically upgrade ...`
+  → Vercel báo sẽ dùng Node bản mới nhất; vô hại, cứ để mặc định.
+- `npm warn allow-scripts ... (postinstall: node install.js)` (esbuild/protobufjs)
+  → cảnh báo an ninh của npm về script cài đặt; app vẫn cài & chạy bình thường;
+  có thể bỏ qua hoặc chạy `npm approve-scripts ...` để tắt tiếng.
+- `2 moderate severity vulnerabilities` → có từ gói backend thừa (vd `express`/`qs`);
+  cách chuẩn của V8: **app là 1 file HTML tĩnh (Mục 6.5.2) nên không bao giờ có gói này**;
+  nếu gặp, rút gọn không dùng framework backend → chạy lại `npm install` → còn `0 vulnerabilities`.
+- `(!) Some chunks are larger than 500 kB` → cảnh báo kích thước bundle của Vite; app vẫn
+  chạy, không phải lỗi; không cần xử lý.
+
+Quy tắc: chỉ xử lý khi dòng **bắt đầu bằng `Error`/`failed`/`✖`** hoặc khi **không có link
+được tạo**. Cảnh báo vàng (warning) thì nói 1 câu "đây chỉ là thông báo, không sao" cho giáo
+viên an tâm rồi ĐI TIẾP, không lan man kỹ thuật.
+
 ### 6.9. PHASE 9 — PUBLIC WEBSITE
 
 - Mở link trên **điện thoại** (network khác Wi-Fi phòng máy).
