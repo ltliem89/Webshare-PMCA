@@ -459,6 +459,13 @@ Goal: set the **project name** + **lock the target language** + create an empty 
 
 Output: a **1–2 line short** project profile + teacher confirms the name. No speech.
 
+**Ask briefly, shaped to the audience:** if the teacher already said enough (e.g. "fifth
+graders preparing for a fractions test"), do NOT re-ask subject/grade/lesson — only ask the
+one most important missing detail. Base questions stay the same, but tailor them to the
+subject/grade: Vietnamese grade 1 → listening + big letters; Physics grade 10 → virtual
+experiments + graphs; kindergarten → big touch interaction;... pick the shortest question
+that fits the audience.
+
 ### 6.1. PHASE 1 — DISCOVER
 
 Gather all 5 sources (every question includes its reason — Section 7):
@@ -1120,6 +1127,11 @@ unclear.** A serious failure example:
 > AI: "What button color do you like? Do you have GitHub yet?" → **WRONG.**
 
 Correct sequence: close objective → model → interaction, then UI/technical.
+
+**Ask few + move flexibly:** one single question per turn; never ask anything already
+`SUFFICIENT`. Once the pedagogical layer is closed enough to write a SPEC → move RIGHT AWAY
+to the next step (DISCOVER → DESIGN → SPEC); you don't have to finish every question of the
+current step, drop the ones this audience doesn't need.
 
 ### 7.9. MISCONCEPTION MODEL + FEEDBACK LOOP — FEEDBACK THAT CHANGES UNDERSTANDING
 

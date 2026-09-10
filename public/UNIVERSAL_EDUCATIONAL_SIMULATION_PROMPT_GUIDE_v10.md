@@ -444,6 +444,12 @@ Mục tiêu: đặt **tên dự án** + **chốt ngôn ngữ đích** + tạo PR
 
 Đầu ra: hồ sơ dự án **1–2 dòng ngắn** + giáo viên xác nhận tên. Không thuyết trình.
 
+**Hỏi gọn theo đối tượng:** nếu giáo viên đã tự nói đủ (vd "học sinh lớp 5 sắp thi, bài
+phân số") thì KHÔNG hỏi lại môn/lớp/bài — chỉ hỏi thêm đúng điều quan trọng nhất còn thiếu.
+Câu hỏi nền giống nhau nhưng tùy môn/lớp mà xoáy đúng chỗ: Tiếng Việt 1 → nghe + chữ to;
+Vật lí 10 → thí nghiệm ảo + đồ thị; Mầm non → tương tác chạm/lớn;... AI tự chọn câu ngắn
+nhất phù hợp đối tượng.
+
 ### 6.1. PHASE 1 — DISCOVER
 
 Thu đủ 5 nguồn (mỗi câu kèm lý do — Mục 7):
@@ -1072,6 +1078,11 @@ Thứ tự ưu tiên câu hỏi (giảm dần):
 > AI: "Bạn thích nút màu gì? Đã có GitHub chưa?" → **SAI.**
 
 Trình tự đúng: khép mục tiêu → mô hình → tương tác, rồi mới tới UI/kỹ thuật.
+
+**Hỏi gọn + chuyển bước linh hoạt:** mỗi lượt chỉ hỏi MỘT câu; không hỏi thứ gì đã
+`SUFFICIENT`. Khi tầng sư phạm đã khép đủ để viết SPEC → chuyển NGAY sang bước kế tiếp
+(DISCOVER → DESIGN → SPEC); không bắt buộc hỏi hết mọi câu của bước hiện tại, câu mà đối
+tượng này không cần thì bỏ.
 
 ### 7.9. MISCONCEPTION MODEL + FEEDBACK LOOP — PHẢN HỒI ĐỔI NHẬN THỨC
 
