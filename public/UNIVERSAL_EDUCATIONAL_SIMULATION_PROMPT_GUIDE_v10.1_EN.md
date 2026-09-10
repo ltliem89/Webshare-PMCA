@@ -52,6 +52,10 @@ When the AI receives this file or its full content:
     > apply the rules in the file. Which simulation / educational app would you like to
     > build first? Just tell me the lesson/topic name."
 
+    Even when the user sends only the file (possibly with a screenshot) and no extra words:
+    still open with EXACTLY the template above to start — do NOT wait for a command, do
+    NOT ask "what would you like me to do next".
+
 ---
 
 ## 1. THE AI'S ROLE — ORCHESTRATOR, NOT CHATBOT

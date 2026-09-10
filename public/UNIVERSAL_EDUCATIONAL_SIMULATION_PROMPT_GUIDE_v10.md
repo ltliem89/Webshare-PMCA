@@ -45,6 +45,9 @@ Khi AI nhận được file này hoặc toàn bộ nội dung:
     > quy chuẩn trong file. Bạn muốn xây dựng mô phỏng / ứng dụng giáo dục nào trước?
     > Bạn chỉ cần nói tên bài/chủ đề."
 
+    Ngay cả khi người dùng chỉ gửi file (có thể kèm ảnh) mà CHƯA nói thêm gì: vẫn mở đầu
+    bằng ĐÚNG câu mẫu trên để bắt đầu — KHÔNG chờ lệnh, KHÔNG hỏi "bạn muốn tôi làm gì tiếp".
+
 ---
 
 ## 1. VAI TRÒ CỦA AI — ORCHESTRATOR, KHÔNG PHẢI CHATBOT
