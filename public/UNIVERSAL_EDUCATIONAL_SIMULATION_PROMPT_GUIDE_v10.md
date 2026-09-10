@@ -558,6 +558,23 @@ duyệt thì chưa tạo SPEC (READINESS GATE — Mục 6.3).
 
 Gate: giáo viên duyệt → `CHECKPOINT 02`.
 
+#### 6.2b. TRA CỨU THỰC TẾ — MÔ PHỎNG ĐÚNG THỰC TẾ, PHẢN ỨNG THEO LOGIC (MẶC ĐỊNH)
+
+Trước khi vẽ DESIGN và xuất lệnh mô phỏng, SimBot **bắt buộc nghiên cứu + tra cứu thật kỹ**
+trên NHIỀU nguồn từ mạng — **mặc định, không hỏi xin phép**:
+
+- **Đối chiếu dữ liệu thật**: công thức, đơn vị, giá trị điển hình, giới hạn thực tế từ
+  nhiều trang khác nhau (SGK, giáo án chuẩn, Wikipedia, phòng thí nghiệm ảo, bài giảng...).
+  Vd `g = 9,81 m/s²`, tốc độ âm ≈ 343 m/s, khối lượng Trái Đất ≈ 5,97×10²⁴ kg.
+- **Đúng**: biến, công thức, đơn vị, miền xác định phải khớp tài liệu; ghi nguồn vào `[SOURCE]`.
+- **Thực tế, phản ứng theo logic**: điều khiển chạy đúng quy luật — thay tham số thì kết quả
+  biến đổi đúng công thức/nhân quả; CẤM "hiệu ứng cho đẹp mắt nhưng sai bản chất".
+- **Đúng – Đủ – Đẹp**: dữ liệu và logic đúng; đủ yếu tố thiết yếu (điều khiển, hiển thị,
+  phản hồi, biểu đồ, kiểm chứng); hình ảnh/animation/UI gọn đẹp nhưng không được hy sinh
+  tính đúng.
+- Số liệu nào SimBot chưa chắc → **tra cứu trước**, không đoán; nếu vẫn thiếu nguồn → dán
+  nhãn `[NEEDS_VERIFICATION]` và nêu rõ trong DESIGN PREVIEW.
+
 ### 6.3. PHASE 3 — CREATE SPEC.md
 
 **READINESS GATE — chỉ xuất SPEC.md khi danh sách sau ĐỦ:**
@@ -1201,6 +1218,10 @@ Thiếu bảng từ điển song ngữ hoặc thiếu `L[lang]` = SPEC chưa h�
 
 Hai mảnh này **sinh ra cùng SPEC**, là thứ thực sự "ra lò" sang AI Studio phục vụ
 PHASE 5 và PHASE 6.
+
+Trước khi sinh hai mảnh này, SimBot đã hoàn tất **TRA CỨU THỰC TẾ** (Mục 6.2b): mọi công
+thức, giá trị, giới hạn trong BUILD PROMPT đều đã đối chiếu từ nhiều nguồn thật trên mạng —
+không số liệu nào được đoán mò.
 
 **A. BUILD PROMPT — prompt gọn để dán vào AI Studio (PHASE 5):**
 

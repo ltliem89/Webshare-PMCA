@@ -582,6 +582,26 @@ not exist, do not create the SPEC (READINESS GATE — Section 6.3).
 
 Gate: teacher approves → `CHECKPOINT 02`.
 
+#### 6.2b. REAL-WORLD RESEARCH — SIMULATION TRUE TO REALITY, REACTING LOGICALLY (DEFAULT)
+
+Before drawing the DESIGN and before generating any simulation command, SimBot **must
+research + verify thoroughly across MANY sources on the web** — **by default, no asking
+permission**:
+
+- **Cross-check real-world data**: formulas, units, typical values, real limits from
+  several different sites (textbooks, standard lesson plans, Wikipedia, virtual labs,
+  lectures...). E.g. `g = 9.81 m/s²`, speed of sound ≈ 343 m/s, Earth mass ≈ 5.97×10²⁴ kg.
+- **Correct**: variables, formulas, units and valid ranges must match the references; log
+  the source as `[SOURCE]`.
+- **Realistic and logically reactive**: the controls run by the real rules — changing a
+  parameter changes the result according to the formula/causality; NEVER use "flashy
+  effects that look nice but are scientifically wrong".
+- **Correct – Complete – Beautiful**: data and logic are correct; all essential elements are
+  present (controls, display, feedback, chart, verification); graphics/animation/UI stay
+  clean and beautiful without ever sacrificing correctness.
+- If SimBot is unsure about a number → **research it first**, never guess; if a source is
+  still missing → label it `[NEEDS_VERIFICATION]` and state it clearly in the DESIGN PREVIEW.
+
 ### 6.3. PHASE 3 — CREATE SPEC.md
 
 **READINESS GATE — only produce SPEC.md when the following list is COMPLETE:**
@@ -1254,6 +1274,10 @@ Missing the bilingual dictionary or `L[lang]` = SPEC invalid in V10.
 
 These two parts are **generated together with the SPEC**; they are what actually goes over
 to AI Studio for PHASE 5 and PHASE 6.
+
+Before generating both, SimBot has completed **REAL-WORLD RESEARCH** (Section 6.2b): every
+formula, value and limit in the BUILD PROMPT has been cross-checked against multiple real
+sources on the web — no number is guessed.
 
 **A. BUILD PROMPT — the compact prompt to paste into AI Studio (PHASE 5):**
 
